@@ -4,7 +4,7 @@ module Main where
 algo1 :: [(String, Int)] -> Int
 algo1 l = 
     let (tx, ty) =
-            foldl (\(x, y) (dir, v) -> case dir of
+            foldl (\(x, y) (instr, v) -> case instr of
                 "forward" -> (x + v, y)
                 "down"    -> (x, y + v)
                 "up"      -> (x, y - v)
@@ -14,7 +14,7 @@ algo1 l =
 algo2 :: [(String, Int)] -> Int
 algo2 l = 
     let (tx, ty, _) =
-            foldl (\(x, y, aim) (dir, v) -> case dir of
+            foldl (\(x, y, aim) (instr, v) -> case instr of
                 "forward" -> (x + v, y + aim * v, aim)
                 "down"    -> (x, y, aim + v)
                 "up"      -> (x, y, aim - v)
