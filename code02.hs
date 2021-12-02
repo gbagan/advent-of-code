@@ -1,7 +1,7 @@
 module Main where
 
-algo :: [(String, Int)] -> Int
-algo l = 
+algo1 :: [(String, Int)] -> Int
+algo1 l = 
     let (tx, ty) =
             foldl (\(x, y) (dir, v) -> case dir of
                 "forward" -> (x + v, y)
@@ -24,6 +24,6 @@ f :: [String] -> (String, Int)
 f [x, y] = (x, read y)
 
 main = do
-    ls <- map (f . words) . lines <$> readFile "data02"
-    print $ algo ls
-    print $ algo2 ls
+    l <- map (f . words) . lines <$> readFile "data02"
+    print $ algo1 l
+    print $ algo2 l
