@@ -1,3 +1,4 @@
+-- https://adventofcode.com/2021/day/1
 module Main where
 
 countAug :: Int -> [Int] -> Int
