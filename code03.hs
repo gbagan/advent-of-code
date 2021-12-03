@@ -2,7 +2,7 @@
 
 module Main where
 import Data.Char (digitToInt)
-import Data.List (foldl', (!!))
+import Data.List (foldl', partition, (!!))
 
 gammaRate :: [String] -> String
 gammaRate l = map (\v -> if v >= ndiv2 then '1' else '0')
@@ -26,8 +26,7 @@ filterCode common l = go 0 l where
     go _ [x] = x
     go i xs =
         let n = length xs
-            ys = filter (\x -> x !! i == '1') xs
-            zs = filter (\x -> x !! i == '0') xs 
+            (ys, zs) = partition (\x -> x !! i == '1') xs
         in
         if (length ys >= length zs) == (common == MostCommon) then
             go (i + 1) ys
