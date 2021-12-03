@@ -25,9 +25,7 @@ filterCode common l = go 0 l where
     go _ [] = undefined
     go _ [x] = x
     go i xs =
-        let n = length xs
-            (ys, zs) = partition (\x -> x !! i == '1') xs
-        in
+        let (ys, zs) = partition (\x -> x !! i == '1') xs in
         if (length ys >= length zs) == (common == MostCommon) then
             go (i + 1) ys
         else
