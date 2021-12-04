@@ -20,7 +20,7 @@ parseData (l:_:ls) = (drawn, boards) where
 
 hasWon :: Board -> Bool
 hasWon board = f board || f (transpose board) where
-    f = any (all \x -> snd x)
+    f = any (all snd)
 
 play :: Int -> Board -> Board
 play x = map (map \(y, b) -> if x == y then (y, True) else (y, b))
