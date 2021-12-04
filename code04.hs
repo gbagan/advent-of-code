@@ -18,8 +18,8 @@ parseData (l:_:ls) = (drawn, boards) where
     drawn = map read . splitWhen (== ',') $ l
     boards = map (map (map ((,False) . read) . words)) . splitWhen null $ ls
 
-hasWin :: Board -> Bool
-hasWin board = f board || f (transpose board) where
+hasWon :: Board -> Bool
+hasWon board = f board || f (transpose board) where
     f = any (all \x -> snd x)
 
 play :: Int -> Board -> Board
@@ -33,7 +33,7 @@ algo1 drawn boards = go drawn boards where
     go [] _ = error "no winner"
     go (x:xs) bs =
         let bs' = map (play x) bs in
-        case filter hasWin bs' of
+        case filter hasWon bs' of
             [] -> go xs bs'
             b:_ -> x * score b
 
@@ -42,7 +42,7 @@ algo2 drawn boards = go drawn boards where
     go [] _ = error "no winner"
     go (x:xs) bs =
         let bs' = map (play x) bs in
-        case filter (not . hasWin) bs' of
+        case filter (not . hasWon) bs' of
             [] -> x * score (head bs')
             bs'' -> go xs bs''
 
