@@ -24,21 +24,19 @@ line = Line <$> coord <* string " -> " <*> coord
 playOn :: (Int, Int) -> Board -> Board
 playOn (x, y) = Map.insertWith (+) (x, y) 1
 
-fillBoard1 :: Bool -> Line -> Board -> Board
-fillBoard1 diag (Line (x1, y1) (x2, y2)) board =
-    let points =
-         if | y1 == y2  -> (,y1) <$> [min x1 x2..max x1 x2]
-            | x1 == x2  -> (x1,) <$> [min y1 y2..max y1 y2]
-            | diag      -> let len = abs (x1 - x2)
-                               dx = signum (x2 - x1)
-                               dy = signum (y2 - y1)
-                               move (x, y) = (x + dx, y + dy)
-                           in take (len+1) (iterate move (x1, y1))
-            | otherwise -> []
-    in foldl' (flip playOn) board points
-
 fillBoard :: Bool -> [Line] -> Board
-fillBoard diag = foldl' (flip $ fillBoard1 diag) Map.empty
+fillBoard diag = foldl' go Map.empty where
+    go board (Line (x1, y1) (x2, y2)) =
+        let points =
+             if  | y1 == y2  -> (,y1) <$> [min x1 x2..max x1 x2]
+                 | x1 == x2  -> (x1,) <$> [min y1 y2..max y1 y2]
+                 | diag      -> let len = abs (x1 - x2)
+                                    dx = signum (x2 - x1)
+                                    dy = signum (y2 - y1)
+                                    move (x, y) = (x + dx, y + dy)
+                                in take (len+1) (iterate move (x1, y1))
+                 | otherwise -> []
+        in foldl' (flip playOn) board points
 
 countIntersections :: Bool -> [Line] -> Int
 countIntersections diag ls = 
