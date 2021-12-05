@@ -1,5 +1,4 @@
 module Day05 (solve) where
-import Data.Maybe (mapMaybe)
 import Data.List (foldl')
 import Text.Regex.Applicative
 import Text.Regex.Applicative.Common (decimal)
@@ -35,10 +34,9 @@ fillBoard diag = foldl' go Map.empty where
         in foldl' (flip playOn) board points
 
 countIntersections :: Bool -> [Line] -> Int
-countIntersections diag ls = 
-    length . filter (\(_, v) -> v > 1) . Map.toList . fillBoard diag $ ls
+countIntersections diag = length . filter (\(_, v) -> v > 1) . Map.toList . fillBoard diag
 
 solve :: String -> Maybe (Int, Int)
-solve s =
-    let ls = mapMaybe (=~ line) . lines $ s in
+solve s = do
+    ls <- traverse (=~ line) (lines s)
     Just (countIntersections False ls, countIntersections True ls)

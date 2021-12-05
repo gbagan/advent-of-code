@@ -1,6 +1,6 @@
 module Main where
 
-import Data.Map (Map)
+import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 import qualified Day01 (solve)
 import qualified Day02 (solve)

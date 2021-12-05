@@ -20,8 +20,8 @@ play x = map (map \(y, b) -> if x == y then (y, True) else (y, b))
 score :: Board -> Int
 score = sum . map fst . filter (not . snd) . concat
 
-algo1 :: [Int] -> [Board] -> Int
-algo1 drawn boards = go drawn boards where
+part1 :: [Int] -> [Board] -> Int
+part1 = go where
     go [] _ = error "no winner"
     go (x:xs) bs =
         let bs' = map (play x) bs in
@@ -29,8 +29,8 @@ algo1 drawn boards = go drawn boards where
             [] -> go xs bs'
             b:_ -> x * score b
 
-algo2 :: [Int] -> [Board] -> Int
-algo2 drawn boards = go drawn boards where
+part2 :: [Int] -> [Board] -> Int
+part2 = go where
     go [] _ = error "no winner"
     go (x:xs) bs =
         let bs' = map (play x) bs in
@@ -41,4 +41,4 @@ algo2 drawn boards = go drawn boards where
 solve :: String -> Maybe (Int, Int)
 solve s = 
     let (drawn, boards) = parseData . lines $ s in
-    Just (algo1 drawn boards, algo2 drawn boards)
+    Just (part1 drawn boards, part2 drawn boards)

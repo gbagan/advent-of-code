@@ -1,30 +1,41 @@
 -- https://adventofcode.com/2021/day/2
 module Day02 (solve) where
 
-part1 :: [(String, Int)] -> Int
+import Data.List (foldl')
+import Text.Read (readMaybe)
+
+data Instr = Forward Int | Down Int
+
+part1 :: [Instr] -> Int
 part1 l = 
     let (tx, ty) =
-            foldl (\(x, y) (instr, v) -> case instr of
-                "forward" -> (x + v, y)
-                "down"    -> (x, y + v)
-                "up"      -> (x, y - v)
+            foldl' (\(x, y) instr -> case instr of
+                Forward v -> (x + v, y)
+                Down v    -> (x, y + v)
             ) (0, 0) l
     in tx * ty
 
-part2 :: [(String, Int)] -> Int
+part2 :: [Instr] -> Int
 part2 l = 
     let (tx, ty, _) =
-            foldl (\(x, y, aim) (instr, v) -> case instr of
-                "forward" -> (x + v, y + aim * v, aim)
-                "down"    -> (x, y, aim + v)
-                "up"      -> (x, y, aim - v)
+            foldl' (\(x, y, aim) instr -> case instr of
+                Forward v -> (x + v, y + aim * v, aim)
+                Down v    -> (x, y, aim + v)
             ) (0, 0, 0) l
     in tx * ty
 
-f :: [String] -> (String, Int)
-f [x, y] = (x, read y)
+
+parseLine :: [String] -> Maybe Instr
+parseLine [x, y] = do
+    v <- readMaybe y
+    case x of
+        "forward" -> Just (Forward v)
+        "down"    -> Just (Down v)
+        "up"      -> Just (Down (-v))
+        _         -> Nothing
+parseLine _ = Nothing
 
 solve :: String -> Maybe (Int, Int)
-solve s = 
-    let l = map (f . words) . lines $ s in
+solve s = do
+    l <- traverse (parseLine . words) (lines s)
     Just (part1 l, part2 l)

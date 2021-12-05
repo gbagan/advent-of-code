@@ -19,7 +19,7 @@ part1 l = toDec e * toDec g where
 data Common = MostCommon | LeastCommon deriving (Eq)
 
 filterCode :: Common -> [String] -> String
-filterCode common l = go 0 l where
+filterCode common = go 0 where
     go _ [] = undefined
     go _ [x] = x
     go i xs =
