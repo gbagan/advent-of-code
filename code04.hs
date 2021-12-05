@@ -4,19 +4,14 @@
 module Main where
 
 import Data.List (transpose)
+import Data.List.Split (splitOn)
 
 type Board = [[(Int, Bool)]]
 
-splitWhen :: (a -> Bool) -> [a] -> [[a]]
-splitWhen p l =  case dropWhile p l of
-                      [] -> []
-                      l' -> w : splitWhen p l''
-                            where (w, l'') = break p l'
-
 parseData :: [String] -> ([Int], [Board])
 parseData (l:_:ls) = (drawn, boards) where
-    drawn = map read . splitWhen (== ',') $ l
-    boards = map (map (map ((,False) . read) . words)) . splitWhen null $ ls
+    drawn = map read . splitOn "," $ l
+    boards = map (map (map ((,False) . read) . words)) . splitOn [[]] $ ls
 
 hasWon :: Board -> Bool
 hasWon board = f board || f (transpose board) where
