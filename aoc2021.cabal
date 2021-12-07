@@ -15,6 +15,8 @@ library
         Day03
         Day04
         Day05
+        Day06
+        Day07
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -30,9 +32,7 @@ library
     build-depends:
                        base >= 4.7 && < 5
                      , containers
-                     , parsec
-                     , regex-applicative
-                     , recursion-schemes
+                     , megaparsec
                      , split
                      , lens
 
@@ -55,9 +55,7 @@ executable aoc2021
               -Wredundant-constraints
   build-depends:       base >= 4.7 && < 5
                      , containers
-                     , parsec
-                     , regex-applicative
-                     , recursion-schemes
+                     , megaparsec
                      , split
                      , lens
                      , aoc2021

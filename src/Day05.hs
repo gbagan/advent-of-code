@@ -1,42 +1,37 @@
 module Day05 (solve) where
-import Data.List (foldl')
-import Text.Regex.Applicative
-import Text.Regex.Applicative.Common (decimal)
-import Data.Map.Strict (Map)
-import qualified Data.Map.Strict as Map
+import qualified Data.Map as Map
+import           Data.Void (Void)
+import           Text.Megaparsec (Parsec, parseMaybe, sepEndBy1)
+import qualified Text.Megaparsec.Char as P
+import qualified Text.Megaparsec.Char.Lexer as L
+import           Util (freqs)
 
-type Regex = RE Char
+type Parser = Parsec Void String
 
 data Line = Line (Int, Int) (Int, Int)
-type Board = Map (Int, Int) Int
+data Diag = Diag | NoDiag deriving Eq
 
-coord :: Regex (Int, Int)
-coord = (,) <$> decimal <* sym ',' <*> decimal
+parser :: Parser [Line]
+parser = sepEndBy1 lineP P.eol where
+    lexeme = L.lexeme P.hspace
+    coordP = (,) <$> lexeme L.decimal <* lexeme (P.char ',') <*> lexeme L.decimal
+    lineP = Line <$> coordP <* lexeme (P.string "->") <*> coordP
 
-line :: Regex Line
-line = Line <$> coord <* string " -> " <*> coord
+points :: Diag -> Line -> [(Int, Int)]
+points diag (Line (x1, y1) (x2, y2))
+    | y1 == y2     = (,y1) <$> [min x1 x2..max x1 x2]
+    | x1 == x2     = (x1,) <$> [min y1 y2..max y1 y2]
+    | diag == Diag = let len = abs (x1 - x2)
+                         dx = signum (x2 - x1)
+                         dy = signum (y2 - y1)
+                         move (x, y) = (x + dx, y + dy)
+                     in take (len+1) (iterate move (x1, y1))
+    | otherwise    = []
 
-playOn :: (Int, Int) -> Board -> Board
-playOn (x, y) = Map.insertWith (+) (x, y) 1
-
-fillBoard :: Bool -> [Line] -> Board
-fillBoard diag = foldl' go Map.empty where
-    go board (Line (x1, y1) (x2, y2)) =
-        let points =
-             if  | y1 == y2  -> (,y1) <$> [min x1 x2..max x1 x2]
-                 | x1 == x2  -> (x1,) <$> [min y1 y2..max y1 y2]
-                 | diag      -> let len = abs (x1 - x2)
-                                    dx = signum (x2 - x1)
-                                    dy = signum (y2 - y1)
-                                    move (x, y) = (x + dx, y + dy)
-                                in take (len+1) (iterate move (x1, y1))
-                 | otherwise -> []
-        in foldl' (flip playOn) board points
-
-countIntersections :: Bool -> [Line] -> Int
-countIntersections diag = length . filter (\(_, v) -> v > 1) . Map.toList . fillBoard diag
+countIntersections :: Diag -> [Line] -> Int
+countIntersections diag ls = length . Map.filter (>1) . freqs $ ls >>= points diag
 
 solve :: String -> Maybe (Int, Int)
 solve s = do
-    ls <- traverse (=~ line) (lines s)
-    Just (countIntersections False ls, countIntersections True ls)
+    xs <- parseMaybe parser s
+    Just (countIntersections NoDiag xs, countIntersections Diag xs)
