@@ -7,23 +7,20 @@ import Text.Read (readMaybe)
 data Instr = Forward Int | Down Int
 
 part1 :: [Instr] -> Int
-part1 l = 
-    let (tx, ty) =
+part1 l = tx * ty where
+        (tx, ty) =
             foldl' (\(x, y) instr -> case instr of
                 Forward v -> (x + v, y)
                 Down v    -> (x, y + v)
             ) (0, 0) l
-    in tx * ty
 
 part2 :: [Instr] -> Int
-part2 l = 
-    let (tx, ty, _) =
+part2 l = tx * ty where
+        (tx, ty, _) =
             foldl' (\(x, y, aim) instr -> case instr of
                 Forward v -> (x + v, y + aim * v, aim)
                 Down v    -> (x, y, aim + v)
             ) (0, 0, 0) l
-    in tx * ty
-
 
 parseLine :: [String] -> Maybe Instr
 parseLine [x, y] = do

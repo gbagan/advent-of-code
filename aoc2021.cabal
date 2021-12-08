@@ -17,6 +17,7 @@ library
         Day05
         Day06
         Day07
+        Day08
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -48,12 +49,12 @@ executable aoc2021
                     LambdaCase
                     MultiWayIf
                     TupleSections
-  ghc-options:
+    ghc-options:
               -Wall
               -Wcompat
               -Wincomplete-uni-patterns
               -Wredundant-constraints
-  build-depends:       base >= 4.7 && < 5
+    build-depends:   base >= 4.7 && < 5
                      , containers
                      , megaparsec
                      , split

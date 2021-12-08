@@ -1,5 +1,5 @@
 module Day07 (solve) where
-import Data.List (sort, genericLength)
+import Data.List (sort)
 import Data.List.Split (splitOn)
 import Text.Read (readMaybe)
 import Util (average)
