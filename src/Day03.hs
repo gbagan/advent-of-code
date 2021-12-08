@@ -7,12 +7,9 @@ import Util (majority)
 toDec :: String -> Int
 toDec = foldl' (\acc x -> acc * 2 + digitToInt x) 0
 
-gammaRate :: [String] -> String
-gammaRate = map (bool '0' '1' . majority (=='1'))
-
 part1 :: [String] -> Int
 part1 l = toDec e * toDec g where
-    g = gammaRate (transpose l)
+    g = map (bool '0' '1' . majority (=='1')) (transpose l)
     e = map (bool '1' '0' . (=='1')) g
 
 data Common = MostCommon | LeastCommon deriving (Eq)
