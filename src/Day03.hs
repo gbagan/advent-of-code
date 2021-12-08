@@ -1,5 +1,6 @@
 module Day03 (solve) where
 import Data.Char (digitToInt)
+import Data.Bool (bool)
 import Data.List (foldl', partition, transpose)
 import Util (majority)
 
@@ -7,13 +8,12 @@ toDec :: String -> Int
 toDec = foldl' (\acc x -> acc * 2 + digitToInt x) 0
 
 gammaRate :: [String] -> String
-gammaRate = map go where 
-                go s = if majority (=='1') s then '1' else '0'
+gammaRate = map (bool '0' '1' . majority (=='1'))
 
 part1 :: [String] -> Int
 part1 l = toDec e * toDec g where
     g = gammaRate (transpose l)
-    e = map (\x -> if x == '0' then '1' else '0') g
+    e = map (bool '1' '0' . (=='1')) g
 
 data Common = MostCommon | LeastCommon deriving (Eq)
 
