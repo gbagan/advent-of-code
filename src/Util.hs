@@ -1,7 +1,17 @@
 module Util where
+import Data.Char (digitToInt, isDigit)
 import Data.List (genericLength)
 import Data.Map (Map)
 import qualified Data.Map as Map
+
+type Point = (Int, Int)
+
+adjacentPoints :: Point -> [Point]
+adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
+
+digitToIntMaybe :: Char -> Maybe Int
+digitToIntMaybe c | isDigit c = Just $ digitToInt c
+                  | otherwise = Nothing
 
 freqs :: Ord a => [a] -> Map a Int
 freqs = Map.fromListWith (+) . map (,1)

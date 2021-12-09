@@ -3,6 +3,8 @@ import           Data.Char (chr, ord)
 import           Data.List (find, permutations)
 import           Data.Map (Map)
 import qualified Data.Map as Map
+import           Data.IntSet (IntSet)
+import qualified Data.IntSet as IntSet
 import           Data.Set (Set)
 import qualified Data.Set as Set
 import           Data.Void (Void)
@@ -12,21 +14,21 @@ import qualified Text.Megaparsec.Char.Lexer as L
 import           Text.Read (readMaybe)
 
 type Parser = Parsec Void String
-type Digit = Set Int
+type Digit = IntSet
 data Line = Line (Set Digit) [Digit]
 
 parser :: Parser [Line]
 parser = sepEndBy1 line P.eol where
     segment = (\c -> ord c - ord 'a') <$> P.lowerChar
-    digit = Set.fromList <$> some segment
+    digit = IntSet.fromList <$> some segment
     digits = sepEndBy1 digit P.hspace1
     line = Line <$> (Set.fromList <$> digits) <* P.string "| " <*> digits
 
 part1 :: [Line] -> Int
-part1 xs = length $ xs >>= \(Line _ r) -> filter (\w -> length w `elem` [2, 3, 4, 7]) r 
+part1 xs = length $ xs >>= \(Line _ r) -> filter (\w -> IntSet.size w `elem` [2, 3, 4, 7]) r
 
 digitList :: [Digit]
-digitList = map Set.fromList
+digitList = map IntSet.fromList
     [ [0,1,2,4,5,6]
     , [2,5]
     , [0,2,3,4,6]
@@ -49,7 +51,7 @@ perms7 :: [[Int]]
 perms7 = permutations [0..7]
 
 applyPerm :: [Int] -> Digit -> Digit
-applyPerm p = Set.map (p!!)
+applyPerm p = IntSet.map (p!!)
 
 decodeLine :: Line -> Maybe Int
 decodeLine (Line l r) = do
