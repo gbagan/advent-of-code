@@ -19,6 +19,7 @@ library
         Day07
         Day08
         Day09
+        Day10
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -33,7 +34,6 @@ library
     -- other-extensions:
     build-depends:
                        base >= 4.7 && < 5
-                     , array
                      , containers
                      , megaparsec
                      , split
@@ -57,7 +57,6 @@ executable aoc2021
               -Wincomplete-uni-patterns
               -Wredundant-constraints
     build-depends:   base >= 4.7 && < 5
-                     , array
                      , containers
                      , megaparsec
                      , split
