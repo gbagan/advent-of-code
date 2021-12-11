@@ -29,3 +29,12 @@ majority f l = 2*m >= n where
 
 median :: Ord a => [a] -> a
 median l = sort l !! (length l `div` 2)
+
+parse2dMap :: (Char -> Maybe a) -> String -> Maybe (Map Point a)
+parse2dMap parseChar str = do
+    l <- traverse (traverse parseChar) (lines str)
+    Just $ Map.fromList
+        [((i, j), v) 
+        | (j, row) <- zip [0..] l
+        , (i, v) <- zip [0..] row
+        ]

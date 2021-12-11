@@ -1,18 +1,10 @@
 module Day09 (solve) where
+
 import           Data.Maybe (isNothing)
-import           Data.Foldable (toList)
 import           Data.List (find, sort)
 import           Data.Map (Map, (!))
 import qualified Data.Map as Map
-import           Util (Point, adjacentPoints, digitToIntMaybe, freqs)
-
-listToMap :: [[Int]] -> Map Point Int
-listToMap l =  Map.fromList
-                [((i, j), v) 
-                | (j, row) <- zip [0..] l
-                , (i, v) <- zip [0..] row
-                , v < 9
-                ]
+import           Util (Point, adjacentPoints, digitToIntMaybe, freqs, parse2dMap)
 
 flow :: Map Point Int -> Map Point (Maybe Point)
 flow m = Map.mapWithKey go m where
@@ -31,9 +23,9 @@ part1 :: Map Point Int -> Int
 part1 m = sum . map ((+1) . (m!) . fst) . filter (isNothing . snd) . Map.toList . flow $ m 
 
 part2 :: Map Point Int -> Int
-part2 = product . take 3 . reverse . sort . toList . freqs . toList . closure . flow
+part2 = product . take 3 . reverse . sort . Map.elems . freqs . Map.elems . closure . flow
 
 solve :: String -> Maybe (Int, Int)
 solve s = do
-    arr <- listToMap <$> traverse (traverse digitToIntMaybe) (lines s)
-    pure (part1 arr, part2 arr)
+    mp <- Map.filter (<9) <$> parse2dMap digitToIntMaybe s
+    pure (part1 mp, part2 mp)

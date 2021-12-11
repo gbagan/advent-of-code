@@ -4,14 +4,7 @@ import           Data.Map (Map)
 import qualified Data.Map as Map
 import           Data.Maybe (fromJust)
 import qualified Data.Set as Set
-import           Util (Point, digitToIntMaybe, kingAdjacentPoints)
-
-listToMap :: [[Int]] -> Map Point Int
-listToMap l =  Map.fromList
-                [((i, j), v) 
-                | (j, row) <- zip [0..] l
-                , (i, v) <- zip [0..] row
-                ]
+import           Util (Point, digitToIntMaybe, kingAdjacentPoints, parse2dMap)
 
 step :: Map Point Int -> Map Point Int
 step mp = mp3 where
@@ -41,6 +34,6 @@ part2 = fromJust . findIndex (all (==0) . Map.elems)
 
 solve :: String -> Maybe (Int, Int)
 solve s = do
-    mp <- listToMap <$> traverse (traverse digitToIntMaybe) (lines s)
+    mp <- parse2dMap digitToIntMaybe s
     let l = stepList mp
     pure (part1 l, part2 l)
