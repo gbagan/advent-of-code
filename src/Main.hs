@@ -12,6 +12,7 @@ import qualified Day07 (solve)
 import qualified Day08 (solve)
 import qualified Day09 (solve)
 import qualified Day10 (solve)
+import qualified Day11 (solve)
 import System.Environment (getArgs)
 
 solutions :: Map String (String -> Maybe (Int, Int))
@@ -26,6 +27,7 @@ solutions = Map.fromList
             ,   ("08", Day08.solve)
             ,   ("09", Day09.solve)
             ,   ("10", Day10.solve)
+            ,   ("11", Day11.solve)
             ]
 
 solveOne :: String -> IO ()

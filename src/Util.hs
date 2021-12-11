@@ -9,6 +9,9 @@ type Point = (Int, Int)
 adjacentPoints :: Point -> [Point]
 adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
 
+kingAdjacentPoints :: Point -> [Point]
+kingAdjacentPoints (x, y) = adjacentPoints (x, y) ++ [(x-1, y-1), (x+1, y-1), (x-1, y+1), (x+1, y+1)]
+
 digitToIntMaybe :: Char -> Maybe Int
 digitToIntMaybe c | isDigit c = Just $ digitToInt c
                   | otherwise = Nothing

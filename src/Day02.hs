@@ -9,7 +9,7 @@ data Instr = Forward Int | Down Int
 part1 :: [Instr] -> Int
 part1 l = tx * ty where
         (tx, ty) =
-            foldl' (\(x, y) instr -> case instr of
+            foldl' (\(x, y) -> \case
                 Forward v -> (x + v, y)
                 Down v    -> (x, y + v)
             ) (0, 0) l
@@ -17,7 +17,7 @@ part1 l = tx * ty where
 part2 :: [Instr] -> Int
 part2 l = tx * ty where
         (tx, ty, _) =
-            foldl' (\(x, y, aim) instr -> case instr of
+            foldl' (\(x, y, aim) -> \case
                 Forward v -> (x + v, y + aim * v, aim)
                 Down v    -> (x, y, aim + v)
             ) (0, 0, 0) l

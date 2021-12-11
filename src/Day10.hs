@@ -1,4 +1,4 @@
-module Day10 where
+module Day10 (solve) where
 import Data.List (foldl')
 import Data.Either (lefts, rights)
 import Util (median)
