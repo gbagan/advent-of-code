@@ -33,8 +33,6 @@ step mp = mp3 where
 stepList :: Map Point Int -> [Map Point Int]
 stepList = iterate step
 
--- nbFlash = length . filter ((>9) . snd) . Map.toList $ mp2
-
 part1 :: [Map Point Int] -> Int
 part1 = sum . map (length . filter (==0) . Map.elems) . take 100 . tail
 
