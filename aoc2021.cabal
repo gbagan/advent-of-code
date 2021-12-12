@@ -21,6 +21,7 @@ library
         Day09
         Day10
         Day11
+        Day12
 
     -- Modules included in this library but not exported.
     -- other-modules:

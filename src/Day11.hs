@@ -11,7 +11,6 @@ step mp = mp3 where
     mp1 = Map.map (+1)  mp
     stack = map fst . filter ((>9) . snd) . Map.toList $ mp1
     mp2 = go stack Set.empty mp1
-    
     mp3 = Map.map (\v -> if v > 9 then 0 else v) mp2
     go [] _ mp' = mp'
     go (x:xs) flashed mp' =

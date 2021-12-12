@@ -8,9 +8,8 @@ import qualified Data.IntSet as IntSet
 import           Data.Set (Set)
 import qualified Data.Set as Set
 import           Data.Void (Void)
-import           Text.Megaparsec (Parsec, parseMaybe, parseTest, sepEndBy1, some)
+import           Text.Megaparsec (Parsec, parseMaybe, sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
 import           Text.Read (readMaybe)
 
 type Parser = Parsec Void String
