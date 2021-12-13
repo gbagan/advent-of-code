@@ -15,11 +15,11 @@ data Fold = Fold Axis Int
 data Input = Input (Set Point) [Fold]
 
 parser :: Parser Input
-parser = Input <$> points <* P.eol <*> some fold where
+parser = Input <$> points <* P.eol <*> sepEndBy1 fold P.eol where
      points = Set.fromList <$> some point
-     fold = Fold <$> (P.string "fold along " *> axis) <* P.char '=' <*> L.decimal <* P.eol
-     axis = X <$ P.char 'x' <|> Y <$ P.char 'y'
      point = (,) <$> L.decimal <* P.char ',' <*> L.decimal <* P.eol
+     fold = Fold <$> (P.string "fold along " *> axis) <* P.char '=' <*> L.decimal
+     axis = X <$ P.char 'x' <|> Y <$ P.char 'y'
 
 foldPaper :: Fold -> Set Point -> Set Point
 foldPaper (Fold X i) = Set.map \(x, y) -> (min x (2*i - x), y)
