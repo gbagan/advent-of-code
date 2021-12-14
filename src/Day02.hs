@@ -1,10 +1,19 @@
 -- https://adventofcode.com/2021/day/2
 module Day02 (solve) where
 
-import Data.List (foldl')
-import Text.Read (readMaybe)
+import           Data.List (foldl')
+import           Text.Megaparsec (sepEndBy1, (<|>))
+import qualified Text.Megaparsec.Char as P
+import qualified Text.Megaparsec.Char.Lexer as L
+import           Util (Parser, aocTemplate)
 
 data Instr = Forward Int | Down Int
+
+parser :: Parser [Instr]
+parser = line `sepEndBy1` P.eol where
+    line = Forward <$> (P.string "forward " *> L.decimal)
+       <|> Down <$> (P.string "down " *> L.decimal)
+       <|> Down . negate <$> (P.string "up " *> L.decimal)
 
 part1 :: [Instr] -> Int
 part1 l = tx * ty where
@@ -22,17 +31,5 @@ part2 l = tx * ty where
                 Down v    -> (x, y, aim + v)
             ) (0, 0, 0) l
 
-parseLine :: [String] -> Maybe Instr
-parseLine [x, y] = do
-    v <- readMaybe y
-    case x of
-        "forward" -> Just (Forward v)
-        "down"    -> Just (Down v)
-        "up"      -> Just (Down (-v))
-        _         -> Nothing
-parseLine _ = Nothing
-
-solve :: String -> Maybe (Int, Int)
-solve s = do
-    l <- traverse (parseLine . words) (lines s)
-    Just (part1 l, part2 l)
+solve :: String -> IO ()
+solve = aocTemplate parser (Just . part1) (Just . part2)

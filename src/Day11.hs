@@ -1,10 +1,18 @@
 module Day11 (solve) where
+import           Data.Char (digitToInt)
 import           Data.List (iterate', findIndex, foldl')
 import           Data.Map (Map)
 import qualified Data.Map as Map
 import           Data.Maybe (fromJust)
 import qualified Data.Set as Set
-import           Util (Point, count, digitToIntMaybe, kingAdjacentPoints, parse2dMap)
+import           Text.Megaparsec (sepEndBy1, some)
+import qualified Text.Megaparsec.Char as P
+import qualified Text.Megaparsec.Char.Lexer as L
+import           Util (Parser, Point, aocTemplate, count, digitToIntMaybe, kingAdjacentPoints, listTo2dMap)
+
+parser :: Parser (Map Point Int)
+parser = listTo2dMap <$> line `sepEndBy1` P.eol where
+        line = some (digitToInt <$> P.digitChar)
 
 step :: Map Point Int -> Map Point Int
 step mp = mp3 where
@@ -22,17 +30,11 @@ step mp = mp3 where
                             else
                                 go xs flashed mp''
 
-stepList :: Map Point Int -> [Map Point Int]
-stepList = iterate step
+part1 :: Map Point Int -> Int
+part1 = sum . map (count (==0) . Map.elems) . take 100 . tail . iterate step
 
-part1 :: [Map Point Int] -> Int
-part1 = sum . map (count (==0) . Map.elems) . take 100 . tail
+part2 :: Map Point Int -> Maybe Int
+part2 = findIndex (all (==0) . Map.elems) . iterate step
 
-part2 :: [Map Point Int] -> Int
-part2 = fromJust . findIndex (all (==0) . Map.elems)
-
-solve :: String -> Maybe (Int, Int)
-solve s = do
-    mp <- parse2dMap digitToIntMaybe s
-    let l = stepList mp
-    pure (part1 l, part2 l)
+solve :: String -> IO ()
+solve = aocTemplate parser (Just . part1) part2

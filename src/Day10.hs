@@ -1,7 +1,15 @@
 module Day10 (solve) where
-import Data.List (foldl')
-import Data.Either (lefts, rights)
-import Util (median)
+import           Data.List (foldl')
+import           Data.Either (lefts, rights)
+import           Text.Megaparsec (sepEndBy1, some, (<|>))
+import qualified Text.Megaparsec.Char as P
+import qualified Text.Megaparsec.Char.Lexer as L
+import           Util (Parser, aocTemplate, median)
+
+parser :: Parser [String]
+parser = line `sepEndBy1` P.eol where
+        line = some $ P.char '(' <|> P.char '[' <|> P.char '{' <|> P.char '<'
+                     <|> P.char ')' <|> P.char ']' <|> P.char '}' <|> P.char '>'
 
 parseLine :: String -> Either Char [Char]
 parseLine = go [] where
@@ -25,6 +33,5 @@ part2 = median . map stackWeight . rights . map parseLine where
         weight '<' = 4
         stackWeight = foldl' (\acc x -> acc * 5 + weight x) 0
 
-solve :: String -> Maybe (Int, Int)
-solve s = let ls = lines s in
-            pure (part1 ls, part2 ls)
+solve :: String -> IO ()
+solve = aocTemplate parser (Just . part1) (Just . part2)

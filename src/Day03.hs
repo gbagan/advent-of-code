@@ -1,15 +1,17 @@
 module Day03 (solve) where
-
-import Data.Bool (bool)
-import Data.List (foldl', partition, transpose)
-import Util (majority)
+import           Data.Bool (bool)
+import           Data.Functor (($>))
+import           Data.List (foldl', partition, transpose)
+import           Text.Megaparsec (sepEndBy1, some, (<|>))
+import qualified Text.Megaparsec.Char as P
+import qualified Text.Megaparsec.Char.Lexer as L
+import           Util (Parser, aocTemplate, majority)
 
 data Bit = Zero | One deriving (Eq, Enum)
 
-digitToBit :: Char -> Maybe Bit
-digitToBit '0' = Just Zero
-digitToBit '1' = Just One
-digitToBit _ = Nothing
+parser :: Parser [[Bit]]
+parser = some bit `sepEndBy1` P.eol where
+    bit = P.char '0' $> Zero <|> P.char '1' $> One
 
 toDec :: [Bit] -> Int
 toDec = foldl' (\acc x -> acc * 2 + fromEnum x) 0
@@ -37,7 +39,5 @@ part2 l = toDec x * toDec y where
     x = filterCode MostCommon l
     y = filterCode LeastCommon l
 
-solve :: String -> Maybe (Int, Int)
-solve s = do
-    xs <- traverse (traverse digitToBit) (lines s)
-    Just (part1 xs, part2 xs)
+solve :: String -> IO ()
+solve = aocTemplate parser (Just . part1) (Just . part2)

@@ -2,9 +2,27 @@ module Util where
 import Data.Char (digitToInt, isDigit)
 import Data.List (sort, genericLength)
 import Data.Map (Map)
+import Data.Void (Void)
+import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
+import qualified Text.Megaparsec.Char as P
+import qualified Text.Megaparsec.Char.Lexer as L
 import qualified Data.Map as Map
 
+type Parser = Parsec Void String
 type Point = (Int, Int)
+
+aocTemplate :: Parser a -> (a -> Maybe Int) -> (a -> Maybe Int) -> String -> IO ()
+aocTemplate parser part1 part2 s = do
+    case parse parser "" s of
+        Left err -> putStr (errorBundlePretty err)
+        Right input -> do
+            case part1 input of
+                Nothing -> putStrLn "  part 1: no solution found"
+                Just n ->  putStrLn $ "  part 1: " ++ show n
+            case part2 input of
+                Nothing -> putStrLn "  part 2: no solution found"
+                Just n ->  putStrLn $ "  part 2: " ++ show n
+
 
 adjacentPoints :: Point -> [Point]
 adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
@@ -33,10 +51,9 @@ majority f l = 2*m >= n where
 median :: Ord a => [a] -> a
 median l = sort l !! (length l `div` 2)
 
-parse2dMap :: (Char -> Maybe a) -> String -> Maybe (Map Point a)
-parse2dMap parseChar str = do
-    l <- traverse (traverse parseChar) (lines str)
-    Just $ Map.fromList
+listTo2dMap :: [[a]] -> Map Point a
+listTo2dMap l = 
+    Map.fromList
         [((i, j), v) 
         | (j, row) <- zip [0..] l
         , (i, v) <- zip [0..] row

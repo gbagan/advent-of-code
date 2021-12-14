@@ -6,16 +6,15 @@ import           Data.Map (Map, (!))
 import qualified Data.Map as Map
 import           Data.Maybe (mapMaybe)
 import qualified Data.Set as Set
-import           Data.Void (Void)
-import           Text.Megaparsec (Parsec, parseMaybe, sepEndBy1, some)
+import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
+import           Util (Parser, aocTemplate)
 
-type Parser = Parsec Void String
 data Edge = Edge String String
 type Graph = Map String [String]
 
-parser :: Parser [Edge]
-parser = sepEndBy1 edge P.eol where
+parser :: Parser Graph
+parser = edgesToGraph <$> sepEndBy1 edge P.eol where
     edge = Edge <$> some P.letterChar <* P.char '-' <*> some P.letterChar
 
 edgesToGraph :: [Edge] -> Graph
@@ -51,8 +50,5 @@ part2 g = go ["start"] False "start" where
                 guard $ nbor /= "start"
                 pure $ go (if all isUpper nbor then visited else nbor : visited) (nbor `elem` visited) nbor
 
-solve :: String -> Maybe (Int, Int)
-solve s = do
-    edges <- parseMaybe parser s
-    let graph = edgesToGraph edges
-    pure (part1 graph, part2 graph)
+solve :: String -> IO ()
+solve = aocTemplate parser (Just . part1) (Just . part2)

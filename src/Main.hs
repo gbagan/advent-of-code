@@ -18,7 +18,7 @@ import qualified Day13 (solve)
 import qualified Day14 (solve)
 import System.Environment (getArgs)
 
-solutions :: Map String (String -> Maybe (Int, Int))
+solutions :: Map String (String -> IO())
 solutions = Map.fromList
             [   ("01", Day01.solve)
             ,   ("02", Day02.solve)
@@ -38,14 +38,10 @@ solutions = Map.fromList
 
 solveProblem :: String -> IO ()
 solveProblem name = case Map.lookup name solutions of
-    Just f -> do
+    Just solve -> do
         putStrLn $ "Solve day " ++ name
         s <- readFile ("./data/data" ++ name)
-        case f s of
-            Nothing -> putStrLn "Parsing problem or no solution found"
-            Just (sol1, sol2) -> do
-                putStrLn $ "  part 1: " ++ show sol1
-                putStrLn $ "  part 2: " ++ show sol2
+        solve s
     Nothing -> putStrLn $ "Day not implemented: " ++ name
 
 main :: IO ()

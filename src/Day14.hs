@@ -1,11 +1,10 @@
 module Day14 (solve) where
 import           Data.Map (Map)
 import qualified Data.Map as Map
-import           Data.Void (Void)
-import           Text.Megaparsec (Parsec, parseMaybe, sepEndBy1, some)
+import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
+import           Util (Parser, aocTemplate)
 
-type Parser = Parsec Void String
 type Rules = Map String Char
 type PairsMap = Map (Char, Char) Int
 data Input = Input String Rules
@@ -39,7 +38,5 @@ algo n (Input s rules) = maximum freqs - minimum freqs where
     pairs = stringToPairsMap s
     freqs = Map.elems . pairsMapToFreqs s $ iterate (step rules) pairs !! n
 
-solve :: String -> Maybe (Int, Int)
-solve s = do
-    input <- parseMaybe parser s
-    pure (algo 10 input, algo 40 input)
+solve :: String -> IO ()
+solve = aocTemplate parser (Just . algo 10) (Just . algo 40)

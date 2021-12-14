@@ -2,14 +2,12 @@ module Day13 (solve) where
 import           Data.List (foldl', intercalate)
 import           Data.Set (Set)
 import qualified Data.Set as Set
-import           Data.Void (Void)
-import           Text.Megaparsec (Parsec, parseMaybe, sepEndBy1, some, (<|>))
+import           Text.Megaparsec (sepEndBy1, some, (<|>))
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
-import           Util (Point)
-import           Debug.Trace (traceM)
+import           Util (Parser, Point, aocTemplate)
+import           Debug.Trace (trace)
 
-type Parser = Parsec Void String
 data Axis = X | Y
 data Fold = Fold Axis Int
 data Input = Input (Set Point) [Fold]
@@ -28,19 +26,16 @@ foldPaper (Fold Y i) = Set.map \(x, y) -> (x, min y (2*i - y))
 part1 :: Input -> Int
 part1 (Input paper folds) = Set.size $ foldPaper (head folds) paper
 
-part2 :: Input -> String
-part2 (Input paper folds) =
-    intercalate "\n" 
+part2 :: Input -> Int
+part2 (Input paper folds) = trace str 0 where
+    str = intercalate "\n" 
         [
             [if Set.member (x, y) folded then '#' else ' ' | x <- [0..xMax]]
             | y <- [0..yMax]        
-        ] where
+        ]
     folded = foldl' (flip foldPaper) paper folds
     xMax = maximum (Set.map fst folded)
     yMax = maximum (Set.map snd folded)
 
-solve :: String -> Maybe (Int, Int)
-solve s = do
-    input <- parseMaybe parser s
-    traceM $ part2 input
-    pure (part1 input, 0)
+solve :: String -> IO ()
+solve = aocTemplate parser (Just . part1) (Just . part2)

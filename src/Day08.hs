@@ -7,12 +7,11 @@ import           Data.IntSet (IntSet)
 import qualified Data.IntSet as IntSet
 import           Data.Set (Set)
 import qualified Data.Set as Set
-import           Data.Void (Void)
-import           Text.Megaparsec (Parsec, parseMaybe, sepEndBy1, some)
+import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
 import           Text.Read (readMaybe)
+import           Util (Parser, aocTemplate)
 
-type Parser = Parsec Void String
 type Digit = IntSet
 data Line = Line (Set Digit) [Digit]
 
@@ -59,9 +58,5 @@ decodeLine (Line l r) = do
 part2 :: [Line] -> Maybe Int
 part2 xs = sum <$> traverse decodeLine xs
 
-solve :: String -> Maybe (Int, Int)
-solve s = do
-    ls <- parseMaybe parser s
-    let r1 = part1 ls
-    r2 <- part2 ls
-    pure (r1, r2)
+solve :: String -> IO ()
+solve = aocTemplate parser (Just . part1) part2

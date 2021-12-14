@@ -1,20 +1,17 @@
 module Day05 (solve) where
 import qualified Data.Map as Map
-import           Data.Void (Void)
-import           Text.Megaparsec (Parsec, parseMaybe, sepEndBy1)
+import           Text.Megaparsec (sepEndBy1)
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
-import           Util (freqs)
-
-type Parser = Parsec Void String
+import           Util (Parser, aocTemplate, freqs)
 
 data Line = Line (Int, Int) (Int, Int)
 data Diag = Diag | NoDiag deriving Eq
 
 parser :: Parser [Line]
-parser = sepEndBy1 lineP P.eol where
-    coordP = (,) <$> L.decimal <* P.char ',' <*> L.decimal
-    lineP = Line <$> coordP <* P.string " -> " <*> coordP
+parser = line `sepEndBy1` P.eol where
+    coord = (,) <$> L.decimal <* P.char ',' <*> L.decimal
+    line = Line <$> coord <* P.string " -> " <*> coord
 
 points :: Diag -> Line -> [(Int, Int)]
 points diag (Line (x1, y1) (x2, y2))
@@ -30,7 +27,5 @@ points diag (Line (x1, y1) (x2, y2))
 countIntersections :: Diag -> [Line] -> Int
 countIntersections diag = Map.size . Map.filter (>1) . freqs . (>>= points diag)
 
-solve :: String -> Maybe (Int, Int)
-solve s = do
-    xs <- parseMaybe parser s
-    Just (countIntersections NoDiag xs, countIntersections Diag xs)
+solve :: String -> IO ()
+solve = aocTemplate parser (Just . countIntersections NoDiag) (Just . countIntersections Diag)
