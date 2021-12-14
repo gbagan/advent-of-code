@@ -16,6 +16,9 @@ digitToIntMaybe :: Char -> Maybe Int
 digitToIntMaybe c | isDigit c = Just $ digitToInt c
                   | otherwise = Nothing
 
+count :: (a -> Bool) -> [a] -> Int
+count f = length . filter f
+
 freqs :: Ord a => [a] -> Map a Int
 freqs = Map.fromListWith (+) . map (,1)
 

@@ -15,12 +15,11 @@ parser = Input <$> some P.upperChar <* P.eol <* P.eol <*> rules where
     rules = Map.fromList <$> sepEndBy1 rule P.eol
     rule = (,) <$> some P.upperChar <* P.string " -> " <*> P.upperChar
 
-
 stringToPairsMap :: String -> PairsMap
 stringToPairsMap s = Map.fromListWith (+) $ zip (zip s (tail s)) (repeat 1) 
 
 step :: Rules -> PairsMap -> PairsMap
-step rules = Map.fromListWith (+) 
+step rules = Map.fromListWith (+)
                 . Map.foldlWithKey' (\acc (a, b) v ->
                     case Map.lookup [a, b] rules of
                         Nothing -> ((a, b), v) : acc 
@@ -36,9 +35,9 @@ pairsMapToFreqs str =
     . Map.foldlWithKey' (\acc (a, b) v -> (a, v) : (b, v) : acc) []
 
 algo :: Int -> Input -> Int
-algo n (Input s rules) = maximum fs - minimum fs where
-    cmpt = stringToPairsMap s
-    fs = Map.elems . pairsMapToFreqs s $ iterate (step rules) cmpt !! n
+algo n (Input s rules) = maximum freqs - minimum freqs where
+    pairs = stringToPairsMap s
+    freqs = Map.elems . pairsMapToFreqs s $ iterate (step rules) pairs !! n
 
 solve :: String -> Maybe (Int, Int)
 solve s = do

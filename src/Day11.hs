@@ -4,7 +4,7 @@ import           Data.Map (Map)
 import qualified Data.Map as Map
 import           Data.Maybe (fromJust)
 import qualified Data.Set as Set
-import           Util (Point, digitToIntMaybe, kingAdjacentPoints, parse2dMap)
+import           Util (Point, count, digitToIntMaybe, kingAdjacentPoints, parse2dMap)
 
 step :: Map Point Int -> Map Point Int
 step mp = mp3 where
@@ -26,7 +26,7 @@ stepList :: Map Point Int -> [Map Point Int]
 stepList = iterate step
 
 part1 :: [Map Point Int] -> Int
-part1 = sum . map (length . filter (==0) . Map.elems) . take 100 . tail
+part1 = sum . map (count (==0) . Map.elems) . take 100 . tail
 
 part2 :: [Map Point Int] -> Int
 part2 = fromJust . findIndex (all (==0) . Map.elems)

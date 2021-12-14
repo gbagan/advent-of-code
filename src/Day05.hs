@@ -13,9 +13,8 @@ data Diag = Diag | NoDiag deriving Eq
 
 parser :: Parser [Line]
 parser = sepEndBy1 lineP P.eol where
-    lexeme = L.lexeme P.hspace
-    coordP = (,) <$> lexeme L.decimal <* lexeme (P.char ',') <*> lexeme L.decimal
-    lineP = Line <$> coordP <* lexeme (P.string "->") <*> coordP
+    coordP = (,) <$> L.decimal <* P.char ',' <*> L.decimal
+    lineP = Line <$> coordP <* P.string " -> " <*> coordP
 
 points :: Diag -> Line -> [(Int, Int)]
 points diag (Line (x1, y1) (x2, y2))
@@ -29,7 +28,7 @@ points diag (Line (x1, y1) (x2, y2))
     | otherwise    = []
 
 countIntersections :: Diag -> [Line] -> Int
-countIntersections diag ls = length . Map.filter (>1) . freqs $ ls >>= points diag
+countIntersections diag = Map.size . Map.filter (>1) . freqs . (>>= points diag)
 
 solve :: String -> Maybe (Int, Int)
 solve s = do

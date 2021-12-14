@@ -2,7 +2,7 @@ module Day03 (solve) where
 
 import Data.Bool (bool)
 import Data.List (foldl', partition, transpose)
-import Util (digitToIntMaybe, majority)
+import Util (majority)
 
 data Bit = Zero | One deriving (Eq, Enum)
 

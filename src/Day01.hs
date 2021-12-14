@@ -2,9 +2,10 @@
 module Day01 (solve) where
 
 import Text.Read (readMaybe)
+import Util (count)
 
 algo :: Int -> [Int] -> Int
-algo n l = length . filter id $ zipWith (<) l (drop n l)
+algo n l = count id $ zipWith (<) l (drop n l)
 
 solve :: String -> Maybe (Int, Int)
 solve s = do

@@ -46,15 +46,12 @@ digitMap = Map.fromList $ zip digitList $ map (chr . (+ ord '0')) [0..]
 digitSet :: Set Digit
 digitSet = Set.fromList digitList
 
-perms7 :: [[Int]]
-perms7 = permutations [0..7]
-
 applyPerm :: [Int] -> Digit -> Digit
 applyPerm p = IntSet.map (p!!)
 
 decodeLine :: Line -> Maybe Int
 decodeLine (Line l r) = do
-    perm <- find (\p -> Set.map (applyPerm p) l == digitSet) perms7
+    perm <- find (\p -> Set.map (applyPerm p) l == digitSet) (permutations [0..7])
     let permR = map (applyPerm perm) r
     strR <- traverse (`Map.lookup` digitMap) permR
     readMaybe strR
