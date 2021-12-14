@@ -30,8 +30,8 @@ step rules = Map.fromListWith (+)
 compactedToFreqs :: String -> Compacted -> Map Char Int
 compactedToFreqs str =
     Map.map (`div` 2)
-    . Map.update (Just . (+1)) (last str)
-    . Map.update (Just . (+1)) (head str)
+    . Map.adjust (+1) (last str)
+    . Map.adjust (+1) (head str)
     . Map.fromListWith (+)
     . Map.foldlWithKey' (\acc (a, b) v -> (a, v) : (b, v) : acc) []
 
