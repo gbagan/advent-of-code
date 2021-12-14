@@ -23,7 +23,7 @@ data Common = MostCommon | LeastCommon deriving (Eq)
 
 filterCode :: Common -> [[Bit]] -> [Bit]
 filterCode common = go 0 where
-    go _ [] = undefined
+    go _ [] = []
     go _ [x] = x
     go i xs =
         let (ys, zs) = partition (\x -> x !! i == One) xs in

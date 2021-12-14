@@ -1,14 +1,21 @@
 module Day04 (solve) where
 
-import Data.List (transpose)
-import Data.List.Split (splitOn)
+import           Data.List (transpose)
+import           Data.Void (Void)
+import           Text.Megaparsec (Parsec, parseMaybe, sepEndBy1, sepBy1)
+import qualified Text.Megaparsec.Char as P
+import qualified Text.Megaparsec.Char.Lexer as L
 
+type Parser = Parsec Void String
 type Board = [[(Int, Bool)]]
+data Input = Input [Int] [Board]
 
-parseData :: [String] -> ([Int], [Board])
-parseData (l:_:ls) = (drawn, boards) where
-    drawn = map read . splitOn "," $ l
-    boards = map (map (map ((,False) . read) . words)) . splitOn [[]] $ ls
+parser :: Parser Input
+parser = Input <$> drawn <* P.eol <* P.eol <*> boards where
+    drawn =  L.decimal `sepBy1` P.char ','
+    boards = board `sepEndBy1` P.eol
+    board = line `sepEndBy1` P.eol
+    line =  P.hspace *> ((,False) <$> L.decimal) `sepEndBy1` P.hspace1
 
 hasWon :: Board -> Bool
 hasWon board = f board || f (transpose board) where
@@ -22,7 +29,7 @@ score = sum . map fst . filter (not . snd) . concat
 
 part1 :: [Int] -> [Board] -> Int
 part1 = go where
-    go [] _ = error "no winner"
+    go [] _ = 0
     go (x:xs) bs =
         let bs' = map (play x) bs in
         case filter hasWon bs' of
@@ -31,7 +38,7 @@ part1 = go where
 
 part2 :: [Int] -> [Board] -> Int
 part2 = go where
-    go [] _ = error "no winner"
+    go [] _ = 0
     go (x:xs) bs =
         let bs' = map (play x) bs in
         case filter (not . hasWon) bs' of
@@ -39,6 +46,6 @@ part2 = go where
             bs'' -> go xs bs''
 
 solve :: String -> Maybe (Int, Int)
-solve s = 
-    let (drawn, boards) = parseData . lines $ s in
+solve s = do
+    Input drawn boards <- parseMaybe parser s
     Just (part1 drawn boards, part2 drawn boards)
