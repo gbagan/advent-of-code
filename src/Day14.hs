@@ -7,7 +7,7 @@ import qualified Text.Megaparsec.Char as P
 
 type Parser = Parsec Void String
 type Rules = Map String Char
-type Compacted = Map (Char, Char) Int
+type PairsMap = Map (Char, Char) Int
 data Input = Input String Rules
 
 parser :: Parser Input
@@ -16,10 +16,10 @@ parser = Input <$> some P.upperChar <* P.eol <* P.eol <*> rules where
     rule = (,) <$> some P.upperChar <* P.string " -> " <*> P.upperChar
 
 
-stringToCompacted :: String -> Compacted
-stringToCompacted s = Map.fromListWith (+) $ zip (zip s (tail s)) (repeat 1) 
+stringToPairsMap :: String -> PairsMap
+stringToPairsMap s = Map.fromListWith (+) $ zip (zip s (tail s)) (repeat 1) 
 
-step :: Rules -> Compacted -> Compacted
+step :: Rules -> PairsMap -> PairsMap
 step rules = Map.fromListWith (+) 
                 . Map.foldlWithKey' (\acc (a, b) v ->
                     case Map.lookup [a, b] rules of
@@ -27,8 +27,8 @@ step rules = Map.fromListWith (+)
                         Just c  -> ((a, c), v) : ((c, b), v) : acc
                 ) []
 
-compactedToFreqs :: String -> Compacted -> Map Char Int
-compactedToFreqs str =
+pairsMapToFreqs :: String -> PairsMap -> Map Char Int
+pairsMapToFreqs str =
     Map.map (`div` 2)
     . Map.adjust (+1) (last str)
     . Map.adjust (+1) (head str)
@@ -37,8 +37,8 @@ compactedToFreqs str =
 
 algo :: Int -> Input -> Int
 algo n (Input s rules) = maximum fs - minimum fs where
-    cmpt = stringToCompacted s
-    fs = Map.elems . compactedToFreqs s $ iterate (step rules) cmpt !! n
+    cmpt = stringToPairsMap s
+    fs = Map.elems . pairsMapToFreqs s $ iterate (step rules) cmpt !! n
 
 solve :: String -> Maybe (Int, Int)
 solve s = do

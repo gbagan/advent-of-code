@@ -36,8 +36,8 @@ solutions = Map.fromList
             ,   ("14", Day14.solve)
             ]
 
-solveOne :: String -> IO ()
-solveOne name = case Map.lookup name solutions of
+solveProblem :: String -> IO ()
+solveProblem name = case Map.lookup name solutions of
     Just f -> do
         putStrLn $ "Solve day " ++ name
         s <- readFile ("./data/data" ++ name)
@@ -48,13 +48,7 @@ solveOne name = case Map.lookup name solutions of
                 putStrLn $ "  part 2: " ++ show sol2
     Nothing -> putStrLn $ "Day not implemented: " ++ name
 
-solveProblems :: [String] -> IO ()
-solveProblems = mapM_ solveOne
-
 main :: IO ()
 main = do
     args <- getArgs
-    if null args then
-        solveProblems $ Map.keys solutions
-    else
-        solveProblems args
+    mapM_ solveProblem if null args then Map.keys solutions else args
