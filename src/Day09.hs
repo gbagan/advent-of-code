@@ -6,7 +6,7 @@ import           Data.Map (Map, (!))
 import qualified Data.Map as Map
 import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
-import           Util (Parser, Point, aocTemplate, adjacentPoints, digitToIntMaybe, freqs, listTo2dMap)
+import           Util (Parser, Point, aocTemplate, adjacentPoints, freqs, listTo2dMap)
 
 parser :: Parser (Map Point Int)
 parser = listTo2dMap <$> line `sepEndBy1` P.eol where

@@ -1,5 +1,4 @@
 module Util where
-import Data.Char (digitToInt, isDigit)
 import Data.List (sort, genericLength)
 import Data.Map (Map)
 import Data.Void (Void)
@@ -21,16 +20,11 @@ aocTemplate parser part1 part2 s = do
                 Nothing -> putStrLn "  part 2: no solution found"
                 Just n ->  putStrLn $ "  part 2: " ++ show n
 
-
 adjacentPoints :: Point -> [Point]
 adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
 
 kingAdjacentPoints :: Point -> [Point]
 kingAdjacentPoints (x, y) = adjacentPoints (x, y) ++ [(x-1, y-1), (x+1, y-1), (x-1, y+1), (x+1, y+1)]
-
-digitToIntMaybe :: Char -> Maybe Int
-digitToIntMaybe c | isDigit c = Just $ digitToInt c
-                  | otherwise = Nothing
 
 count :: (a -> Bool) -> [a] -> Int
 count f = length . filter f

@@ -5,7 +5,6 @@ import           Data.List (nub)
 import           Data.Map (Map, (!))
 import qualified Data.Map as Map
 import           Data.Maybe (mapMaybe)
-import qualified Data.Set as Set
 import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
 import           Util (Parser, aocTemplate)

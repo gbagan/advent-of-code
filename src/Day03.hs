@@ -4,7 +4,6 @@ import           Data.Functor (($>))
 import           Data.List (foldl', partition, transpose)
 import           Text.Megaparsec (sepEndBy1, some, (<|>))
 import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
 import           Util (Parser, aocTemplate, majority)
 
 data Bit = Zero | One deriving (Eq, Enum)

@@ -3,7 +3,6 @@ import           Data.List (foldl')
 import           Data.Either (lefts, rights)
 import           Text.Megaparsec (sepEndBy1, some, (<|>))
 import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
 import           Util (Parser, aocTemplate, median)
 
 parser :: Parser [String]

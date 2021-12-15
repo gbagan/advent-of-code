@@ -1,14 +1,12 @@
 module Day11 (solve) where
 import           Data.Char (digitToInt)
-import           Data.List (iterate', findIndex, foldl')
+import           Data.List (findIndex)
 import           Data.Map (Map)
 import qualified Data.Map as Map
-import           Data.Maybe (fromJust)
 import qualified Data.Set as Set
 import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
-import           Util (Parser, Point, aocTemplate, count, digitToIntMaybe, kingAdjacentPoints, listTo2dMap)
+import           Util (Parser, Point, aocTemplate, count, kingAdjacentPoints, listTo2dMap)
 
 parser :: Parser (Map Point Int)
 parser = listTo2dMap <$> line `sepEndBy1` P.eol where

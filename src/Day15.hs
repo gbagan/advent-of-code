@@ -13,21 +13,21 @@ parser :: Parser (Map Point Int)
 parser = listTo2dMap <$> line `sepEndBy1` P.eol where
         line = some (digitToInt <$> P.digitChar)
 
-dijkstra :: (Ord v, Real w) => ((w, v) -> [(w, v)]) -> v -> v -> Maybe w
+dijkstra :: (Ord v, Real w) => (v -> [(v, w)]) -> v -> v -> Maybe w
 dijkstra nbors source target = go Set.empty (Set.singleton (0, source)) where
     go visited queue = case Set.minView queue of
         Nothing -> Nothing
-        Just ((cost , vertex), queue')
-            | vertex == target          -> Just cost
-            | Set.member vertex visited -> go visited queue'
-            | otherwise                 -> go
-                                            (Set.insert vertex visited)
-                                            (foldr Set.insert queue' (nbors (cost, vertex)))
+        Just ((cost, v), queue')
+            | v == target          -> Just cost
+            | Set.member v visited -> go visited queue'
+            | otherwise            -> go
+                                        (Set.insert v visited)
+                                        (foldr Set.insert queue' $ (\(u, w) -> (w+cost, u)) <$> nbors v)
 
-neighbors :: Map Point Int -> (Int, Point) -> [(Int, Point)]
-neighbors mp (cost, v) = mapMaybe
-                        (\u -> (\weight -> (cost + weight, u)) <$> Map.lookup u mp)
-                        (adjacentPoints v)
+neighbors :: Map Point Int -> Point -> [(Point, Int)]
+neighbors mp v = mapMaybe
+                    (\u -> (u,) <$> Map.lookup u mp)
+                    (adjacentPoints v)
 
 part1 :: Map Point Int -> Maybe Int
 part1 mp = dijkstra (neighbors mp) (0, 0) (99, 99)

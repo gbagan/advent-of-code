@@ -1,6 +1,4 @@
 module Day07 (solve) where
-import Data.List (sort)
-import Text.Read (readMaybe)
 import           Text.Megaparsec (sepBy1)
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
