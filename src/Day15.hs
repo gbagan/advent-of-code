@@ -13,7 +13,7 @@ parser :: Parser (Map Point Int)
 parser = listTo2dMap <$> line `sepEndBy1` P.eol where
         line = some (digitToInt <$> P.digitChar)
 
-dijkstra :: Ord v => ((Int, v) -> [(Int, v)]) -> v -> v -> Maybe Int
+dijkstra :: (Ord v, Real w) => ((w, v) -> [(w, v)]) -> v -> v -> Maybe w
 dijkstra nbors source target = go Set.empty (Set.singleton (0, source)) where
     go visited queue = case Set.minView queue of
         Nothing -> Nothing

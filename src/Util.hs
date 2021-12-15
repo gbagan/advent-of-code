@@ -44,9 +44,7 @@ average :: [Int] -> Double
 average xs = realToFrac (sum xs) / genericLength xs
 
 majority :: (a -> Bool) -> [a] -> Bool
-majority f l = 2*m >= n where
-                m = length $ filter f l
-                n = length l
+majority f l = 2* count f l >= length l
 
 median :: Ord a => [a] -> a
 median l = sort l !! (length l `div` 2)
