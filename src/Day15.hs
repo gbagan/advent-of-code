@@ -22,7 +22,7 @@ dijkstra nbors source target = go Set.empty (Set.singleton (0, source)) where
             | Set.member vertex visited -> go visited queue'
             | otherwise                 -> go
                                             (Set.insert vertex visited)
-                                            (foldr Set.insert queue' $ nbors (cost, vertex))
+                                            (foldr Set.insert queue' (nbors (cost, vertex)))
 
 neighbors :: Map Point Int -> (Int, Point) -> [(Int, Point)]
 neighbors mp (cost, v) = mapMaybe

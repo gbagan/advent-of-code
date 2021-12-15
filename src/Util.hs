@@ -4,8 +4,6 @@ import Data.List (sort, genericLength)
 import Data.Map (Map)
 import Data.Void (Void)
 import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
-import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
 import qualified Data.Map as Map
 
 type Parser = Parsec Void String

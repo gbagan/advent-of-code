@@ -40,7 +40,6 @@ library
     build-depends:
                        base >= 4.7 && < 5
                      , containers
-                     , heaps
                      , megaparsec
 
     hs-source-dirs:   src
@@ -62,6 +61,5 @@ executable aoc2021
               -Wredundant-constraints
     build-depends:   base >= 4.7 && < 5
                      , containers
-                     , heaps
                      , megaparsec
                      , aoc2021
