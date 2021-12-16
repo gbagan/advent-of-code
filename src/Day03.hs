@@ -12,11 +12,11 @@ parser :: Parser [[Bit]]
 parser = some bit `sepEndBy1` P.eol where
     bit = P.char '0' $> Zero <|> P.char '1' $> One
 
-toDec :: [Bit] -> Int
-toDec = foldl' (\acc x -> acc * 2 + fromEnum x) 0
+bitsToInt :: [Bit] -> Int
+bitsToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
 
 part1 :: [[Bit]] -> Int
-part1 l = toDec e * toDec g where
+part1 l = bitsToInt e * bitsToInt g where
     g = map (bool Zero One . majority (==One)) (transpose l)
     e = map (bool One Zero . (==One)) g
 
@@ -34,7 +34,7 @@ filterCode common = go 0 where
             go (i + 1) zs
 
 part2 :: [[Bit]] -> Int
-part2 l = toDec x * toDec y where
+part2 l = bitsToInt x * bitsToInt y where
     x = filterCode MostCommon l
     y = filterCode LeastCommon l
 
