@@ -33,9 +33,11 @@ library
     -- LANGUAGE extensions used by modules in this package.
     default-extensions:
                     BlockArguments
+                    FlexibleInstances
                     LambdaCase
                     MultiWayIf
                     TupleSections
+                    TypeFamilies
 
     -- other-extensions:
     build-depends:
@@ -52,9 +54,11 @@ executable aoc2021
     default-language:    Haskell2010
     default-extensions:
                     BlockArguments
+                    FlexibleInstances
                     LambdaCase
                     MultiWayIf
                     TupleSections
+                    TypeFamilies
     ghc-options:
               -Wall
               -Wcompat

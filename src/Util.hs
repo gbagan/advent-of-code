@@ -1,11 +1,12 @@
 module Util where
-import Data.List (sort, genericLength)
+import Data.List (foldl', sort, genericLength)
 import Data.Map (Map)
 import Data.Void (Void)
-import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
+import           Text.Megaparsec (Parsec, Stream(..), parse, errorBundlePretty)
 import qualified Data.Map as Map
 
 type Parser = Parsec Void String
+type BinParser = Parsec Void [Bool]
 type Point = (Int, Int)
 
 aocTemplate :: Parser a -> (a -> Maybe Int) -> (a -> Maybe Int) -> String -> IO ()
@@ -48,3 +49,6 @@ listTo2dMap l =
         | (j, row) <- zip [0..] l
         , (i, v) <- zip [0..] row
         ]
+
+binToInt :: [Bool] -> Int
+binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
