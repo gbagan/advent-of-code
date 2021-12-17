@@ -27,6 +27,8 @@ library
         Day15
         Day16
         Day17
+        Day18
+        Util
 
     -- Modules included in this library but not exported.
     -- other-modules:

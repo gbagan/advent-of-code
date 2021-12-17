@@ -35,4 +35,4 @@ part2 :: Map Point Int -> Maybe Int
 part2 = findIndex (all (==0) . Map.elems) . iterate step
 
 solve :: String -> IO ()
-solve = aocTemplate parser (Just . part1) part2
+solve = aocTemplate parser (pure . part1) part2

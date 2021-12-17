@@ -20,4 +20,4 @@ algo n = vecSum . (!!n) . iterate' step . buildVec where
             step (Vec x0 x1 x2 x3 x4 x5 x6 x7 x8) = Vec x1 x2 x3 x4 x5 x6 (x0+x7) x8 x0
 
 solve :: String -> IO ()
-solve = aocTemplate parser (Just . algo 80) (Just . algo 256)
+solve = aocTemplate parser (pure . algo 80) (pure . algo 256)

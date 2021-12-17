@@ -12,5 +12,5 @@ algo :: Int -> [Int] -> Int
 algo n l = count id $ zipWith (<) l (drop n l)
 
 solve :: String -> IO ()
-solve = aocTemplate parser (Just . algo 1) (Just . algo 3)
+solve = aocTemplate parser (pure . algo 1) (pure . algo 3)
 

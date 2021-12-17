@@ -39,4 +39,4 @@ algo n (Input s rules) = maximum freqs - minimum freqs where
     freqs = Map.elems . pairsMapToFreqs s $ iterate (step rules) pairs !! n
 
 solve :: String -> IO ()
-solve = aocTemplate parser (Just . algo 10) (Just . algo 40)
+solve = aocTemplate parser (pure . algo 10) (pure . algo 40)

@@ -38,4 +38,4 @@ part2 (Input paper folds) = trace str 0 where
     yMax = maximum (Set.map snd folded)
 
 solve :: String -> IO ()
-solve = aocTemplate parser (Just . part1) (Just . part2)
+solve = aocTemplate parser (pure . part1) (pure . part2)

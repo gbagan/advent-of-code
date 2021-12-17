@@ -1,6 +1,6 @@
 module Day03 (solve) where
 import           Data.Functor (($>))
-import           Data.List (foldl', partition, transpose)
+import           Data.List (partition, transpose)
 import           Text.Megaparsec (sepEndBy1, some, (<|>))
 import qualified Text.Megaparsec.Char as P
 import           Util (Parser, aocTemplate, binToInt, majority)
@@ -33,4 +33,4 @@ part2 l = binToInt x * binToInt y where
     y = filterCode LeastCommon l
 
 solve :: String -> IO ()
-solve = aocTemplate parser (Just . part1) (Just . part2)
+solve = aocTemplate parser (pure . part1) (pure . part2)

@@ -28,4 +28,4 @@ countIntersections :: Diag -> [Line] -> Int
 countIntersections diag = Map.size . Map.filter (>1) . freqs . (>>= points diag)
 
 solve :: String -> IO ()
-solve = aocTemplate parser (Just . countIntersections NoDiag) (Just . countIntersections Diag)
+solve = aocTemplate parser (pure . countIntersections NoDiag) (pure . countIntersections Diag)

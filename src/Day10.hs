@@ -23,6 +23,7 @@ part1 = sum . map weight . lefts . map parseLine where
         weight ']' = 57
         weight '}' = 1197
         weight '>' = 25137
+        weight _ = 0
 
 part2 :: [String] -> Int 
 part2 = median . map stackWeight . rights . map parseLine where
@@ -30,7 +31,8 @@ part2 = median . map stackWeight . rights . map parseLine where
         weight '[' = 2
         weight '{' = 3
         weight '<' = 4
+        weight _ = 0
         stackWeight = foldl' (\acc x -> acc * 5 + weight x) 0
 
 solve :: String -> IO ()
-solve = aocTemplate parser (Just . part1) (Just . part2)
+solve = aocTemplate parser (pure . part1) (pure . part2)
