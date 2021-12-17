@@ -59,8 +59,8 @@ packetsUntilLimit n =
     if n == 0
         then pure []
         else do
-            (m, p) <- packet
-            (p:) <$> packetsUntilLimit (n - m)
+            (len, p) <- packet
+            (p:) <$> packetsUntilLimit (n - len)
 
 operator :: Int -> ([Int] -> Int)
 operator n = case n of

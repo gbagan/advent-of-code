@@ -52,3 +52,6 @@ listTo2dMap l =
 
 binToInt :: [Bool] -> Int
 binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
+
+cartesianProduct :: [a] -> [b] -> [(a, b)]
+cartesianProduct l1 l2 = (,) <$> l1 <*> l2
