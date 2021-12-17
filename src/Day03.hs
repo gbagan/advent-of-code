@@ -1,40 +1,34 @@
 module Day03 (solve) where
-import           Data.Bool (bool)
 import           Data.Functor (($>))
 import           Data.List (foldl', partition, transpose)
 import           Text.Megaparsec (sepEndBy1, some, (<|>))
 import qualified Text.Megaparsec.Char as P
-import           Util (Parser, aocTemplate, majority)
+import           Util (Parser, aocTemplate, binToInt, majority)
 
-data Bit = Zero | One deriving (Eq, Enum)
-
-parser :: Parser [[Bit]]
+parser :: Parser [[Bool]]
 parser = some bit `sepEndBy1` P.eol where
-    bit = P.char '0' $> Zero <|> P.char '1' $> One
+    bit = P.char '0' $> False <|> P.char '1' $> True
 
-bitsToInt :: [Bit] -> Int
-bitsToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
-
-part1 :: [[Bit]] -> Int
-part1 l = bitsToInt e * bitsToInt g where
-    g = map (bool Zero One . majority (==One)) (transpose l)
-    e = map (bool One Zero . (==One)) g
+part1 :: [[Bool]] -> Int
+part1 l = binToInt e * binToInt g where
+    g = map (majority id) (transpose l)
+    e = map not g
 
 data Common = MostCommon | LeastCommon deriving (Eq)
 
-filterCode :: Common -> [[Bit]] -> [Bit]
+filterCode :: Common -> [[Bool]] -> [Bool]
 filterCode common = go 0 where
     go _ [] = []
     go _ [x] = x
     go i xs =
-        let (ys, zs) = partition (\x -> x !! i == One) xs in
+        let (ys, zs) = partition (!!i) xs in
         if (length ys >= length zs) == (common == MostCommon) then
             go (i + 1) ys
         else
             go (i + 1) zs
 
-part2 :: [[Bit]] -> Int
-part2 l = bitsToInt x * bitsToInt y where
+part2 :: [[Bool]] -> Int
+part2 l = binToInt x * binToInt y where
     x = filterCode MostCommon l
     y = filterCode LeastCommon l
 
