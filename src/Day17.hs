@@ -15,9 +15,9 @@ part1 (Area _ _ ymin _) = ((-ymin) * (-ymin -1)) `div` 2
 
 simulate :: Area -> (Int, Int) -> Bool
 simulate (Area xmin xmax ymin ymax) (vx, vy) = 
-    any (\(x, y, _, _) -> inZone x y) . takeWhile (\(_, y, _, _) -> y >= ymin) $ run
+    any (\(x, y, _, _) -> inArea x y) . takeWhile (\(_, y, _, _) -> y >= ymin) $ run
     where
-    inZone x y = xmin <= x && x <= xmax && ymin <= y && y <= ymax
+    inArea x y = xmin <= x && x <= xmax && ymin <= y && y <= ymax
     step (x, y, dx, dy) = (x+dx, y+dy, max (dx-1) 0, dy-1)
     run = iterate' step (0, 0, vx, vy)
 
