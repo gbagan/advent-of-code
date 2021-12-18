@@ -11,7 +11,7 @@ parser = Area <$> (P.string "target area: x=" *> L.decimal) <* P.string ".." <*>
                     P.string ", y=-" <*> (negate <$> L.decimal) <* P.string "..-" <*> (negate <$> L.decimal)
 
 part1 :: Area -> Int 
-part1 (Area _ _ ymin _) = ((-ymin) * (-ymin -1)) `div` 2 
+part1 (Area _ _ ymin _) = (-ymin) * (-ymin -1) `div` 2 
 
 simulate :: Area -> (Int, Int) -> Bool
 simulate (Area xmin xmax ymin ymax) (vx, vy) = 
