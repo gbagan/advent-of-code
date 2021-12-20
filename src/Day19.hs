@@ -23,20 +23,21 @@ sub :: Point -> Point -> Point
 sub (x, y, z) (x', y', z') = (x - x', y - y', z - z')
 
 rotations :: Point -> [Point]
-rotations p = scanl (&) p [r,t,t,t,r,t,t,t,r,t,t,t, r.t.r.r, t,t,t,r,t,t,t,r,t,t,t]
+rotations p = scanl (&) p [r,t,t,t,r,c,c,c,r,t,t,t,r,c,c,c,r,t,t,t,r,c,c,c]
     where r (x,y,z) = (x,z,-y)
           t (x,y,z) = (-y,x,z)
+          c (x,y,z) = (y,-x,z)
 
 scanRotations :: Scan -> [Scan]
 scanRotations = transpose . map rotations
 
-alignAll :: [Scan] -> [(Scan, Point)]
-alignAll []            = []
+alignAll :: [Scan] -> Maybe [(Scan, Point)]
+alignAll []            = Just []
 alignAll (scan0:scans) = go [(scan0, (0, 0, 0))] [scan0] scans where
-    go absolute _ [] = absolute
+    go absolute _ [] = Just absolute
     go absolute (ref:refs) relative = go (found ++ absolute) (map fst found ++ refs) notFound
         where (notFound, found) = partitionEithers [maybeToRight scan $ align ref scan | scan <- relative]
-    go _ _ _ = []
+    go _ _ _ = Nothing
 
 align :: Scan -> Scan -> Maybe (Scan, Point)
 align scan scan' = listToMaybe [(map (add pos) rot, pos) | rot <- scanRotations scan', pos <- overlap scan rot]
@@ -53,4 +54,4 @@ part2 scans = maximum [dist x y | x <- positions, y <- positions] where
     dist (x1, y1, z1) (x2, y2, z2) = abs(x1-x2) + abs(y1-y2) + abs(z1-z2)
 
 solve :: String -> IO ()
-solve = aocTemplate parser (pure . alignAll) (pure . part1) (pure . part2)
+solve = aocTemplate parser alignAll (pure . part1) (pure . part2)
