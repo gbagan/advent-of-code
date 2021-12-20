@@ -1,7 +1,6 @@
 module Day16 (solve) where
 
 import           Data.Bifunctor (second)
-import           Data.List (foldl')
 import           Text.Megaparsec (anySingle, count, some, takeP, parseMaybe, takeRest)
 import qualified Text.Megaparsec.Char as P
 import           Util (Parser, BinParser, aocTemplate, binToInt)
@@ -74,19 +73,16 @@ operator n = case n of
     where cmp f (x:y:_) = fromEnum (f x y)
           cmp _ _ = 0
 
-versionSum :: Packet -> Int
-versionSum (Packet version (Lit _)) = version
-versionSum (Packet version (Op _ packets)) = version + sum (map versionSum packets) 
+precomp :: [Bool] -> Maybe Packet
+precomp = parseMaybe (snd <$> packet <* takeRest)
 
-part1 :: [Bool] -> Maybe Int
-part1 s = versionSum . snd <$> parseMaybe (packet <* takeRest) s
+part1 :: Packet -> Int
+part1 (Packet version (Lit _)) = version
+part1 (Packet version (Op _ packets)) = version + sum (map part1 packets) 
 
-eval :: Packet -> Int
-eval (Packet _ (Lit n)) = n
-eval (Packet _ (Op f packets)) = f (map eval packets)
-
-part2 :: [Bool] -> Maybe Int
-part2 s = eval . snd <$> parseMaybe (packet <* takeRest) s
+part2 :: Packet -> Int
+part2 (Packet _ (Lit n)) = n
+part2 (Packet _ (Op f packets)) = f (map part2 packets)
 
 solve :: String -> IO ()
-solve = aocTemplate parser part1 part2
+solve = aocTemplate parser precomp (pure . part1) (pure . part2)

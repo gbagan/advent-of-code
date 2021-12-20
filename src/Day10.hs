@@ -35,4 +35,4 @@ part2 = median . map stackWeight . rights . map parseLine where
         stackWeight = foldl' (\acc x -> acc * 5 + weight x) 0
 
 solve :: String -> IO ()
-solve = aocTemplate parser (pure . part1) (pure . part2)
+solve = aocTemplate parser pure (pure . part1) (pure . part2)

@@ -59,4 +59,4 @@ part2 :: [Line] -> Maybe Int
 part2 xs = sum <$> traverse decodeLine xs
 
 solve :: String -> IO ()
-solve = aocTemplate parser (pure . part1) part2
+solve = aocTemplate parser  pure(pure . part1) part2

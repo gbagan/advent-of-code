@@ -28,11 +28,14 @@ step mp = mp3 where
                             else
                                 go xs flashed mp''
 
-part1 :: Map Point Int -> Int
-part1 = sum . map (count (==0) . Map.elems) . take 100 . tail . iterate step
+precomp :: Map Point Int -> [Map Point Int]
+precomp = iterate step
 
-part2 :: Map Point Int -> Maybe Int
-part2 = findIndex (all (==0) . Map.elems) . iterate step
+part1 :: [Map Point Int] -> Int
+part1 = sum . map (count (==0) . Map.elems) . take 100 . tail
+
+part2 :: [Map Point Int] -> Maybe Int
+part2 = findIndex (all (==0) . Map.elems)
 
 solve :: String -> IO ()
-solve = aocTemplate parser (pure . part1) part2
+solve = aocTemplate parser (pure . precomp) (pure . part1) part2

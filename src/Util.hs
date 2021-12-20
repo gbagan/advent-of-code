@@ -1,25 +1,31 @@
 module Util where
-import Data.List (foldl', sort, genericLength)
-import Data.Map (Map)
-import Data.Void (Void)
-import           Text.Megaparsec (Parsec, Stream(..), parse, errorBundlePretty)
+import           Data.Functor (($>))
+import           Data.List (foldl', group, sort, genericLength)
+import           Data.Map (Map)
+import           Data.Void (Void)
+import           Text.Megaparsec (Parsec, parse, errorBundlePretty, (<|>))
+import qualified Text.Megaparsec.Char as P
+import qualified Text.Megaparsec.Char.Lexer as L
 import qualified Data.Map as Map
 
 type Parser = Parsec Void String
 type BinParser = Parsec Void [Bool]
 type Point = (Int, Int)
 
-aocTemplate :: Parser a -> (a -> Maybe Int) -> (a -> Maybe Int) -> String -> IO ()
-aocTemplate parser part1 part2 s = do
+aocTemplate :: Parser a -> (a -> Maybe b) -> (b -> Maybe Int) -> (b -> Maybe Int) -> String -> IO ()
+aocTemplate parser precomp part1 part2 s = do
     case parse parser "" s of
         Left err -> putStr (errorBundlePretty err)
         Right input -> do
-            case part1 input of
-                Nothing -> putStrLn "  part 1: no solution found"
-                Just n ->  putStrLn $ "  part 1: " ++ show n
-            case part2 input of
-                Nothing -> putStrLn "  part 2: no solution found"
-                Just n ->  putStrLn $ "  part 2: " ++ show n
+            case precomp input of
+                Nothing -> putStrLn "precomputing failed"
+                Just p -> do
+                    case part1 p of
+                        Nothing -> putStrLn "  part 1: no solution found"
+                        Just n ->  putStrLn $ "  part 1: " ++ show n
+                    case part2 p of
+                        Nothing -> putStrLn "  part 2: no solution found"
+                        Just n ->  putStrLn $ "  part 2: " ++ show n
 
 adjacentPoints :: Point -> [Point]
 adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
@@ -32,6 +38,9 @@ count f = length . filter f
 
 freqs :: Ord a => [a] -> Map a Int
 freqs = Map.fromListWith (+) . map (,1)
+
+sortNub :: Ord a => [a] -> [a]
+sortNub = map head . group . sort
 
 average :: [Int] -> Double
 average xs = realToFrac (sum xs) / genericLength xs
@@ -55,3 +64,9 @@ binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
 
 cartesianProduct :: [a] -> [b] -> [(a, b)]
 cartesianProduct l1 l2 = (,) <$> l1 <*> l2
+
+signedInteger :: Parser Int
+signedInteger = L.decimal <|> P.char '-' *> (negate <$> L.decimal)
+
+bitP :: Parser Bool
+bitP = P.char '0' $> False <|> P.char '1' $> True

@@ -32,4 +32,4 @@ part2 l = tx * ty where
             ) (0, 0, 0) l
 
 solve :: String -> IO ()
-solve = aocTemplate parser (pure . part1) (pure . part2)
+solve = aocTemplate parser pure (pure . part1) (pure . part2)

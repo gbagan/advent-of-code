@@ -24,4 +24,4 @@ part2 :: Area -> Int
 part2 area@(Area _ xmax ymin _) = count (simulate area) (cartesianProduct [1..xmax] [ymin..(-ymin)])
 
 solve :: String -> IO ()
-solve = aocTemplate parser (pure . part1) (pure . part2)
+solve = aocTemplate parser pure (pure . part1) (pure . part2)

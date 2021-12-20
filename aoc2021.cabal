@@ -28,6 +28,8 @@ library
         Day16
         Day17
         Day18
+        Day19
+        Day20
         Util
 
     -- Modules included in this library but not exported.
@@ -40,12 +42,15 @@ library
                     LambdaCase
                     MultiWayIf
                     TupleSections
+                    TypeApplications
                     TypeFamilies
 
     -- other-extensions:
     build-depends:
                        base >= 4.7 && < 5
                      , containers
+                     , either
+                     , massiv
                      , megaparsec
 
     hs-source-dirs:   src
@@ -61,6 +66,7 @@ executable aoc2021
                     LambdaCase
                     MultiWayIf
                     TupleSections
+                    TypeApplications
                     TypeFamilies
     ghc-options:
               -Wall
@@ -69,5 +75,7 @@ executable aoc2021
               -Wredundant-constraints
     build-depends:   base >= 4.7 && < 5
                      , containers
+                     , either
+                     , massiv
                      , megaparsec
                      , aoc2021

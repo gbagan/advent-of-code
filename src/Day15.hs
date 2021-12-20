@@ -22,7 +22,7 @@ dijkstra nbors source target = go Set.empty (Set.singleton (0, source)) where
             | Set.member v visited -> go visited queue'
             | otherwise            -> go
                                         (Set.insert v visited)
-                                        (foldr Set.insert queue' $ (\(u, w) -> (w+cost, u)) <$> nbors v)
+                                        (foldr Set.insert queue' [(w+cost, u) | (u, w) <- nbors v])
 
 neighbors :: Map Point Int -> Point -> [(Point, Int)]
 neighbors mp v = mapMaybe
@@ -41,4 +41,4 @@ part2 mp = dijkstra (neighbors mp') (0, 0) (499, 499) where
         mp' = duplicateGrid mp
 
 solve :: String -> IO ()
-solve = aocTemplate parser part1 part2
+solve = aocTemplate parser pure part1 part2

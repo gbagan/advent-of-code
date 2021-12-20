@@ -17,4 +17,4 @@ part2 xs = sum [bin . abs $ x - m | x <- xs] where
         bin n = n * (n + 1) `div` 2
 
 solve :: String -> IO ()
-solve = aocTemplate parser (pure . part1) (pure . part2)
+solve = aocTemplate parser pure (pure . part1) (pure . part2)

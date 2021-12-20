@@ -32,4 +32,4 @@ part2 :: Map Point Int -> Int
 part2 = product . take 3 . reverse . sort . Map.elems . freqs . Map.elems . closure . flow . Map.filter (<9)
 
 solve :: String -> IO ()
-solve = aocTemplate parser (pure . part1) (pure . part2)
+solve = aocTemplate parser pure (pure . part1) (pure . part2)

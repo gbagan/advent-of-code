@@ -50,4 +50,4 @@ part2 g = go ["start"] False "start" where
                 pure $ go (if all isUpper nbor then visited else nbor : visited) (nbor `elem` visited) nbor
 
 solve :: String -> IO ()
-solve = aocTemplate parser (pure . part1) (pure . part2)
+solve = aocTemplate parser pure (pure . part1) (pure . part2)

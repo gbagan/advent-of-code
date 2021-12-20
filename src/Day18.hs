@@ -53,4 +53,4 @@ part2 :: [Snailfish] -> Int
 part2 sfs = maximum [magnitude $ add a b | a <- sfs, b <- sfs, a /= b]
 
 solve :: String -> IO ()
-solve = aocTemplate parser (pure . part1) (pure . part2)
+solve = aocTemplate parser pure (pure . part1) (pure . part2)

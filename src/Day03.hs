@@ -1,13 +1,11 @@
 module Day03 (solve) where
-import           Data.Functor (($>))
 import           Data.List (partition, transpose)
 import           Text.Megaparsec (sepEndBy1, some, (<|>))
 import qualified Text.Megaparsec.Char as P
-import           Util (Parser, aocTemplate, binToInt, majority)
+import           Util (Parser, aocTemplate, binToInt, bitP, majority)
 
 parser :: Parser [[Bool]]
-parser = some bit `sepEndBy1` P.eol where
-    bit = P.char '0' $> False <|> P.char '1' $> True
+parser = some bitP `sepEndBy1` P.eol
 
 part1 :: [[Bool]] -> Int
 part1 l = binToInt e * binToInt g where
@@ -33,4 +31,4 @@ part2 l = binToInt x * binToInt y where
     y = filterCode LeastCommon l
 
 solve :: String -> IO ()
-solve = aocTemplate parser (pure . part1) (pure . part2)
+solve = aocTemplate parser pure (pure . part1) (pure . part2)

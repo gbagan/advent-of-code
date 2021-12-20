@@ -45,4 +45,4 @@ part2 (Input draw boards) = go draw boards where
             bs'' -> go xs bs''
 
 solve :: String -> IO ()
-solve = aocTemplate parser (pure . part1) (pure . part2)
+solve = aocTemplate parser pure (pure . part1) (pure . part2)
