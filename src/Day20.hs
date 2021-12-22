@@ -1,5 +1,4 @@
 module Day20 (solve) where
-import           Data.Functor (($>))
 import           Data.Massiv.Array
 import           Data.Massiv.Array.Stencil ()
 import           Text.Megaparsec (sepEndBy1, some, (<|>))
@@ -14,7 +13,7 @@ parser :: Parser Input
 parser = Input <$> algo <* P.eol <* P.eol <*> grid where
     algo = fromList Seq <$> some bit
     grid = fromLists' Seq <$> some bit `sepEndBy1` P.eol
-    bit = P.char '.' $> False <|> P.char '#' $> True
+    bit = False <$ P.char '.' <|> True <$ P.char '#'
 
 stencil :: Algo -> Stencil Ix2 Bool Bool
 stencil algo = makeStencil (Sz2 3 3) (0 :. 0) \get -> algo ! binToInt [get (i:.j) | i <- [-1..1], j <- [-1..1]]

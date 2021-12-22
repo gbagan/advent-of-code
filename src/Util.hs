@@ -1,5 +1,4 @@
 module Util where
-import           Data.Functor (($>))
 import           Data.List (foldl', group, sort, genericLength)
 import           Data.Map (Map)
 import           Data.Void (Void)
@@ -26,9 +25,6 @@ aocTemplate parser precomp part1 part2 s = do
                     case part2 p of
                         Nothing -> putStrLn "  part 2: no solution found"
                         Just n ->  putStrLn $ "  part 2: " ++ show n
-
-addPoint :: Point -> Point -> Point
-addPoint (x1, y1) (x2, y2) = (x1+x2, y1+y2)
 
 adjacentPoints :: Point -> [Point]
 adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
@@ -72,4 +68,4 @@ signedInteger :: Parser Int
 signedInteger = L.decimal <|> P.char '-' *> (negate <$> L.decimal)
 
 bitP :: Parser Bool
-bitP = P.char '0' $> False <|> P.char '1' $> True
+bitP = False <$ P.char '0' <|> True <$ P.char '1'

@@ -7,8 +7,8 @@ import qualified Text.Megaparsec.Char.Lexer as L
 import           Util (Parser, aocTemplate, freqs)
 
 parser :: Parser (Int, Int)
-parser = (,) <$> (P.string "Player 1 starting position: " *> L.decimal <* P.eol
-            <* P.string "Player 2 starting position: ") <*> L.decimal
+parser = (,) <$ P.string "Player 1 starting position: " <*> L.decimal <* P.eol
+            <* P.string "Player 2 starting position: " <*> L.decimal
 
 part1 :: (Int, Int) -> Int
 part1 (p1, p2) = go 0 (p1-1) (p2-1) 0 0 where
