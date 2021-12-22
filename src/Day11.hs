@@ -1,9 +1,10 @@
 module Day11 (solve) where
-import           Data.Char (digitToInt)
-import           Data.List (findIndex)
-import           Data.Map (Map)
-import qualified Data.Map as Map
-import qualified Data.Set as Set
+import           RIO hiding (some)
+import           RIO.Char.Partial (digitToInt)
+import           RIO.List (findIndex, iterate)
+import           RIO.List.Partial (tail)
+import qualified RIO.Map as Map
+import qualified RIO.Set as Set
 import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
 import           Util (Parser, Point, aocTemplate, count, kingAdjacentPoints, listTo2dMap)
@@ -37,5 +38,5 @@ part1 = sum . map (count (==0) . Map.elems) . take 100 . tail
 part2 :: [Map Point Int] -> Maybe Int
 part2 = findIndex (all (==0) . Map.elems)
 
-solve :: String -> IO ()
+solve :: Text -> IO ()
 solve = aocTemplate parser (pure . precomp) (pure . part1) part2

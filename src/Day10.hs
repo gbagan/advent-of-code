@@ -1,7 +1,6 @@
 module Day10 (solve) where
-import           Data.List (foldl')
-import           Data.Either (lefts, rights)
-import           Text.Megaparsec (sepEndBy1, some, (<|>))
+import           RIO hiding (some)
+import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
 import           Util (Parser, aocTemplate, median)
 
@@ -13,7 +12,7 @@ parser = line `sepEndBy1` P.eol where
 parseLine :: String -> Either Char [Char]
 parseLine = go [] where
     go stack [] = Right stack
-    go stack  (x:xs) | x `elem` "([{<"                        = go (x:stack) xs
+    go stack  (x:xs) | x `elem` ("([{<" :: String)            = go (x:stack) xs
     go (s:ss) (x:xs) | [s, x] `elem` ["()", "[]", "{}", "<>"] = go ss xs
     go _ (x:_) = Left x
 
@@ -34,5 +33,5 @@ part2 = median . map stackWeight . rights . map parseLine where
         weight _ = 0
         stackWeight = foldl' (\acc x -> acc * 5 + weight x) 0
 
-solve :: String -> IO ()
+solve :: Text -> IO ()
 solve = aocTemplate parser pure (pure . part1) (pure . part2)

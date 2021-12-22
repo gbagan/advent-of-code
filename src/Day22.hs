@@ -1,11 +1,10 @@
 module Day22 (solve) where
-import           Data.List (foldl')
-import           Data.Maybe (mapMaybe)
-import           Text.Megaparsec (sepEndBy1, (<|>))
+import           RIO
+import           Text.Megaparsec (sepEndBy1)
 import qualified Text.Megaparsec.Char as P
 import           Util (Parser, aocTemplate, signedInteger)
 
-data Cube = Cube Bool (Int, Int) (Int, Int) (Int, Int)
+data Cube = Cube !Bool !(Int, Int) !(Int, Int) !(Int, Int)
 
 parser :: Parser [Cube]
 parser = cube `sepEndBy1` P.eol where
@@ -19,26 +18,25 @@ disjoint (Cube _ (xmin, xmax) (ymin, ymax) (zmin, zmax))
             xmax < xmin' || ymax < ymin' || zmax < zmin' || xmax' < xmin || ymax' < ymin || zmax' < zmin
 
 intersect :: Bool -> Cube -> Cube -> Maybe Cube
-intersect on
+intersect onoff
           c1@(Cube _ (xmin, xmax) (ymin, ymax) (zmin, zmax))
-          c2@(Cube _ (xmin', xmax') (ymin', ymax') (zmin', zmax')) =
-            if disjoint c1 c2 then
-                Nothing 
-            else
-                Just $ Cube on (max xmin xmin', min xmax xmax') (max ymin ymin', min ymax ymax') (max zmin zmin', min zmax zmax')
+          c2@(Cube _ (xmin', xmax') (ymin', ymax') (zmin', zmax'))
+            | disjoint c1 c2 = Nothing 
+            | otherwise      = Just $ Cube onoff (max xmin xmin', min xmax xmax')
+                                                 (max ymin ymin', min ymax ymax')
+                                                 (max zmin zmin', min zmax zmax')
 
 addCube :: [Cube] -> Cube -> [Cube]
-addCube cubes c@(Cube on _ _ _) =
-    let cubes' = mapMaybe (\c'@(Cube on' _ _ _) -> intersect (not on') c c') cubes
-        cubes'' = if on then c : cubes' else cubes'
-    in cubes'' ++ cubes
+addCube cubes c@(Cube onoff _ _ _) = cubes'' ++ cubes where
+    cubes' = mapMaybe (\c'@(Cube onoff' _ _ _) -> intersect (not onoff') c c') cubes
+    cubes'' = if onoff then c : cubes' else cubes'
 
 computeCubes :: [Cube] -> [Cube]
 computeCubes = foldl' addCube [] 
 
 volume :: Cube -> Int
-volume (Cube on (xmin, xmax) (ymin, ymax) (zmin, zmax)) =
-    (if on then 1 else -1) * (xmax - xmin + 1) * (ymax - ymin + 1) * (zmax - zmin + 1)
+volume (Cube onoff (xmin, xmax) (ymin, ymax) (zmin, zmax)) =
+    (if onoff then 1 else -1) * (xmax - xmin + 1) * (ymax - ymin + 1) * (zmax - zmin + 1)
 
 totalVolume :: [Cube] -> Int 
 totalVolume = sum . map volume
@@ -46,10 +44,10 @@ totalVolume = sum . map volume
 part1 :: [Cube] -> Int
 part1 = totalVolume . computeCubes . mapMaybe (intersect' cube)
             where cube = Cube True (-50,50) (-50,50) (-50,50)
-                  intersect' c1 c2@(Cube on _ _ _) = intersect on c1 c2
+                  intersect' c1 c2@(Cube onoff _ _ _) = intersect onoff c1 c2
 
 part2 :: [Cube] -> Int 
 part2 = totalVolume . computeCubes
 
-solve :: String -> IO ()
+solve :: Text -> IO ()
 solve = aocTemplate parser pure (pure . part1) (pure . part2)

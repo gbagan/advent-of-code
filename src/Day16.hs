@@ -1,6 +1,7 @@
 module Day16 (solve) where
-
-import           Data.Bifunctor (second)
+import           RIO hiding (some)
+import           RIO.List (unzip)
+import           RIO.List.Partial (maximum, minimum)
 import           Text.Megaparsec (anySingle, count, some, takeP, parseMaybe, takeRest)
 import qualified Text.Megaparsec.Char as P
 import           Util (Parser, BinParser, aocTemplate, binToInt)
@@ -84,5 +85,5 @@ part2 :: Packet -> Int
 part2 (Packet _ (Lit n)) = n
 part2 (Packet _ (Op f packets)) = f (map part2 packets)
 
-solve :: String -> IO ()
+solve :: Text -> IO ()
 solve = aocTemplate parser precomp (pure . part1) (pure . part2)

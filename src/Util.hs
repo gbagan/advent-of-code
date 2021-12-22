@@ -1,30 +1,38 @@
 module Util where
-import           Data.List (foldl', group, sort, genericLength)
-import           Data.Map (Map)
-import           Data.Void (Void)
-import           Text.Megaparsec (Parsec, parse, errorBundlePretty, (<|>))
+import           RIO
+import           RIO.ByteString (putStr)
+import           RIO.List (group, sort, genericLength)
+import           RIO.List.Partial (head, (!!))
+import qualified RIO.Text as Text
+import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
 import qualified Data.Map as Map
 
-type Parser = Parsec Void String
+type Parser = Parsec Void Text
 type BinParser = Parsec Void [Bool]
 type Point = (Int, Int)
 
-aocTemplate :: Parser a -> (a -> Maybe b) -> (b -> Maybe Int) -> (b -> Maybe Int) -> String -> IO ()
+print :: (MonadIO m) => Text -> m ()
+print = putStr . Text.encodeUtf8
+
+printLn :: (MonadIO m) => Text -> m ()
+printLn = print . (<> "\n") 
+
+aocTemplate :: Parser a -> (a -> Maybe b) -> (b -> Maybe Int) -> (b -> Maybe Int) -> Text -> IO ()
 aocTemplate parser precomp part1 part2 s = do
     case parse parser "" s of
-        Left err -> putStr (errorBundlePretty err)
+        Left err -> print . Text.pack $ errorBundlePretty err
         Right input -> do
             case precomp input of
-                Nothing -> putStrLn "precomputing failed"
+                Nothing -> printLn "precomputing failed"
                 Just p -> do
                     case part1 p of
-                        Nothing -> putStrLn "  part 1: no solution found"
-                        Just n ->  putStrLn $ "  part 1: " ++ show n
+                        Nothing -> printLn "  part 1: no solution found"
+                        Just n ->  printLn $ "  part 1: " <> tshow n
                     case part2 p of
-                        Nothing -> putStrLn "  part 2: no solution found"
-                        Just n ->  putStrLn $ "  part 2: " ++ show n
+                        Nothing -> printLn "  part 2: no solution found"
+                        Just n ->  printLn $ "  part 2: " <> tshow n
 
 adjacentPoints :: Point -> [Point]
 adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]

@@ -1,15 +1,14 @@
 module Day08 (solve) where
-import           Data.Char (chr, ord)
-import           Data.List (find, permutations)
-import           Data.Map (Map)
-import qualified Data.Map as Map
-import           Data.IntSet (IntSet)
+import           RIO hiding (some)
+import           RIO.Char (ord)
+import           RIO.Char.Partial (chr)
+import           RIO.List (find, permutations)
+import           RIO.List.Partial ((!!))
+import qualified RIO.Map as Map
 import qualified Data.IntSet as IntSet
-import           Data.Set (Set)
-import qualified Data.Set as Set
+import qualified RIO.Set as Set
 import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
-import           Text.Read (readMaybe)
 import           Util (Parser, aocTemplate)
 
 type Digit = IntSet
@@ -58,5 +57,5 @@ decodeLine (Line l r) = do
 part2 :: [Line] -> Maybe Int
 part2 xs = sum <$> traverse decodeLine xs
 
-solve :: String -> IO ()
+solve :: Text -> IO ()
 solve = aocTemplate parser  pure(pure . part1) part2

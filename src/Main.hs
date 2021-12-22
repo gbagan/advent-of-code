@@ -1,7 +1,7 @@
 module Main where
-
-import Data.Map.Strict (Map)
-import qualified Data.Map.Strict as Map
+import RIO
+import qualified RIO.Text as Text
+import qualified RIO.Map as Map
 import qualified Day01 (solve)
 import qualified Day02 (solve)
 import qualified Day03 (solve)
@@ -25,8 +25,9 @@ import qualified Day20 (solve)
 import qualified Day21 (solve)
 import qualified Day22 (solve)
 import System.Environment (getArgs)
+import Util (printLn)
 
-solutions :: Map String (String -> IO())
+solutions :: Map Text (Text -> IO())
 solutions = Map.fromList
             [   ("01", Day01.solve)
             ,   ("02", Day02.solve)
@@ -52,15 +53,15 @@ solutions = Map.fromList
             ,   ("22", Day22.solve)
             ]
 
-solveProblem :: String -> IO ()
+solveProblem :: Text -> IO ()
 solveProblem name = case Map.lookup name solutions of
     Just solve -> do
-        putStrLn $ "Solve day " ++ name
-        s <- readFile ("./data/data" ++ name)
+        printLn $ "Solve day " <> name
+        s <- readFileUtf8 (Text.unpack $ "./data/data" <> name)
         solve s
-    Nothing -> putStrLn $ "Day not implemented: " ++ name
+    Nothing -> printLn $ "Day not implemented: " <> name
 
 main :: IO ()
 main = do
-    args <- getArgs
+    args <- map Text.pack <$> getArgs
     mapM_ solveProblem if null args then Map.keys solutions else args

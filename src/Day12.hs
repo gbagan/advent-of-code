@@ -1,10 +1,9 @@
 module Day12 (solve) where
-import           Control.Monad (guard)
+import           RIO hiding (some)
 import           Data.Char (isUpper)
 import           Data.List (nub)
-import           Data.Map (Map, (!))
+import           Data.Map ((!))
 import qualified Data.Map as Map
-import           Data.Maybe (mapMaybe)
 import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
 import           Util (Parser, aocTemplate)
@@ -49,5 +48,5 @@ part2 g = go ["start"] False "start" where
                 guard $ nbor /= "start"
                 pure $ go (if all isUpper nbor then visited else nbor : visited) (nbor `elem` visited) nbor
 
-solve :: String -> IO ()
+solve :: Text -> IO ()
 solve = aocTemplate parser pure (pure . part1) (pure . part2)

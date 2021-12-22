@@ -1,6 +1,7 @@
 module Day21 (solve) where
-import           Data.Array (Array, listArray, range, (!))          
-import qualified Data.Map as Map
+import           RIO
+import qualified RIO.Map as Map
+import           Data.Array (Array, listArray, range, (!))
 import           Linear.V2 (V2(..))
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -38,5 +39,5 @@ scores = listArray bds
 part2 :: (Int, Int) -> Int
 part2 (p1, p2) = max x y where V2 x y = scores ! (p1-1, p2-1, 0, 0)
 
-solve :: String -> IO ()
+solve :: Text -> IO ()
 solve = aocTemplate parser pure (pure . part1) (pure . part2)

@@ -1,5 +1,7 @@
 module Day05 (solve) where
-import qualified Data.Map as Map
+import           RIO
+import           RIO.List (iterate)
+import qualified RIO.Map as Map
 import           Text.Megaparsec (sepEndBy1)
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -27,5 +29,5 @@ points diag (Line (x1, y1) (x2, y2))
 countIntersections :: Diag -> [Line] -> Int
 countIntersections diag = Map.size . Map.filter (>1) . freqs . (>>= points diag)
 
-solve :: String -> IO ()
+solve :: Text -> IO ()
 solve = aocTemplate parser pure (pure . countIntersections NoDiag) (pure . countIntersections Diag)

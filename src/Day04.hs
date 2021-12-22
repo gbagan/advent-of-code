@@ -1,6 +1,7 @@
 module Day04 (solve) where
-
-import           Data.List (transpose)
+import           RIO
+import           RIO.List (transpose)
+import           RIO.List.Partial (head)
 import           Text.Megaparsec (sepEndBy1, sepBy1)
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -44,5 +45,5 @@ part2 (Input draw boards) = go draw boards where
             [] -> x * score (head bs')
             bs'' -> go xs bs''
 
-solve :: String -> IO ()
+solve :: Text -> IO ()
 solve = aocTemplate parser pure (pure . part1) (pure . part2)

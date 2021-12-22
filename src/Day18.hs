@@ -1,7 +1,7 @@
 module Day18 (solve) where
-import           Control.Monad ((<=<))
-import           Data.Bifunctor (bimap, first)
-import           Text.Megaparsec (sepEndBy1, (<|>))
+import           RIO
+import           RIO.List.Partial (foldl1', maximum)
+import           Text.Megaparsec (sepEndBy1)
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
 import           Util (Parser, aocTemplate)
@@ -47,10 +47,10 @@ add :: Snailfish -> Snailfish -> Snailfish
 add l r = reduce (Node l r)
 
 part1 :: [Snailfish] -> Int
-part1 = magnitude . foldl1 add
+part1 = magnitude . foldl1' add
 
 part2 :: [Snailfish] -> Int
 part2 sfs = maximum [magnitude $ add a b | a <- sfs, b <- sfs, a /= b]
 
-solve :: String -> IO ()
+solve :: Text -> IO ()
 solve = aocTemplate parser pure (pure . part1) (pure . part2)

@@ -1,9 +1,8 @@
 module Day19 (solve) where
-import           Data.Either (partitionEithers)
+import           RIO hiding (some)
+import           RIO.List (scanl, transpose)
+import           RIO.List.Partial (maximum)
 import           Data.Either.Combinators (maybeToRight)
-import           Data.Function ((&))
-import           Data.List (transpose)
-import           Data.Maybe (listToMaybe)
 import qualified Data.Map as Map
 import           Linear.V3 (V3(..))
 import           Text.Megaparsec (sepEndBy1, some)
@@ -48,5 +47,5 @@ part2 scans = maximum [dist x y | x <- positions, y <- positions] where
     positions = map snd scans
     dist v1 v2 = sum . abs $ v1 - v2
 
-solve :: String -> IO ()
+solve :: Text -> IO ()
 solve = aocTemplate parser alignAll (pure . part1) (pure . part2)

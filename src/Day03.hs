@@ -1,6 +1,8 @@
 module Day03 (solve) where
-import           Data.List (partition, transpose)
-import           Text.Megaparsec (sepEndBy1, some, (<|>))
+import           RIO hiding (some)
+import           RIO.List (partition, transpose)
+import           RIO.List.Partial ((!!))
+import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
 import           Util (Parser, aocTemplate, binToInt, bitP, majority)
 
@@ -30,5 +32,5 @@ part2 l = binToInt x * binToInt y where
     x = filterCode MostCommon l
     y = filterCode LeastCommon l
 
-solve :: String -> IO ()
+solve :: Text -> IO ()
 solve = aocTemplate parser pure (pure . part1) (pure . part2)

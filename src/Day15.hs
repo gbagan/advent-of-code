@@ -1,10 +1,8 @@
 module Day15 (solve) where
-import           Control.Monad ((<=<))
-import           Data.Char (digitToInt)
-import qualified Data.Set as Set
-import           Data.Map (Map)
-import qualified Data.Map as Map
-import           Data.Maybe (mapMaybe)
+import           RIO hiding (some)
+import           RIO.Char.Partial (digitToInt)
+import qualified RIO.Set as Set
+import qualified RIO.Map as Map
 import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
 import           Util (Parser, Point, aocTemplate, adjacentPoints, listTo2dMap)
@@ -40,5 +38,5 @@ part2 :: Map Point Int -> Maybe Int
 part2 mp = dijkstra (neighbors mp') (0, 0) (499, 499) where
         mp' = duplicateGrid mp
 
-solve :: String -> IO ()
+solve :: Text -> IO ()
 solve = aocTemplate parser pure part1 part2

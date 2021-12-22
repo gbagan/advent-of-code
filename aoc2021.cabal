@@ -42,6 +42,8 @@ executable aoc2021
                     FlexibleInstances
                     LambdaCase
                     MultiWayIf
+                    NoImplicitPrelude
+                    OverloadedStrings
                     TupleSections
                     TypeApplications
                     TypeFamilies
@@ -57,3 +59,4 @@ executable aoc2021
                      , linear
                      , massiv
                      , megaparsec
+                     , rio
