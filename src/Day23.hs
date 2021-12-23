@@ -58,7 +58,7 @@ enterRoom size (rooms, hall) h =
             let room = rooms ! roomNo c in
             if length room < size && all (== c) room && freePath h (roomPosition c) hall
                 then let newBoard = (rooms // [(roomNo c, c : rooms ! roomNo c)], IM.delete h hall)
-                         cost = moveCost c * ((size - length room) + abs (h - roomPosition c))
+                         cost = moveCost c * (size - length room + abs (h - roomPosition c))
                      in Just (newBoard, cost)
                 else Nothing
 
@@ -70,7 +70,7 @@ exitRoom size (rooms, hall) r h = case rooms ! roomNo r of
     [] -> Nothing
     (c:cs) | freePath (roomPosition r) h hall -> 
                 let newBoard = (rooms // [(roomNo r, cs)], IM.insert h c hall)
-                    cost = moveCost c * ((size - length cs) + abs (h - roomPosition r))
+                    cost = moveCost c * (size - length cs + abs (h - roomPosition r))
                 in Just (newBoard, cost)
            | otherwise -> Nothing
 
