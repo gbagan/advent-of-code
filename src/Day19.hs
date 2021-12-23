@@ -47,5 +47,5 @@ part2 scans = maximum [dist x y | x <- positions, y <- positions] where
     positions = map snd scans
     dist v1 v2 = sum . abs $ v1 - v2
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser alignAll (pure . part1) (pure . part2)

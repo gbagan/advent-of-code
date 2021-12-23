@@ -1,26 +1,14 @@
 module Day15 (solve) where
 import           RIO hiding (some)
 import           RIO.Char.Partial (digitToInt)
-import qualified RIO.Set as Set
 import qualified RIO.Map as Map
 import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
-import           Util (Parser, Point, aocTemplate, adjacentPoints, listTo2dMap)
+import           Util (Parser, Point, aocTemplate, adjacentPoints, dijkstra, listTo2dMap)
 
 parser :: Parser (Map Point Int)
 parser = listTo2dMap <$> line `sepEndBy1` P.eol where
         line = some (digitToInt <$> P.digitChar)
-
-dijkstra :: (Ord v, Real w) => (v -> [(v, w)]) -> v -> v -> Maybe w
-dijkstra nbors source target = go Set.empty (Set.singleton (0, source)) where
-    go visited queue = case Set.minView queue of
-        Nothing -> Nothing
-        Just ((cost, v), queue')
-            | v == target          -> Just cost
-            | Set.member v visited -> go visited queue'
-            | otherwise            -> go
-                                        (Set.insert v visited)
-                                        (foldr Set.insert queue' [(w+cost, u) | (u, w) <- nbors v])
 
 neighbors :: Map Point Int -> Point -> [(Point, Int)]
 neighbors mp v = mapMaybe
@@ -38,5 +26,5 @@ part2 :: Map Point Int -> Maybe Int
 part2 mp = dijkstra (neighbors mp') (0, 0) (499, 499) where
         mp' = duplicateGrid mp
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser pure part1 part2

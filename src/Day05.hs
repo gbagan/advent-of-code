@@ -29,5 +29,5 @@ points diag (Line (x1, y1) (x2, y2))
 countIntersections :: Diag -> [Line] -> Int
 countIntersections diag = Map.size . Map.filter (>1) . freqs . (>>= points diag)
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser pure (pure . countIntersections NoDiag) (pure . countIntersections Diag)

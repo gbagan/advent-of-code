@@ -33,5 +33,5 @@ part2 = median . map stackWeight . rights . map parseLine where
         weight _ = 0
         stackWeight = foldl' (\acc x -> acc * 5 + weight x) 0
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser pure (pure . part1) (pure . part2)

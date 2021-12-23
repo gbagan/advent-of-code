@@ -1,8 +1,8 @@
 module Util where
 import           RIO
-import           RIO.ByteString (putStr)
 import           RIO.List (group, sort, genericLength)
 import           RIO.List.Partial (head, (!!))
+import qualified RIO.Set as Set
 import qualified RIO.Text as Text
 import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
 import qualified Text.Megaparsec.Char as P
@@ -13,32 +13,29 @@ type Parser = Parsec Void Text
 type BinParser = Parsec Void [Bool]
 type Point = (Int, Int)
 
-print :: (MonadIO m) => Text -> m ()
-print = putStr . Text.encodeUtf8
-
-printLn :: (MonadIO m) => Text -> m ()
-printLn = print . (<> "\n") 
-
-aocTemplate :: Parser a -> (a -> Maybe b) -> (b -> Maybe Int) -> (b -> Maybe Int) -> Text -> IO ()
+aocTemplate :: (MonadReader env m, MonadIO m, HasLogFunc env) => Parser a -> (a -> Maybe b) -> (b -> Maybe Int) -> (b -> Maybe Int) -> Text -> m ()
 aocTemplate parser precomp part1 part2 s = do
     case parse parser "" s of
-        Left err -> print . Text.pack $ errorBundlePretty err
+        Left err -> logInfo $ display $ Text.pack $ errorBundlePretty err
         Right input -> do
             case precomp input of
-                Nothing -> printLn "precomputing failed"
+                Nothing -> logInfo "precomputing failed"
                 Just p -> do
                     case part1 p of
-                        Nothing -> printLn "  part 1: no solution found"
-                        Just n ->  printLn $ "  part 1: " <> tshow n
+                        Nothing -> logInfo "  part 1: no solution found"
+                        Just n ->  logInfo $ "  part 1: " <> display n
                     case part2 p of
-                        Nothing -> printLn "  part 2: no solution found"
-                        Just n ->  printLn $ "  part 2: " <> tshow n
+                        Nothing -> logInfo "  part 2: no solution found"
+                        Just n ->  logInfo $ "  part 2: " <> display n
 
 adjacentPoints :: Point -> [Point]
 adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
 
 kingAdjacentPoints :: Point -> [Point]
 kingAdjacentPoints (x, y) = adjacentPoints (x, y) ++ [(x-1, y-1), (x+1, y-1), (x-1, y+1), (x+1, y+1)]
+
+range :: Int -> Int -> [Int]
+range x y = if x < y then [x .. y] else [y .. x]
 
 count :: (a -> Bool) -> [a] -> Int
 count f = length . filter f
@@ -77,3 +74,14 @@ signedInteger = L.decimal <|> P.char '-' *> (negate <$> L.decimal)
 
 bitP :: Parser Bool
 bitP = False <$ P.char '0' <|> True <$ P.char '1'
+
+dijkstra :: (Ord v, Real w) => (v -> [(v, w)]) -> v -> v -> Maybe w
+dijkstra nbors source target = go Set.empty (Set.singleton (0, source)) where
+    go visited queue = case Set.minView queue of
+        Nothing -> Nothing
+        Just ((cost, v), queue')
+            | v == target          -> Just cost
+            | Set.member v visited -> go visited queue'
+            | otherwise            -> go
+                                        (Set.insert v visited)
+                                        (foldr Set.insert queue' [(w+cost, u) | (u, w) <- nbors v])

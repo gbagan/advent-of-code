@@ -24,5 +24,5 @@ simulate (Area xmin xmax ymin ymax) (vx, vy) =
 part2 :: Area -> Int
 part2 area@(Area _ xmax ymin _) = count (simulate area) (cartesianProduct [1..xmax] [ymin..(-ymin)])
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser pure (pure . part1) (pure . part2)

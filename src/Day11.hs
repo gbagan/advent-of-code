@@ -38,5 +38,5 @@ part1 = sum . map (count (==0) . Map.elems) . take 100 . tail
 part2 :: [Map Point Int] -> Maybe Int
 part2 = findIndex (all (==0) . Map.elems)
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser (pure . precomp) (pure . part1) part2

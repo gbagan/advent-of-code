@@ -30,5 +30,5 @@ part2 l = tx * ty where
                 IDown v   -> (x, y, aim + v)
             ) (0, 0, 0) l
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser pure (pure . part1) (pure . part2)

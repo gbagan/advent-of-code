@@ -1,5 +1,5 @@
 module Main where
-import RIO
+import           RIO
 import qualified RIO.Text as Text
 import qualified RIO.Map as Map
 import qualified Day01 (solve)
@@ -24,10 +24,10 @@ import qualified Day19 (solve)
 import qualified Day20 (solve)
 import qualified Day21 (solve)
 import qualified Day22 (solve)
+import qualified Day23 (solve)
 import System.Environment (getArgs)
-import Util (printLn)
 
-solutions :: Map Text (Text -> IO())
+solutions :: Map Text (Text -> RIO SimpleApp ())
 solutions = Map.fromList
             [   ("01", Day01.solve)
             ,   ("02", Day02.solve)
@@ -51,17 +51,18 @@ solutions = Map.fromList
             ,   ("20", Day20.solve)
             ,   ("21", Day21.solve)
             ,   ("22", Day22.solve)
+            ,   ("23", Day23.solve)
             ]
 
-solveProblem :: Text -> IO ()
+solveProblem :: Text -> RIO SimpleApp ()
 solveProblem name = case Map.lookup name solutions of
     Just solve -> do
-        printLn $ "Solve day " <> name
+        logInfo $ "Solve day " <> display name
         s <- readFileUtf8 (Text.unpack $ "./data/data" <> name)
         solve s
-    Nothing -> printLn $ "Day not implemented: " <> name
+    Nothing -> logInfo $ "Day not implemented: " <> display name
 
 main :: IO ()
-main = do
-    args <- map Text.pack <$> getArgs
+main = runSimpleApp do
+    args <- map Text.pack <$> liftIO getArgs
     mapM_ solveProblem if null args then Map.keys solutions else args

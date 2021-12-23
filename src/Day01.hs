@@ -12,6 +12,6 @@ parser = L.decimal `sepEndBy1` P.eol
 algo :: Int -> [Int] -> Int
 algo n l = count id $ zipWith (<) l (drop n l)
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser pure (pure . algo 1) (pure . algo 3)
 

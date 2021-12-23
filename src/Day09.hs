@@ -31,5 +31,5 @@ part1 m = sum . map ((+1) . (m!) . fst) . filter (isNothing . snd) . LMap.toList
 part2 :: Map Point Int -> Int
 part2 = product . take 3 . reverse . sort . LMap.elems . freqs . LMap.elems . closure . flow . LMap.filter (<9)
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser pure (pure . part1) (pure . part2)

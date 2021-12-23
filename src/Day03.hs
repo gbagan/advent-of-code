@@ -32,5 +32,5 @@ part2 l = binToInt x * binToInt y where
     x = filterCode MostCommon l
     y = filterCode LeastCommon l
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser pure (pure . part1) (pure . part2)

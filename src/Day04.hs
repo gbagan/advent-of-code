@@ -45,5 +45,5 @@ part2 (Input draw boards) = go draw boards where
             [] -> x * score (head bs')
             bs'' -> go xs bs''
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser pure (pure . part1) (pure . part2)

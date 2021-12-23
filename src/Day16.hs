@@ -85,5 +85,5 @@ part2 :: Packet -> Int
 part2 (Packet _ (Lit n)) = n
 part2 (Packet _ (Op f packets)) = f (map part2 packets)
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser precomp (pure . part1) (pure . part2)

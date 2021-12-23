@@ -40,5 +40,5 @@ algo n (Input s rules) = maximum freqs - minimum freqs where
     pairs = stringToPairsMap s
     freqs = Map.elems . pairsMapToFreqs s $ iterate (step rules) pairs !! n
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser pure (pure . algo 10) (pure . algo 40)

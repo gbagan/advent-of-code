@@ -57,5 +57,5 @@ decodeLine (Line l r) = do
 part2 :: [Line] -> Maybe Int
 part2 xs = sum <$> traverse decodeLine xs
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser  pure(pure . part1) part2

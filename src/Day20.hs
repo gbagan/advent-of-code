@@ -33,5 +33,5 @@ iterateGrid algo = go (0 :: Int) where
 countLit :: Int -> Input -> Int
 countLit n (Input algo grid) = count id . A.toList $ iterateGrid algo grid !! n
 
-solve :: Text -> IO ()
+solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aocTemplate parser pure (pure . countLit 2) (pure . countLit 50)
