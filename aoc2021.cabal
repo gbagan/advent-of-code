@@ -35,6 +35,8 @@ executable aoc2021
                 Day21
                 Day22
                 Day23
+                Day24
+                Day25
                 Util
 
     default-language:    Haskell2010
