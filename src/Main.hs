@@ -69,4 +69,4 @@ solveProblem name = case Map.lookup name solutions of
 main :: IO ()
 main = runSimpleApp do
     args <- map Text.pack <$> liftIO getArgs
-    mapM_ solveProblem if null args then Map.keys solutions else args
+    traverse_ solveProblem if null args then Map.keys solutions else args

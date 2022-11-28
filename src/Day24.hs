@@ -29,9 +29,9 @@ precomp instrs = fst $ foldl' go ((p, q), []) [0..13] where
         in if a > 0
             then ((p', q'), (i, b) : stack)
             else
-                let (j, b) : stack' = stack
-                    p'' = p' - abs ((a+b)*10^(13 - if a > -b then j else i))
-                    q'' = q' + abs ((a+b)*10^(13 - if a < -b then j else i))
+                let (j, c) : stack' = stack
+                    p'' = p' - abs ((a+c)*10^(13 - if a > -c then j else i))
+                    q'' = q' + abs ((a+c)*10^(13 - if a < -c then j else i))
                 in ((p'', q''), stack')
     p = 99999999999999
     q = 11111111111111
