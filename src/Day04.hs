@@ -22,7 +22,7 @@ hasWon board = f board || f (transpose board) where
     f = any (all snd)
 
 play :: Int -> Board -> Board
-play x = map (map \(y, b) -> if x == y then (y, True) else (y, b))
+play x = map (map \(y, b) -> (y, b || x == y))
 
 score :: Board -> Int
 score = sum . map fst . filter (not . snd) . concat
