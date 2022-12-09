@@ -1,6 +1,7 @@
 -- https://adventofcode.com/2022/day/9
 module Day09 (solve) where
 import           RIO
+import           RIO.List (scanl')
 import           RIO.List.Partial (last)
 import qualified RIO.Set as Set
 import           Data.Ord (clamp)
@@ -28,21 +29,18 @@ moveKnot (x, y) dir = case dir of
     D -> (x, y-1)
     U -> (x, y+1)
 
-followFront :: Knot -> Knot -> Knot
-followFront (x, y) (x', y')
-        | (x'-x, y'-y) == (dx, dy) = (x, y)
-        | otherwise = (x+dx, y+dy)
+pullKnot :: Knot -> Knot -> Knot
+pullKnot (hx, hy) (tx, ty)
+        | (hx-tx, hy-ty) == (dx, dy) = (tx, ty)
+        | otherwise = (tx+dx, ty+dy)
     where
-    dx = clamp (-1, 1) (x'-x)
-    dy = clamp (-1, 1) (y'-y)
+    dx = clamp (-1, 1) (hx-tx)
+    dy = clamp (-1, 1) (hy-ty)
 
 moveRope :: Rope -> Direction -> Rope
 moveRope [] _ = []
-moveRope (k:ks) dir = k' : go k' ks where
-    k' = moveKnot k dir
-    go _ [] = []
-    go y (y':ys) = y'' : go y'' ys where y'' = followFront y' y
-
+moveRope (k:ks) dir = scanl' pullKnot (moveKnot k dir) ks
+    
 solve' :: Int -> [Direction] -> Int
 solve' n dirs = Set.size vis where
     (_, vis) = foldl' go (replicate n (0 :: Int, 0 :: Int), Set.singleton (0, 0)) dirs

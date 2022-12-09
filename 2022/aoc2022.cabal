@@ -21,6 +21,7 @@ executable aoc2022
                 Day07
                 Day08
                 Day09
+                Day10
                 Util
 
     default-language:    Haskell2010
