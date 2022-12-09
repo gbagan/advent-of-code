@@ -13,20 +13,23 @@ type Parser = Parsec Void Text
 type BinParser = Parsec Void [Bool]
 type Point = (Int, Int)
 
-aocTemplate :: (MonadReader env m, MonadIO m, HasLogFunc env) => Parser a -> (a -> Maybe b) -> (b -> Maybe Int) -> (b -> Maybe Int) -> Text -> m ()
-aocTemplate parser precomp part1 part2 s = do
-    case parse parser "" s of
+-- templates
+
+aoc :: (Show b, Show c, HasLogFunc env) =>
+        Parser a -> (a -> b) -> (a -> c) -> Text -> RIO env ()
+aoc parser = aoc' parser pure
+
+aoc' :: (Show c, Show d, HasLogFunc env) =>
+        Parser a -> (a -> Maybe b) -> (b -> c) -> (b -> d) -> Text -> RIO env ()
+aoc' parser precomp part1 part2 input = do
+    case parse parser "" input of
         Left err -> logInfo $ display $ Text.pack $ errorBundlePretty err
-        Right input -> do
-            case precomp input of
-                Nothing -> logInfo "precomputing failed"
+        Right parsed ->
+            case precomp parsed of
+                Nothing -> logInfo "  precomputation has failed"
                 Just p -> do
-                    case part1 p of
-                        Nothing -> logInfo "  part 1: no solution found"
-                        Just n ->  logInfo $ "  part 1: " <> display n
-                    case part2 p of
-                        Nothing -> logInfo "  part 2: no solution found"
-                        Just n ->  logInfo $ "  part 2: " <> display n
+                    logInfo $ "  part 1: " <> displayShow (part1 p)
+                    logInfo $ "  part 2: " <> displayShow (part2 p)
 
 adjacentPoints :: Point -> [Point]
 adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
@@ -42,9 +45,6 @@ count f = length . filter f
 
 freqs :: Ord a => [a] -> Map a Int
 freqs = Map.fromListWith (+) . map (,1)
-
-sortNub :: Ord a => [a] -> [a]
-sortNub = map head . group . sort
 
 average :: [Int] -> Double
 average xs = realToFrac (sum xs) / genericLength xs

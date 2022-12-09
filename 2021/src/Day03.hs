@@ -3,11 +3,11 @@ import           RIO hiding (some)
 import           RIO.List (partition, transpose)
 import           RIO.List.Partial ((!!))
 import           Text.Megaparsec (sepEndBy1, some)
-import qualified Text.Megaparsec.Char as P
-import           Util (Parser, aocTemplate, binToInt, bitP, majority)
+import           Text.Megaparsec.Char (eol)
+import           Util (Parser, aoc, binToInt, bitP, majority)
 
 parser :: Parser [[Bool]]
-parser = some bitP `sepEndBy1` P.eol
+parser = some bitP `sepEndBy1` eol
 
 part1 :: [[Bool]] -> Int
 part1 l = binToInt e * binToInt g where
@@ -33,4 +33,4 @@ part2 l = binToInt x * binToInt y where
     y = filterCode LeastCommon l
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . part1) (pure . part2)
+solve = aoc parser part1 part2

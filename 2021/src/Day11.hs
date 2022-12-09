@@ -6,12 +6,12 @@ import           RIO.List.Partial (tail)
 import qualified RIO.Map as Map
 import qualified RIO.Set as Set
 import           Text.Megaparsec (sepEndBy1, some)
-import qualified Text.Megaparsec.Char as P
-import           Util (Parser, Point, aocTemplate, count, kingAdjacentPoints, listTo2dMap)
+import           Text.Megaparsec.Char (digitChar, eol)
+import           Util (Parser, Point, aoc', count, kingAdjacentPoints, listTo2dMap)
 
 parser :: Parser (Map Point Int)
-parser = listTo2dMap <$> line `sepEndBy1` P.eol where
-        line = some (digitToInt <$> P.digitChar)
+parser = listTo2dMap <$> line `sepEndBy1` eol where
+        line = some (digitToInt <$> digitChar)
 
 step :: Map Point Int -> Map Point Int
 step mp = mp3 where
@@ -39,4 +39,4 @@ part2 :: [Map Point Int] -> Maybe Int
 part2 = findIndex (all (==0) . Map.elems)
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser (pure . precomp) (pure . part1) part2
+solve = aoc' parser (pure . precomp) part1 part2

@@ -5,8 +5,8 @@ import qualified RIO.Vector as Vec
 import           RIO.Vector.Partial ((!), (//))
 import qualified Data.IntMap as IM
 import           Text.Megaparsec (anySingle)
-import qualified Text.Megaparsec.Char as P
-import           Util (Parser, aocTemplate, dijkstra)
+import           Text.Megaparsec.Char (char)
+import           Util (Parser, aoc, dijkstra)
 
 data Amphipod = Amber | Bronze | Copper | Desert deriving (Eq, Ord, Enum)
 type Rooms = Vector [Amphipod]
@@ -24,10 +24,10 @@ parser = do
     maybe (fail "Invalid board") pure board
     where
     amphipod :: Parser Amphipod
-    amphipod = P.char 'A' $> Amber 
-      <|> P.char 'B' $> Bronze
-      <|> P.char 'C' $> Copper
-      <|> P.char 'D' $> Desert
+    amphipod = char 'A' $> Amber 
+           <|> char 'B' $> Bronze
+           <|> char 'C' $> Copper
+           <|> char 'D' $> Desert
     amphipod' = Just <$> amphipod <|> anySingle $> Nothing
     amphipods = catMaybes <$> some amphipod'
 
@@ -97,4 +97,4 @@ part2 :: Board -> Maybe Int
 part2 board = dijkstra (neighbors 4) (extendBoard board) (finalBoard 4)
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure part1 part2
+solve = aoc parser part1 part2

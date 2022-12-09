@@ -3,18 +3,18 @@ import           RIO hiding (some)
 import           RIO.List.Partial ((!!))
 import qualified Data.Massiv.Array as A
 import           Text.Megaparsec (sepEndBy1, some)
-import qualified Text.Megaparsec.Char as P
-import           Util (Parser, aocTemplate, binToInt, count)
+import           Text.Megaparsec.Char (char, eol)
+import           Util (Parser, aoc, binToInt, count)
 
 type Algo = A.Array A.U A.Ix1 Bool
 type Grid = A.Array A.U A.Ix2 Bool
 data Input = Input Algo Grid
 
 parser :: Parser Input
-parser = Input <$> algo <* P.eol <* P.eol <*> grid where
+parser = Input <$> algo <* eol <* eol <*> grid where
     algo = A.fromList A.Seq <$> some bit
-    grid = A.fromLists' A.Seq <$> some bit `sepEndBy1` P.eol
-    bit = False <$ P.char '.' <|> True <$ P.char '#'
+    grid = A.fromLists' A.Seq <$> some bit `sepEndBy1` eol
+    bit = False <$ char '.' <|> True <$ char '#'
 
 stencil :: Algo -> A.Stencil A.Ix2 Bool Bool
 stencil algo = A.makeStencil (A.Sz2 3 3) (0 A.:. 0) \get -> algo A.! binToInt [get (i A.:. j) | i <- [-1..1], j <- [-1..1]]
@@ -34,4 +34,4 @@ countLit :: Int -> Input -> Int
 countLit n (Input algo grid) = count id . A.toList $ iterateGrid algo grid !! n
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . countLit 2) (pure . countLit 50)
+solve = aoc parser (countLit 2) (countLit 50)

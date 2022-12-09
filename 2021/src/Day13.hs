@@ -1,26 +1,25 @@
 module Day13 (solve) where
-import           RIO hiding (some)
+import           RIO hiding (fold, some)
 import           Data.List (maximum)
 import           RIO.List (intercalate)
 import           RIO.List.Partial (head)
 import qualified RIO.Set as Set
 import qualified RIO.Text as Text
 import           Text.Megaparsec (sepEndBy1, some)
-import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
-import           Util (Parser, Point, aocTemplate)
---import           Debug.Trace (trace)
+import           Text.Megaparsec.Char (char, eol, string)
+import           Text.Megaparsec.Char.Lexer (decimal)
+import           Util (Parser, Point, aoc)
 
 data Axis = X | Y
 data Fold = Fold Axis Int
 data Input = Input (Set Point) [Fold]
 
 parser :: Parser Input
-parser = Input <$> points <* P.eol <*> sepEndBy1 fold P.eol where
+parser = Input <$> points <* eol <*> sepEndBy1 fold eol where
      points = Set.fromList <$> some point
-     point = (,) <$> L.decimal <* P.char ',' <*> L.decimal <* P.eol
-     fold = Fold <$> (P.string "fold along " *> axis) <* P.char '=' <*> L.decimal
-     axis = X <$ P.char 'x' <|> Y <$ P.char 'y'
+     point = (,) <$> decimal <* char ',' <*> decimal <* eol
+     fold = Fold <$> (string "fold along " *> axis) <* char '=' <*> decimal
+     axis = X <$ char 'x' <|> Y <$ char 'y'
 
 foldPaper :: Fold -> Set Point -> Set Point
 foldPaper (Fold X i) = Set.map \(x, y) -> (min x (2*i - x), y)
@@ -41,4 +40,4 @@ part2 (Input paper folds) = trace (Text.pack str) 0 where
     yMax = maximum (Set.map snd folded)
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . part1) (pure . part2)
+solve = aoc parser part1 part2

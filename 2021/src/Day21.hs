@@ -3,13 +3,13 @@ import           RIO
 import qualified RIO.Map as Map
 import           Data.Array (Array, listArray, range, (!))
 import           Linear.V2 (V2(..))
-import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
-import           Util (Parser, aocTemplate, freqs)
+import           Text.Megaparsec.Char (eol, string)
+import           Text.Megaparsec.Char.Lexer (decimal)
+import           Util (Parser, aoc, freqs)
 
 parser :: Parser (Int, Int)
-parser = (,) <$ P.string "Player 1 starting position: " <*> L.decimal <* P.eol
-            <* P.string "Player 2 starting position: " <*> L.decimal
+parser = (,) <$ string "Player 1 starting position: " <*> decimal <* eol
+            <* string "Player 2 starting position: " <*> decimal
 
 part1 :: (Int, Int) -> Int
 part1 (p1, p2) = go 0 (p1-1) (p2-1) 0 0 where
@@ -40,4 +40,4 @@ part2 :: (Int, Int) -> Int
 part2 (p1, p2) = max x y where V2 x y = scores ! (p1-1, p2-1, 0, 0)
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . part1) (pure . part2)
+solve = aoc parser part1 part2

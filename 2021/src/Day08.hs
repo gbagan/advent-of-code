@@ -8,18 +8,17 @@ import qualified RIO.Map as Map
 import qualified Data.IntSet as IntSet
 import qualified RIO.Set as Set
 import           Text.Megaparsec (sepEndBy1, some)
-import qualified Text.Megaparsec.Char as P
-import           Util (Parser, aocTemplate)
+import           Text.Megaparsec.Char (eol, lowerChar, hspace1, string)
+import           Util (Parser, aoc)
 
 type Digit = IntSet
 data Line = Line (Set Digit) [Digit]
 
 parser :: Parser [Line]
-parser = sepEndBy1 line P.eol where
-    segment = (\c -> ord c - ord 'a') <$> P.lowerChar
-    digit = IntSet.fromList <$> some segment
-    digits = sepEndBy1 digit P.hspace1
-    line = Line <$> (Set.fromList <$> digits) <* P.string "| " <*> digits
+parser = sepEndBy1 line eol where
+    segment = (\c -> ord c - ord 'a') <$> lowerChar
+    digits = (IntSet.fromList <$> some segment) `sepEndBy1` hspace1
+    line = Line <$> (Set.fromList <$> digits) <* string "| " <*> digits
 
 part1 :: [Line] -> Int
 part1 xs = length $ xs >>= \(Line _ r) -> filter (\w -> IntSet.size w `elem` [2, 3, 4, 7]) r
@@ -58,4 +57,4 @@ part2 :: [Line] -> Maybe Int
 part2 xs = sum <$> traverse decodeLine xs
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser  pure(pure . part1) part2
+solve = aoc parser part1 part2

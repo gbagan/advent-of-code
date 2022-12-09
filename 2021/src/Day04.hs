@@ -3,19 +3,19 @@ import           RIO
 import           RIO.List (transpose)
 import           RIO.List.Partial (head)
 import           Text.Megaparsec (sepEndBy1, sepBy1)
-import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
-import           Util (Parser, aocTemplate)
+import           Text.Megaparsec.Char (char, eol, hspace, hspace1)
+import           Text.Megaparsec.Char.Lexer (decimal)
+import           Util (Parser, aoc)
 
 type Board = [[(Int, Bool)]]
 data Input = Input [Int] [Board]
 
 parser :: Parser Input
-parser = Input <$> draw <* P.eol <* P.eol <*> boards where
-    draw =  L.decimal `sepBy1` P.char ','
-    boards = board `sepEndBy1` P.eol
-    board = line `sepEndBy1` P.eol
-    line =  P.hspace *> ((,False) <$> L.decimal) `sepEndBy1` P.hspace1
+parser = Input <$> draw <* eol <* eol <*> boards where
+    draw =  decimal `sepBy1` char ','
+    boards = board `sepEndBy1` eol
+    board = line `sepEndBy1` eol
+    line =  hspace *> ((,False) <$> decimal) `sepEndBy1` hspace1
 
 hasWon :: Board -> Bool
 hasWon board = f board || f (transpose board) where
@@ -46,4 +46,4 @@ part2 (Input draw boards) = go draw boards where
             bs'' -> go xs bs''
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . part1) (pure . part2)
+solve = aoc parser part1 part2

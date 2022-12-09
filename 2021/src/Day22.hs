@@ -1,16 +1,16 @@
 module Day22 (solve) where
 import           RIO
 import           Text.Megaparsec (sepEndBy1)
-import qualified Text.Megaparsec.Char as P
-import           Util (Parser, aocTemplate, signedInteger)
+import           Text.Megaparsec.Char (eol, string)
+import           Util (Parser, aoc, signedInteger)
 
 data Cube = Cube !Bool !(Int, Int) !(Int, Int) !(Int, Int)
 
 parser :: Parser [Cube]
-parser = cube `sepEndBy1` P.eol where
-    cube = Cube <$> onoff <* P.string " x=" <*> pair <* P.string ",y=" <*> pair <* P.string ",z=" <*> pair 
-    pair = (,) <$> signedInteger <* P.string ".." <*> signedInteger
-    onoff = True <$ P.string "on" <|> False <$ P.string "off"
+parser = cube `sepEndBy1` eol where
+    cube = Cube <$> onoff <* string " x=" <*> pair <* string ",y=" <*> pair <* string ",z=" <*> pair 
+    pair = (,) <$> signedInteger <* string ".." <*> signedInteger
+    onoff = True <$ string "on" <|> False <$ string "off"
 
 disjoint :: Cube -> Cube -> Bool
 disjoint (Cube _ (xmin, xmax) (ymin, ymax) (zmin, zmax))
@@ -50,4 +50,4 @@ part2 :: [Cube] -> Int
 part2 = totalVolume . computeCubes
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . part1) (pure . part2)
+solve = aoc parser part1 part2

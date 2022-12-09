@@ -3,12 +3,12 @@ import           RIO hiding (some)
 import           RIO.Char.Partial (digitToInt)
 import qualified RIO.Map as Map
 import           Text.Megaparsec (sepEndBy1, some)
-import qualified Text.Megaparsec.Char as P
-import           Util (Parser, Point, aocTemplate, adjacentPoints, dijkstra, listTo2dMap)
+import           Text.Megaparsec.Char (digitChar, eol)
+import           Util (Parser, Point, aoc, adjacentPoints, dijkstra, listTo2dMap)
 
 parser :: Parser (Map Point Int)
-parser = listTo2dMap <$> line `sepEndBy1` P.eol where
-        line = some (digitToInt <$> P.digitChar)
+parser = listTo2dMap <$> line `sepEndBy1` eol where
+        line = some (digitToInt <$> digitChar)
 
 neighbors :: Map Point Int -> Point -> [(Point, Int)]
 neighbors mp v = mapMaybe
@@ -27,4 +27,4 @@ part2 mp = dijkstra (neighbors mp') (0, 0) (499, 499) where
         mp' = duplicateGrid mp
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure part1 part2
+solve = aoc parser part1 part2

@@ -1,13 +1,13 @@
 module Day10 (solve) where
 import           RIO hiding (some)
 import           Text.Megaparsec (sepEndBy1, some)
-import qualified Text.Megaparsec.Char as P
-import           Util (Parser, aocTemplate, median)
+import           Text.Megaparsec.Char (char, eol)
+import           Util (Parser, aoc, median)
 
 parser :: Parser [String]
-parser = line `sepEndBy1` P.eol where
-        line = some $ P.char '(' <|> P.char '[' <|> P.char '{' <|> P.char '<'
-                     <|> P.char ')' <|> P.char ']' <|> P.char '}' <|> P.char '>'
+parser = line `sepEndBy1` eol where
+        line = some $ char '(' <|> char '[' <|> char '{' <|> char '<'
+                     <|> char ')' <|> char ']' <|> char '}' <|> char '>'
 
 parseLine :: String -> Either Char [Char]
 parseLine = go [] where
@@ -18,20 +18,20 @@ parseLine = go [] where
 
 part1 :: [String] -> Int
 part1 = sum . map weight . lefts . map parseLine where
-        weight ')' = 3
-        weight ']' = 57
-        weight '}' = 1197
-        weight '>' = 25137
-        weight _ = 0
+    weight ')' = 3
+    weight ']' = 57
+    weight '}' = 1197
+    weight '>' = 25137
+    weight _ = 0
 
 part2 :: [String] -> Int 
 part2 = median . map stackWeight . rights . map parseLine where
-        weight '(' = 1
-        weight '[' = 2
-        weight '{' = 3
-        weight '<' = 4
-        weight _ = 0
-        stackWeight = foldl' (\acc x -> acc * 5 + weight x) 0
+     weight '(' = 1
+     weight '[' = 2
+     weight '{' = 3
+     weight '<' = 4
+     weight _ = 0
+     stackWeight = foldl' (\acc x -> acc * 5 + weight x) 0
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . part1) (pure . part2)
+solve = aoc parser part1 part2

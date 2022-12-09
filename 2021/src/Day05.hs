@@ -3,17 +3,17 @@ import           RIO
 import           RIO.List (iterate)
 import qualified RIO.Map as Map
 import           Text.Megaparsec (sepEndBy1)
-import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
-import           Util (Parser, aocTemplate, freqs)
+import           Text.Megaparsec.Char (char, eol, string)
+import           Text.Megaparsec.Char.Lexer (decimal)
+import           Util (Parser, aoc, freqs)
 
 data Line = Line (Int, Int) (Int, Int)
 data Diag = Diag | NoDiag deriving Eq
 
 parser :: Parser [Line]
-parser = line `sepEndBy1` P.eol where
-    coord = (,) <$> L.decimal <* P.char ',' <*> L.decimal
-    line = Line <$> coord <* P.string " -> " <*> coord
+parser = line `sepEndBy1` eol where
+    coord = (,) <$> decimal <* char ',' <*> decimal
+    line = Line <$> coord <* string " -> " <*> coord
 
 points :: Diag -> Line -> [(Int, Int)]
 points diag (Line (x1, y1) (x2, y2))
@@ -30,4 +30,4 @@ countIntersections :: Diag -> [Line] -> Int
 countIntersections diag = Map.size . Map.filter (>1) . freqs . (>>= points diag)
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . countIntersections NoDiag) (pure . countIntersections Diag)
+solve = aoc parser (countIntersections NoDiag) (countIntersections Diag)

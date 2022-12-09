@@ -1,15 +1,15 @@
 module Day17 (solve) where
 import           RIO
 import           RIO.List (iterate)
-import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
-import           Util (Parser, aocTemplate, cartesianProduct, count)
+import           Text.Megaparsec.Char (string)
+import           Text.Megaparsec.Char.Lexer (decimal)
+import           Util (Parser, aoc, cartesianProduct, count)
 
 data Area = Area Int Int Int Int
 
 parser :: Parser Area
-parser = Area <$> (P.string "target area: x=" *> L.decimal) <* P.string ".." <*> L.decimal <*
-                    P.string ", y=-" <*> (negate <$> L.decimal) <* P.string "..-" <*> (negate <$> L.decimal)
+parser = Area <$> (string "target area: x=" *> decimal) <* string ".." <*> decimal <*
+                    string ", y=-" <*> (negate <$> decimal) <* string "..-" <*> (negate <$> decimal)
 
 part1 :: Area -> Int 
 part1 (Area _ _ ymin _) = (-ymin) * (-ymin -1) `div` 2 
@@ -25,4 +25,4 @@ part2 :: Area -> Int
 part2 area@(Area _ xmax ymin _) = count (simulate area) (cartesianProduct [1..xmax] [ymin..(-ymin)])
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . part1) (pure . part2)
+solve = aoc parser part1 part2

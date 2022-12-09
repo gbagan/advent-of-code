@@ -5,15 +5,15 @@ import           Data.List (nub)
 import           Data.Map ((!))
 import qualified Data.Map as Map
 import           Text.Megaparsec (sepEndBy1, some)
-import qualified Text.Megaparsec.Char as P
-import           Util (Parser, aocTemplate)
+import           Text.Megaparsec.Char (char, eol, letterChar)
+import           Util (Parser, aoc)
 
 data Edge = Edge String String
 type Graph = Map String [String]
 
 parser :: Parser Graph
-parser = edgesToGraph <$> sepEndBy1 edge P.eol where
-    edge = Edge <$> some P.letterChar <* P.char '-' <*> some P.letterChar
+parser = edgesToGraph <$> sepEndBy1 edge eol where
+    edge = Edge <$> some letterChar <* char '-' <*> some letterChar
 
 edgesToGraph :: [Edge] -> Graph
 edgesToGraph edges = Map.fromList . map (\u -> (u, neighbor u)) $ vertices where
@@ -49,4 +49,4 @@ part2 g = go ["start"] False "start" where
                 pure $ go (if all isUpper nbor then visited else nbor : visited) (nbor `elem` visited) nbor
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . part1) (pure . part2)
+solve = aoc parser part1 part2

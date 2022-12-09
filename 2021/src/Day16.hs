@@ -3,14 +3,14 @@ import           RIO hiding (some)
 import           RIO.List (unzip)
 import           RIO.List.Partial (maximum, minimum)
 import           Text.Megaparsec (anySingle, count, some, takeP, parseMaybe, takeRest)
-import qualified Text.Megaparsec.Char as P
-import           Util (Parser, BinParser, aocTemplate, binToInt)
+import           Text.Megaparsec.Char (hexDigitChar)
+import           Util (Parser, BinParser, aoc', binToInt)
 
 data Packet = Packet Int PacketData
 data PacketData = Lit Int | Op ([Int] -> Int) [Packet]
 
 parser :: Parser [Bool]
-parser = concat <$> some (hexToBits <$> P.hexDigitChar)
+parser = concat <$> some (hexToBits <$> hexDigitChar)
 
 hexToBits :: Char -> [Bool]
 hexToBits = map (=='1') . \case {
@@ -86,4 +86,4 @@ part2 (Packet _ (Lit n)) = n
 part2 (Packet _ (Op f packets)) = f (map part2 packets)
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser precomp (pure . part1) (pure . part2)
+solve = aoc' parser precomp part1 part2

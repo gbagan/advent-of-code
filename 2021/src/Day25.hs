@@ -4,16 +4,16 @@ import           RIO.List (findIndex, iterate)
 import qualified RIO.Map as Map
 import           RIO.Map.Partial (findMax)
 import           Text.Megaparsec (sepEndBy1)
-import qualified Text.Megaparsec.Char as P
-import           Util (Parser, Point, aocTemplate, listTo2dMap)
+import           Text.Megaparsec.Char (char, eol)
+import           Util (Parser, Point, aoc, listTo2dMap)
 
 data Cell = Empty | East | South deriving (Eq)
 type Board = Map Point Cell
 
 parser :: Parser (Int, Int, Board)
-parser = withDimensions . listTo2dMap <$> line `sepEndBy1` P.eol where
+parser = withDimensions . listTo2dMap <$> line `sepEndBy1` eol where
     line = some cell
-    cell = P.char '.' $> Empty <|> P.char '>' $> East <|> P.char 'v' $> South
+    cell = char '.' $> Empty <|> char '>' $> East <|> char 'v' $> South
     withDimensions mp = (nbCols+1, nbRows+1, Map.filter (/=Empty) mp) where
         ((nbCols, nbRows), _) = findMax mp
 
@@ -41,4 +41,4 @@ part1 :: (Int, Int, Board) -> Maybe Int
 part1 (nbCols, nbRows, board) = findIndex (not . snd) $ iterate (step' nbCols nbRows) (board, True)
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure part1 (pure . const 0)
+solve = aoc parser part1 (const 0)

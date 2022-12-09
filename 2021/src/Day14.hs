@@ -4,17 +4,17 @@ import           RIO.List (iterate, repeat)
 import           RIO.List.Partial (head, last, minimum, maximum, (!!))
 import qualified RIO.Map as Map
 import           Text.Megaparsec (sepEndBy1, some)
-import qualified Text.Megaparsec.Char as P
-import           Util (Parser, aocTemplate)
+import           Text.Megaparsec.Char (eol, string, upperChar)
+import           Util (Parser, aoc)
 
 type Rules = Map String Char
 type PairsMap = Map (Char, Char) Int
 data Input = Input String Rules
 
 parser :: Parser Input
-parser = Input <$> some P.upperChar <* P.eol <* P.eol <*> rules where
-    rules = Map.fromList <$> sepEndBy1 rule P.eol
-    rule = (,) <$> some P.upperChar <* P.string " -> " <*> P.upperChar
+parser = Input <$> some upperChar <* eol <* eol <*> rules where
+    rules = Map.fromList <$> sepEndBy1 rule eol
+    rule = (,) <$> some upperChar <* string " -> " <*> upperChar
 
 stringToPairsMap :: String -> PairsMap
 stringToPairsMap s = Map.fromListWith (+) $ zip (zip s (drop 1 s)) (repeat 1) 
@@ -41,4 +41,4 @@ algo n (Input s rules) = maximum freqs - minimum freqs where
     freqs = Map.elems . pairsMapToFreqs s $ iterate (step rules) pairs !! n
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . algo 10) (pure . algo 40)
+solve = aoc parser (algo 10) (algo 40)

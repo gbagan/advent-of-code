@@ -2,16 +2,16 @@ module Day18 (solve) where
 import           RIO
 import           RIO.List.Partial (foldl1', maximum)
 import           Text.Megaparsec (sepEndBy1)
-import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
-import           Util (Parser, aocTemplate)
+import           Text.Megaparsec.Char (char, eol)
+import           Text.Megaparsec.Char.Lexer (decimal)
+import           Util (Parser, aoc)
 
 data Snailfish = Leaf Int | Node Snailfish Snailfish deriving (Eq)
 
 parser :: Parser [Snailfish]
-parser = snailfish `sepEndBy1` P.eol where
-    snailfish = Leaf <$> L.decimal 
-            <|> Node <$> (P.char '[' *> snailfish <* P.char ',') <*> snailfish <* P.char ']'
+parser = snailfish `sepEndBy1` eol where
+    snailfish = Leaf <$> decimal 
+            <|> Node <$> (char '[' *> snailfish <* char ',') <*> snailfish <* char ']'
 
 explode :: Snailfish -> Either Snailfish Snailfish
 explode = first (\(sf, _, _) -> sf) . go 0 where
@@ -53,4 +53,4 @@ part2 :: [Snailfish] -> Int
 part2 sfs = maximum [magnitude $ add a b | a <- sfs, b <- sfs, a /= b]
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . part1) (pure . part2)
+solve = aoc parser part1 part2

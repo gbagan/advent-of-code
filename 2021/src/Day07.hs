@@ -2,12 +2,12 @@ module Day07 (solve) where
 import           RIO
 import           RIO.List.Partial ((!!))
 import           Text.Megaparsec (sepBy1)
-import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
-import Util (Parser, aocTemplate, average)
+import           Text.Megaparsec.Char (char)
+import           Text.Megaparsec.Char.Lexer (decimal)
+import Util (Parser, aoc, average)
 
 parser :: Parser [Int]
-parser = L.decimal `sepBy1` P.char ','
+parser = decimal `sepBy1` char ','
 
 part1 :: [Int] -> Int
 part1 xs = sum [abs (x - m) | x <- xs] where
@@ -19,4 +19,4 @@ part2 xs = sum [bin . abs $ x - m | x <- xs] where
         bin n = n * (n + 1) `div` 2
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . part1) (pure . part2)
+solve = aoc parser part1 part2

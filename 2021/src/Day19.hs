@@ -7,7 +7,7 @@ import qualified Data.Map as Map
 import           Linear.V3 (V3(..))
 import           Text.Megaparsec (sepEndBy1, some)
 import qualified Text.Megaparsec.Char as P
-import           Util (Parser, aocTemplate, freqs, signedInteger, sortNub)
+import           Util (Parser, aoc', freqs, signedInteger)
 
 type Scan = [V3 Int]
 
@@ -40,7 +40,7 @@ overlap :: Scan -> Scan -> [V3 Int]
 overlap scan scan' = Map.keys . Map.filter (>= 12) . freqs $ (-) <$> scan <*> scan'
 
 part1 :: [(Scan, V3 Int)] -> Int
-part1 = length . sortNub . concatMap fst
+part1 = length . nubOrd . concatMap fst
 
 part2 :: [(Scan, V3 Int)] -> Int
 part2 scans = maximum [dist x y | x <- positions, y <- positions] where
@@ -48,4 +48,4 @@ part2 scans = maximum [dist x y | x <- positions, y <- positions] where
     dist v1 v2 = sum . abs $ v1 - v2
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser alignAll (pure . part1) (pure . part2)
+solve = aoc' parser alignAll part1 part2

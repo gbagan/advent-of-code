@@ -2,16 +2,16 @@
 module Day01 (solve) where
 import           RIO
 import           Text.Megaparsec (sepEndBy1)
-import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
-import           Util (Parser, aocTemplate, count)
+import           Text.Megaparsec.Char (eol)
+import           Text.Megaparsec.Char.Lexer (decimal)
+import           Util (Parser, aoc, count)
 
 parser :: Parser [Int]
-parser = L.decimal `sepEndBy1` P.eol
+parser = decimal `sepEndBy1` eol
 
 algo :: Int -> [Int] -> Int
 algo n l = count id $ zipWith (<) l (drop n l)
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aocTemplate parser pure (pure . algo 1) (pure . algo 3)
+solve = aoc parser (algo 1) (algo 3)
 
