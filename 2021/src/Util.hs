@@ -4,6 +4,9 @@ import           RIO.List (group, sort, genericLength)
 import           RIO.List.Partial (head, (!!))
 import qualified RIO.Set as Set
 import qualified RIO.Text as Text
+import qualified RIO.Vector as V
+import           RIO.Vector ((!?))
+import           RIO.Vector.Partial ((!))
 import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -62,6 +65,25 @@ listTo2dMap l =
         | (j, row) <- zip [0..] l
         , (i, v) <- zip [0..] row
         ]
+
+-- matrices i.e. two dimensional arrays
+
+type Matrix a = Vector (Vector a)
+
+(!!!) :: Matrix a -> (Int, Int) -> a
+v !!! (i, j) = v ! i ! j
+
+(!!?) :: Matrix a -> (Int, Int) -> Maybe a
+v !!? (i, j) = v !? i >>= (!?j)
+
+flatMat :: Matrix a -> [(Int, Int, a)]
+flatMat = join . zipWith (\x -> zipWith (x,,) [0..]) [0..] . map V.toList . V.toList
+
+matFromList :: [[a]] -> Matrix a
+matFromList = V.fromList . map V.fromList
+
+matGenerate :: Int -> Int -> (Int -> Int -> a) -> Matrix a
+matGenerate n m f = V.generate n \i -> V.generate m \j -> f i j
 
 binToInt :: [Bool] -> Int
 binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
