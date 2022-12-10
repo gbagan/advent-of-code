@@ -1,17 +1,35 @@
 -- https://adventofcode.com/2022/day/10
 module Day10 (solve) where
 import           RIO
-import           RIO.List (sort)
+import           RIO.List (scanl')
+import qualified RIO.Text as Text
+import           Data.List.Split (chunksOf, divvy)
 import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc, takeEnd)
+import           Text.Megaparsec.Char (eol, string)
+import           Util (Parser, aoc', signedInteger)
 
-parser :: Parser [[Int]]
-parser = (decimal `sepEndBy1` eol) `sepEndBy1` eol
+data Instr = Noop | Addx Int
 
-solve' :: Int -> [[Int]] -> Int
-solve' n = sum . takeEnd n . sort . map sum
+parser :: Parser [Instr]
+parser = concat <$> instr `sepEndBy1` eol where
+    instr = (\v -> [Noop, Addx v]) <$> (string "addx " *> signedInteger)
+        <|> [Noop] <$ string "noop"  
+
+runInstrs :: Int -> [Instr] -> [Int]
+runInstrs = scanl' (flip runInstr) where
+    runInstr Noop = id
+    runInstr (Addx v) = (+v)
+
+part1 :: [Int] -> Int
+part1 = sum . concat . divvy 1 40 . drop 19 . zipWith (*) [1..] 
+
+part2 :: [Int] -> String
+part2 = unlines . map (zipWith drawPixel [0..]) . chunksOf 40 where
+    drawPixel i x | abs (i - x) <= 1 = '#'
+                  | otherwise = '.'
+
+part2' :: [Int] -> Int
+part2' xs = trace (Text.pack $ part2 xs) 0
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aoc parser (solve' 1) (solve' 3)
+solve = aoc' parser (pure . runInstrs 1) part1 part2'

@@ -43,7 +43,7 @@ moveRope (k:ks) dir = scanl' pullKnot (moveKnot k dir) ks
     
 solve' :: Int -> [Direction] -> Int
 solve' n dirs = Set.size vis where
-    (_, vis) = foldl' go (replicate n (0 :: Int, 0 :: Int), Set.singleton (0, 0)) dirs
+    (_, vis) = foldl' go (replicate n (0, 0), Set.singleton (0, 0)) dirs
     go (rope, visited) dir = (rope', visited') where
         rope' = moveRope rope dir
         visited' = Set.insert (last rope') visited
