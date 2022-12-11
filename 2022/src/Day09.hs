@@ -4,11 +4,10 @@ import           RIO
 import           RIO.List (scanl')
 import           RIO.List.Partial (last)
 import qualified RIO.Set as Set
-import           Data.Ord (clamp)
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (char, eol, space)
 import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc)
+import           Util (Parser, aoc, clamp)
 
 data Direction = L | R | U | D
 type Knot = (Int, Int)

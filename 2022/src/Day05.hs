@@ -5,8 +5,8 @@ import           RIO.Lens (ix)
 import           RIO.List (splitAt, transpose)
 import           RIO.List.Partial (head, (!!))
 import           Text.Megaparsec (anySingle, between, manyTill, sepEndBy1, sepBy1)
-import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
+import           Text.Megaparsec.Char (char, eol, string, upperChar)
+import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 
 type Crate = Char
@@ -16,13 +16,20 @@ data Input = Input Ship [Instr]
 
 parser :: Parser Input
 parser = Input <$> ship <* garbage <*> instrs where
-    ship = map catMaybes . transpose <$> shipLine `sepEndBy1` P.eol
-    shipLine = (crate <|> emptySlot) `sepBy1` P.char ' '
-    crate = Just <$> between (P.char '[') (P.char ']') P.upperChar
-    emptySlot = Nothing <$ P.string "   "
-    garbage = manyTill anySingle P.eol *> P.eol
-    instrs = instr `sepEndBy1` P.eol
-    instr = (,,) <$> (P.string "move " *> L.decimal) <*> (P.string " from " *> L.decimal) <*> (" to " *> L.decimal)
+    ship = map catMaybes . transpose <$> shipLine `sepEndBy1` eol
+    shipLine = (crate <|> emptySlot) `sepBy1` char ' '
+    crate = Just <$> between (char '[') (char ']') upperChar
+    emptySlot = Nothing <$ string "   "
+    garbage = manyTill anySingle eol *> eol
+    instrs = instr `sepEndBy1` eol
+    instr = do
+        _ <- string "move "
+        move_ <- decimal
+        _ <- string " from "
+        from <- decimal
+        _ <- string " to "
+        to_ <- decimal
+        pure (move_, from, to_)
 
 move :: Bool -> Instr -> Ship -> Ship
 move multi (nb, fromIdx, toIdx) ship = ship' where

@@ -78,6 +78,9 @@ matFromList = V.fromList . map V.fromList
 
 
 
+clamp :: Ord a => (a, a) -> a -> a
+clamp (l, u) = max l . min u
+
 adjacentPoints :: Point -> [Point]
 adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
 

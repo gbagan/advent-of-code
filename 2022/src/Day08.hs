@@ -14,11 +14,11 @@ parser = matFromList <$> some (digitToInt <$> numberChar) `sepEndBy1` eol
 directions :: [(Int, Int)]
 directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
--- similar to takeWhile but includes the first element which not satisfies the predicate
+-- | similar to takeWhile but includes the first element which not satisfies the predicate
 takeWhile' :: (a -> Bool) -> [a] -> [a]
 takeWhile' p l = l1 ++ take 1 l2 where (l1, l2) = span p l 
 
--- return the heights of trees from the position (x, y) in the direction (dx, dy)
+-- | return the heights of trees from the position (x, y) in the direction (dx, dy)
 heightsInTheDirection :: Matrix Int -> (Int, Int) -> (Int, Int) -> [Int]
 heightsInTheDirection vec (x, y) (dx, dy) = map fromJust $ takeWhile isJust [vec !!? (x+i*dx, y+i*dy) | i <- [1..]]
 

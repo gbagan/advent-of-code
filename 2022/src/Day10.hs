@@ -1,4 +1,5 @@
 -- https://adventofcode.com/2022/day/10
+{-# OPTIONS_GHC -Wno-deprecations #-}
 module Day10 (solve) where
 import           RIO
 import           RIO.List (scanl')
