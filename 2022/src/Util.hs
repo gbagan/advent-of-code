@@ -3,8 +3,6 @@ import           RIO
 import           RIO.List (sort, genericLength)
 import           RIO.List.Partial ((!!))
 import qualified RIO.Map as Map
-import qualified RIO.Vector as V
-import           RIO.Vector ((!?))
 import qualified RIO.Set as Set
 import qualified RIO.Text as Text
 import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
@@ -63,20 +61,6 @@ cartesianProduct :: [a] -> [b] -> [(a, b)]
 cartesianProduct l1 l2 = (,) <$> l1 <*> l2
 
 
--- matrices i.e. two dimensional arrays
-
-type Matrix a = Vector (Vector a)
-
-(!!?) :: Matrix a -> (Int, Int) -> Maybe a
-v !!? (i, j) = v !? i >>= (!?j)
-
-flatMat :: Matrix a -> [(Int, Int, a)]
-flatMat = join . zipWith (\x -> zipWith (x,,) [0..]) [0..] . map V.toList . V.toList
-
-matFromList :: [[a]] -> Matrix a
-matFromList = V.fromList . map V.fromList
-
-
 
 clamp :: Ord a => (a, a) -> a -> a
 clamp (l, u) = max l . min u
@@ -96,12 +80,12 @@ signedInteger = L.decimal <|> P.char '-' *> (negate <$> L.decimal)
 bitP :: Parser Bool
 bitP = False <$ P.char '0' <|> True <$ P.char '1'
 
-dijkstra :: (Ord v, Real w) => (v -> [(v, w)]) -> v -> v -> Maybe w
-dijkstra nbors source target = go Set.empty (Set.singleton (0, source)) where
+dijkstra :: (Ord v, Real w) => (v -> [(v, w)]) -> v -> (v -> Bool) -> Maybe w
+dijkstra nbors source isTarget = go Set.empty (Set.singleton (0, source)) where
     go visited queue = case Set.minView queue of
         Nothing -> Nothing
         Just ((cost, v), queue')
-            | v == target          -> Just cost
+            | isTarget v           -> Just cost
             | Set.member v visited -> go visited queue'
             | otherwise            -> go
                                         (Set.insert v visited)

@@ -41,16 +41,18 @@ parser = monkey `sepEndBy1` eol where
 solve' :: Part -> Int -> [Monkey] -> Integer
 solve' part nbRounds mks = monkeyBusiness $ iterate runRound mks !! nbRounds where
     runRound monkeys = foldl' runMonkey monkeys [0 .. length monkeys - 1]
+
     runMonkey monkeys i = let ithMonkey = monkeys !! i in
                             foldl' (throwItem ithMonkey) monkeys (_items ithMonkey)
                             & ix i . items .~ []
-                            & ix i . inspected %~ (+ genericLength (_items $ monkeys !! i))
-    throwItem sender monkeys item =
-        monkeys & ix receiver . items %~ (newItem :) where
+                            & ix i . inspected %~ (+ genericLength (_items ithMonkey))
+
+    throwItem sender monkeys item = monkeys & ix receiver . items %~ (newItem :) where
         newItem = (if part == Part1 then (`div` 3) else (`mod` modulo)) $ (sender ^. operation) item
         receiver = if newItem `mod` (sender ^. divBy) == 0 then sender ^. ifTrue else sender ^. ifFalse
     
     modulo = product $ map _divBy mks
+
     monkeyBusiness = product . takeEnd 2 . sort . map _inspected
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
