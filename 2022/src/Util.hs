@@ -89,4 +89,8 @@ dijkstra nbors source isTarget = go Set.empty (Set.singleton (0, source)) where
             | Set.member v visited -> go visited queue'
             | otherwise            -> go
                                         (Set.insert v visited)
-                                        (foldr Set.insert queue' [(w+cost, u) | (u, w) <- nbors v])
+                                        (foldl'
+                                            (flip Set.insert)
+                                            queue'
+                                            [(w+cost, u) | (u, w) <- nbors v]
+                                        )
