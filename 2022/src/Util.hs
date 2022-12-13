@@ -45,7 +45,7 @@ aoc' parser precomp part1 part2 input = do
                     logInfo $ "  part 1: " <> displayShow res1 
                             <> " in " <> display duration1
                     (duration2, res2) <- duration (let !v = part2 p in pure v)
-                    logInfo $ "  part 1: " <> displayShow res2 
+                    logInfo $ "  part 2: " <> displayShow res2 
                             <> " in " <> display duration2
 
 -- functions on lists
