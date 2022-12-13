@@ -1,7 +1,7 @@
 module Util where
 import           RIO
-import           RIO.List (group, sort, genericLength)
-import           RIO.List.Partial (head, (!!))
+import           RIO.List (sort, genericLength)
+import           RIO.List.Partial ((!!))
 import qualified RIO.Set as Set
 import qualified RIO.Text as Text
 import qualified RIO.Vector as V
@@ -96,14 +96,3 @@ signedInteger = L.decimal <|> P.char '-' *> (negate <$> L.decimal)
 
 bitP :: Parser Bool
 bitP = False <$ P.char '0' <|> True <$ P.char '1'
-
-dijkstra :: (Ord v, Real w) => (v -> [(v, w)]) -> v -> v -> Maybe w
-dijkstra nbors source target = go Set.empty (Set.singleton (0, source)) where
-    go visited queue = case Set.minView queue of
-        Nothing -> Nothing
-        Just ((cost, v), queue')
-            | v == target          -> Just cost
-            | Set.member v visited -> go visited queue'
-            | otherwise            -> go
-                                        (Set.insert v visited)
-                                        (foldr Set.insert queue' [(w+cost, u) | (u, w) <- nbors v])

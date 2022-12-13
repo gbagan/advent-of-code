@@ -26,11 +26,11 @@ part1 = sum . zipWith (\i (p1, p2) -> if p1 <= p2 then i else 0) [1..]
 
 part2 :: [(Packet, Packet)] -> Maybe Int
 part2 pairs = do
-    let dividerPacket1 = Packet [Packet [PInt 2]]
-    let dividerPacket2 = Packet [Packet [PInt 6]]
-    let packets = sort $ [dividerPacket1, dividerPacket2] ++ (pairs >>= (\(p1, p2) -> [p1, p2]))
-    i1 <- elemIndex dividerPacket1 packets
-    i2 <- elemIndex dividerPacket2 packets
+    let divider1 = Packet [Packet [PInt 2]]
+    let divider2 = Packet [Packet [PInt 6]]
+    let packets = sort $ [divider1, divider2] ++ (pairs >>= (\(p1, p2) -> [p1, p2]))
+    i1 <- elemIndex divider1 packets
+    i2 <- elemIndex divider2 packets
     pure $ (i1+1) * (i2+1)
 
 solve :: (HasLogFunc env) => Text -> RIO env ()

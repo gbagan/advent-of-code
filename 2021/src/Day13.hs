@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-deprecations #-}
 module Day13 (solve) where
 import           RIO hiding (fold, some)
 import           Data.List (maximum)

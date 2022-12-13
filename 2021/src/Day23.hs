@@ -6,7 +6,8 @@ import           RIO.Vector.Partial ((!), (//))
 import qualified Data.IntMap as IM
 import           Text.Megaparsec (anySingle)
 import           Text.Megaparsec.Char (char)
-import           Util (Parser, aoc, dijkstra)
+import           Algorithm.Search (dijkstraAssoc)
+import           Util (Parser, aoc)
 
 data Amphipod = Amber | Bronze | Copper | Desert deriving (Eq, Ord, Enum)
 type Rooms = Vector [Amphipod]
@@ -84,7 +85,7 @@ finalBoard :: Int -> Board
 finalBoard n = (Vec.fromList [replicate n Amber, replicate n Bronze, replicate n Copper, replicate n Desert], IM.empty)
 
 part1 :: Board -> Maybe Int
-part1 board = dijkstra (neighbors 2) board (finalBoard 2)
+part1 board = fst <$> dijkstraAssoc (neighbors 2) (== finalBoard 2) board 
 
 extendBoard :: Board -> Board
 extendBoard (rooms, hall) = (Vec.imap (\i room -> head room : middle i ++ [last room]) rooms, hall)
@@ -94,7 +95,7 @@ extendBoard (rooms, hall) = (Vec.imap (\i room -> head room : middle i ++ [last 
           middle _ = [Amber, Copper] 
 
 part2 :: Board -> Maybe Int
-part2 board = dijkstra (neighbors 4) (extendBoard board) (finalBoard 4)
+part2 board = fst <$> dijkstraAssoc (neighbors 4) (== finalBoard 4) (extendBoard board) 
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aoc parser part1 part2

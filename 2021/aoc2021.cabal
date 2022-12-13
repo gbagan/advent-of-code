@@ -56,7 +56,8 @@ executable aoc2021
               -Wcompat
               -Wincomplete-uni-patterns
               -Wredundant-constraints
-    build-depends:   base >= 4.7 && < 5
+    build-depends:   base >= 4.15 && < 5
+                     , search-algorithms
                      , array
                      , containers
                      , either
@@ -64,4 +65,3 @@ executable aoc2021
                      , massiv
                      , megaparsec
                      , rio
-                     , vector

@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 module Day24 (solve) where
 import           RIO
 import           RIO.List.Partial ((!!))
