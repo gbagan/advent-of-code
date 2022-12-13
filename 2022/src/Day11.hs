@@ -11,12 +11,12 @@ import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, takeEnd)
 
 data Monkey = Monkey {
-        _items :: [Integer]
-    ,   _operation :: Integer -> Integer
-    ,   _divBy :: Integer
-    ,   _ifTrue :: Int
-    ,   _ifFalse :: Int
-    ,   _inspected :: Integer
+        _items :: ![Integer]
+    ,   _operation :: !(Integer -> Integer)
+    ,   _divBy :: !Integer
+    ,   _ifTrue :: !Int
+    ,   _ifFalse :: !Int
+    ,   _inspected :: !Integer
 }
 
 makeLenses ''Monkey

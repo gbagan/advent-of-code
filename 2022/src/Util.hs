@@ -3,7 +3,6 @@ import           RIO
 import           RIO.List (sort, genericLength)
 import           RIO.List.Partial ((!!))
 import qualified RIO.Map as Map
-import qualified RIO.Set as Set
 import qualified RIO.Text as Text
 import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
 import qualified Text.Megaparsec.Char as P
@@ -79,18 +78,3 @@ signedInteger = L.decimal <|> P.char '-' *> (negate <$> L.decimal)
 
 bitP :: Parser Bool
 bitP = False <$ P.char '0' <|> True <$ P.char '1'
-
-dijkstra :: (Ord v, Real w) => (v -> [(v, w)]) -> v -> (v -> Bool) -> Maybe w
-dijkstra nbors source isTarget = go Set.empty (Set.singleton (0, source)) where
-    go visited queue = case Set.minView queue of
-        Nothing -> Nothing
-        Just ((cost, v), queue')
-            | isTarget v           -> Just cost
-            | Set.member v visited -> go visited queue'
-            | otherwise            -> go
-                                        (Set.insert v visited)
-                                        (foldl'
-                                            (flip Set.insert)
-                                            queue'
-                                            [(w+cost, u) | (u, w) <- nbors v]
-                                        )

@@ -24,6 +24,7 @@ executable aoc2022
                 Day10
                 Day11
                 Day12
+                Day13
                 Util
                 Util.Matrix
 
@@ -48,9 +49,9 @@ executable aoc2022
               -Wincomplete-uni-patterns
               -Wredundant-constraints
     build-depends:   base >= 4.15 && < 5
+                     , search-algorithms 
                      , containers
                      , megaparsec
-                     , microlens
                      , microlens-th
                      , rio
                      , rosezipper
