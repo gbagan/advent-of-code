@@ -30,6 +30,7 @@ executable aoc2022
 
     default-language:    Haskell2010
     default-extensions:
+                    BangPatterns
                     BlockArguments
                     FlexibleContexts
                     FlexibleInstances
@@ -51,6 +52,7 @@ executable aoc2022
     build-depends:   base >= 4.15 && < 5
                      , search-algorithms 
                      , containers
+                     , extra
                      , megaparsec
                      , microlens-th
                      , rio

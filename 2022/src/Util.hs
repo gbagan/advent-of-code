@@ -4,6 +4,7 @@ import           RIO.List (sort, genericLength)
 import           RIO.List.Partial ((!!))
 import qualified RIO.Map as Map
 import qualified RIO.Text as Text
+import           System.CPUTime (getCPUTime)
 import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -19,6 +20,18 @@ aoc :: (Show b, Show c, HasLogFunc env) =>
         Parser a -> (a -> b) -> (a -> c) -> Text -> RIO env ()
 aoc parser = aoc' parser pure
 
+duration :: MonadIO m => m a -> m (Text, a)
+duration m = do
+    begin <- liftIO getCPUTime
+    !res <- m
+    end <- liftIO getCPUTime
+    let diff = (end - begin) `div` 1000000 -- in nano seconds 
+    let strDiff = Text.pack $ if diff >= 10000 then
+                                show (diff `div` 1000) <> " milliseconds"
+                              else
+                                show diff <> " nanoseconds"
+    pure (strDiff, res)
+
 aoc' :: (Show c, Show d, HasLogFunc env) =>
         Parser a -> (a -> Maybe b) -> (b -> c) -> (b -> d) -> Text -> RIO env ()
 aoc' parser precomp part1 part2 input = do
@@ -28,9 +41,12 @@ aoc' parser precomp part1 part2 input = do
             case precomp parsed of
                 Nothing -> logInfo "  precomputation has failed"
                 Just p -> do
-                    logInfo $ "  part 1: " <> displayShow (part1 p)
-                    logInfo $ "  part 2: " <> displayShow (part2 p)
-
+                    (duration1, res1) <- duration (pure $ part1 p)
+                    logInfo $ "  part 1: " <> displayShow res1 
+                            <> " in " <> display duration1
+                    (duration2, res2) <- duration (let !v = part2 p in pure v)
+                    logInfo $ "  part 1: " <> displayShow res2 
+                            <> " in " <> display duration2
 
 -- functions on lists
 
