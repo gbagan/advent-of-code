@@ -34,27 +34,29 @@ drawScan (s:ss) = concat $ zipWith drawLine (s:ss) ss
 precomp :: [Scan] -> Rocks
 precomp scans = Set.fromList $ scans >>= drawScan
 
-unitFall :: Rocks -> Int -> (Int, Int)
-unitFall rocks bottom = go origin where
+-- | return the final position of a sand unit that falls from the origin
+fall :: Rocks -> Int -> (Int, Int)
+fall rocks bottom = go origin where
     go xy = case [xy' | xy' <- adj xy, xy' `Set.notMember` rocks && snd xy' < bottom] of
             [] -> xy
             (xy':_) -> go xy'
 
-simulate :: Rocks -> ((Int, Int) -> Bool) -> Int
-simulate rocks haltPredicate = go rocks 0 where
+-- | number of times one can fill a sand unit until the predicate is satisfied
+fillUntil :: ((Int, Int) -> Bool) -> Rocks -> Int
+fillUntil predicate rocks = go rocks 0 where
     go rocks' i = 
-        let xy = unitFall rocks' bottom in
-        if haltPredicate xy
+        let xy = fall rocks' bottom in
+        if predicate xy
         then i
         else go (Set.insert xy rocks') (i + 1)
     bottom = 2 + maximum (map snd (Set.toList rocks))
 
 part1 :: Rocks -> Int
-part1 rocks = simulate rocks ((== bottom) . snd) where
+part1 rocks = fillUntil ((== bottom) . snd) rocks  where
     bottom = 1 + maximum (map snd (Set.toList rocks))
 
 part2 :: Rocks -> Int
-part2 rocks = 1 + simulate rocks (== origin)
-
+part2 rocks = 1 + fillUntil (== origin) rocks
+ 
 solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aoc' parser (pure . precomp) part1 part2
