@@ -35,23 +35,23 @@ precomp :: [Scan] -> Rocks
 precomp scans = Set.fromList $ scans >>= drawScan
 
 unitFall :: Rocks -> Int -> (Int, Int)
-unitFall rocks floor_ = go origin where
-    go xy = case [xy' | xy' <- adj xy, xy' `Set.notMember` rocks && snd xy' < floor_] of
+unitFall rocks bottom = go origin where
+    go xy = case [xy' | xy' <- adj xy, xy' `Set.notMember` rocks && snd xy' < bottom] of
             [] -> xy
             (xy':_) -> go xy'
 
 simulate :: Rocks -> ((Int, Int) -> Bool) -> Int
 simulate rocks haltPredicate = go rocks 0 where
     go rocks' i = 
-        let xy = unitFall rocks' floor_ in
+        let xy = unitFall rocks' bottom in
         if haltPredicate xy
         then i
         else go (Set.insert xy rocks') (i + 1)
-    floor_ = 2 + maximum (map snd (Set.toList rocks))
+    bottom = 2 + maximum (map snd (Set.toList rocks))
 
 part1 :: Rocks -> Int
-part1 rocks = simulate rocks (\(_, y) -> y == floor_) where
-    floor_ = 1 + maximum (map snd (Set.toList rocks))
+part1 rocks = simulate rocks ((== bottom) . snd) where
+    bottom = 1 + maximum (map snd (Set.toList rocks))
 
 part2 :: Rocks -> Int
 part2 rocks = 1 + simulate rocks (== origin)
