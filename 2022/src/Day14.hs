@@ -2,14 +2,15 @@
 module Day14 (solve) where
 import           RIO
 import           RIO.List.Partial (maximum)
-import qualified RIO.Set as Set
+import qualified RIO.HashSet as Set
 import           Text.Megaparsec (sepEndBy1, sepBy1)
 import           Text.Megaparsec.Char (char, eol, string)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc', cartesianProduct)
+import           Data.HashTable.ST.Basic as H
 
 type Scan = [(Int, Int)]
-type Rocks = Set (Int, Int)
+type Rocks = Set.HashSet (Int, Int)
 
 parser :: Parser [Scan]
 parser = scan `sepEndBy1` eol where
@@ -37,7 +38,7 @@ precomp scans = Set.fromList $ scans >>= drawScan
 -- | return the final position of a sand unit that falls from the origin
 fall :: Rocks -> Int -> (Int, Int)
 fall rocks bottom = go origin where
-    go xy = case [xy' | xy' <- adj xy, xy' `Set.notMember` rocks && snd xy' < bottom] of
+    go xy = case [xy' | xy' <- adj xy, not (xy' `Set.member` rocks) && snd xy' < bottom] of
             [] -> xy
             (xy':_) -> go xy'
 
@@ -56,7 +57,39 @@ part1 rocks = fillUntil ((== bottom) . snd) rocks  where
     bottom = 1 + maximum (map snd (Set.toList rocks))
 
 part2 :: Rocks -> Int
-part2 rocks = 1 + fillUntil (== origin) rocks
- 
+part2 rocks = runST $ do
+    sand <- H.newSized 30000
+    forM_ [0..bottom] $ \j -> do
+        forM_ [500-j..500+j] $ \i -> do
+            let notRock = not $ (i, j) `Set.member` rocks
+            v1 <- H.lookup sand (i-1, j-1)
+            v2 <- H.lookup sand (i, j-1)
+            v3 <- H.lookup sand (i+1, j-1)
+            when (j == 0 || notRock && (isJust v1 || isJust v2 || isJust v3)) $
+                H.insert sand (i, j) ()
+    H.size sand
+    where bottom = 1 + maximum (map snd (Set.toList rocks))
+
 solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aoc' parser (pure . precomp) part1 part2
+
+
+
+
+{- old implementations
+part2 :: Rocks -> Int
+part2 rocks = 1 + fillUntil (== origin) rocks
+
+part2 :: Rocks -> Int 
+part2 rocks = Set.size $ foldl' iterRow Set.empty [0..bottom] where
+    iterRow units j = foldl' (iterColumn j) units [500-j..500+j]
+    iterColumn j units i = if j == 0 
+                       || not ((i, j) `Set.member` rocks)
+                        &&  ((i-1, j-1) `Set.member` units
+                            || (i  , j-1) `Set.member` units
+                            || (i+1, j-1) `Set.member` units 
+                        )
+                    then Set.insert (i, j) units
+                    else units
+    bottom = 1 + maximum (map snd (Set.toList rocks))
+-}

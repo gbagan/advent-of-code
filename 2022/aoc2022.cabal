@@ -51,11 +51,12 @@ executable aoc2022
               -Wincomplete-uni-patterns
               -Wredundant-constraints
     build-depends:   base >= 4.15 && < 5
-                     , search-algorithms 
                      , containers
                      , extra
+                     , hashtables
                      , megaparsec
                      , microlens-th
                      , rio
                      , rosezipper
+                     , search-algorithms 
                      , split
