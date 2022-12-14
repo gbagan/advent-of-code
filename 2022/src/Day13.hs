@@ -6,7 +6,10 @@ import           Text.Megaparsec.Char (char, eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, count)
 
-data Packet = PInt Int | Packet [Packet] deriving (Eq)
+data Packet = PInt Int | Packet [Packet]
+
+instance Eq Packet where
+    a == b = compare a b == EQ
 
 instance Ord Packet where
     compare (PInt n) (PInt m) = compare n m
