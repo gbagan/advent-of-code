@@ -34,8 +34,8 @@ drawScan (s:ss) = concat $ zipWith drawLine (s:ss) ss
 precomp :: [Scan] -> Rocks
 precomp scans = Set.fromList $ scans >>= drawScan
 
-unitFalls :: Rocks -> Int -> (Int, Int)
-unitFalls rocks floor_ = go origin where
+unitFall :: Rocks -> Int -> (Int, Int)
+unitFall rocks floor_ = go origin where
     go xy = case [xy' | xy' <- adj xy, xy' `Set.notMember` rocks && snd xy' < floor_] of
             [] -> xy
             (xy':_) -> go xy'
@@ -43,7 +43,7 @@ unitFalls rocks floor_ = go origin where
 simulate :: Rocks -> ((Int, Int) -> Bool) -> Int
 simulate rocks haltPredicate = go rocks 0 where
     go rocks' i = 
-        let xy = unitFalls rocks' floor_ in
+        let xy = unitFall rocks' floor_ in
         if haltPredicate xy
         then i
         else go (Set.insert xy rocks') (i + 1)
