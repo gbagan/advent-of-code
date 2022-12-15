@@ -89,8 +89,8 @@ kingAdjacentPoints (x, y) = adjacentPoints (x, y) ++ [(x-1, y-1), (x+1, y-1), (x
 binToInt :: [Bool] -> Int
 binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
 
-signedInteger :: Parser Int
-signedInteger = L.decimal <|> P.char '-' *> (negate <$> L.decimal)
+signedDecimal :: Parser Int
+signedDecimal = L.decimal <|> P.char '-' *> (negate <$> L.decimal)
 
 bitP :: Parser Bool
 bitP = False <$ P.char '0' <|> True <$ P.char '1'

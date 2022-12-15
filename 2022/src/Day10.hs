@@ -7,13 +7,13 @@ import qualified RIO.Text as Text
 import           Data.List.Split (chunksOf, divvy)
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol, string)
-import           Util (Parser, aoc', signedInteger)
+import           Util (Parser, aoc', signedDecimal)
 
 data Instr = Noop | Addx Int
 
 parser :: Parser [Instr]
 parser = concat <$> instr `sepEndBy1` eol where
-    instr = (\v -> [Noop, Addx v]) <$> (string "addx " *> signedInteger)
+    instr = (\v -> [Noop, Addx v]) <$> (string "addx " *> signedDecimal)
         <|> [Noop] <$ string "noop"  
 
 runInstrs :: Int -> [Instr] -> [Int]

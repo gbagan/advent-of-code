@@ -26,6 +26,7 @@ executable aoc2022
                 Day12
                 Day13
                 Day14
+                Day15
                 Util
                 Util.Matrix
 
@@ -54,6 +55,7 @@ executable aoc2022
                      , containers
                      , extra
                      , hashtables
+                     , linear
                      , megaparsec
                      , microlens-th
                      , rio
