@@ -70,12 +70,10 @@ part1 pairs = nbBeacons - nbDetectedBeacons where
     yTarget = 2000000
 
 part2 :: [(Position, Position)] -> Maybe Int
-part2 pairs = cy where 
-    itvsPerRow = map go [0..4000000]
-    go y = (y, intervalsWithoutBeacons y pairs)
-    cy = find (\(_, itv) -> length itv >=2) itvsPerRow
+part2 pairs = sol where 
+    itvsPerRow = map (\y -> (y, intervalsWithoutBeacons y pairs)) [0..4000000]
+    sol = find (\(_, itv) -> length itv >=2) itvsPerRow
                <&> \(j, intvs) -> let Interval _ b = head intvs in 4000000 * (b + 1) + j
-
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aoc parser part1 part2
