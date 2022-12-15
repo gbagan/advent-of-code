@@ -28,7 +28,7 @@ parser = line `sepEndBy1` eol where
 manhattan :: Position -> Position -> Int
 manhattan (V2 x1 y1) (V2 x2 y2) = abs (x1 - x2) + abs (y1 - y2)
 
--- | two (discrete) intervals quasioverlap means that their union is an interval
+-- | two (discrete) intervals quasioverlap if their union is an interval
 quasiOverlap :: Interval -> Interval -> Bool
 quasiOverlap (Interval x1 y1) (Interval x2 y2) = max x1 x2 <= min y1 y2 + 1
 
@@ -54,7 +54,7 @@ intersectionCircleWithRow (V2 cx cy) radius row
 itvLength :: Interval -> Int
 itvLength (Interval a b) = b - a + 1
 
--- | union of disjoint intervals that does not cointain non detected intervals
+-- | union of disjoint intervals that does not cointain non detected beacons
 intervalsWithoutBeacons :: Int -> [(Position, Position)] -> [Interval]
 intervalsWithoutBeacons y =
         toDisjointUnion
