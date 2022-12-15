@@ -9,7 +9,7 @@ import           Linear.V2 (V2(..))
 import           Util (Parser, aoc, signedDecimal)
 
 type Position = V2 Int
-data Interval = Interval !Int !Int deriving (Eq, Show)
+data Interval = Interval !Int !Int deriving (Eq)
 
 parser :: Parser [(Position, Position)]
 parser = line `sepEndBy1` eol where
@@ -32,11 +32,14 @@ manhattan (V2 x1 y1) (V2 x2 y2) = abs (x1 - x2) + abs (y1 - y2)
 quasiOverlap :: Interval -> Interval -> Bool
 quasiOverlap (Interval x1 y1) (Interval x2 y2) = max x1 x2 <= min y1 y2 + 1
 
+-- | return the union of the two intervals if this union is an interval
+-- | undefined otherwise
 union :: Interval -> Interval -> Interval
 union itv1@(Interval x1 y1) itv2@(Interval x2 y2)
     | quasiOverlap itv1 itv2 = Interval (min x1 x2) (max y1 y2)
     | otherwise = undefined
 
+-- | return a set disjoint intervals that contains the same points as the input
 toDisjointUnion :: [Interval] -> [Interval]
 toDisjointUnion [] = []
 toDisjointUnion (itv:itvs) = case find (quasiOverlap itv) itvs of
