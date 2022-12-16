@@ -1,11 +1,11 @@
 module Util where
 import           RIO
 import           RIO.List (sort, genericLength)
-import           RIO.List.Partial ((!!))
+import           RIO.List.Partial (maximum, (!!))
 import qualified RIO.Map as Map
 import qualified RIO.Text as Text
 import           System.CPUTime (getCPUTime)
-import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
+import           Text.Megaparsec (Parsec, parse, errorBundlePretty, Token, MonadParsec)
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
 
@@ -52,19 +52,27 @@ aoc' parser precomp part1 part2 input = do
 
 count :: (a -> Bool) -> [a] -> Int
 count f = length . filter f
+{-# INLINE count #-}
 
 takeEnd :: Int -> [a] -> [a]
 takeEnd n xs = drop (length xs - n) xs
-
+{-# INLINE takeEnd #-}
 
 freqs :: Ord a => [a] -> Map a Int
 freqs = Map.fromListWith (+) . map (,1)
+{-# INLINE freqs #-}
 
 allUnique :: Ord a => [a] -> Bool
 allUnique xs = length (nubOrd xs) == length xs
+{-# INLINE allUnique #-}
+
+maximumDef :: Ord a => a -> [a] -> a
+maximumDef def [] = def
+maximumDef _ l = maximum l
 
 average :: [Int] -> Double
 average xs = realToFrac (sum xs) / genericLength xs
+{-# INLINE average #-}
 
 majority :: (a -> Bool) -> [a] -> Bool
 majority f l = 2* count f l >= length l
@@ -74,11 +82,11 @@ median l = sort l !! (length l `div` 2)
 
 cartesianProduct :: [a] -> [b] -> [(a, b)]
 cartesianProduct l1 l2 = (,) <$> l1 <*> l2
-
-
+{-# INLINE cartesianProduct #-}
 
 clamp :: Ord a => (a, a) -> a -> a
 clamp (l, u) = max l . min u
+{-# INLINE clamp #-}
 
 adjacentPoints :: Point -> [Point]
 adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
@@ -88,8 +96,9 @@ kingAdjacentPoints (x, y) = adjacentPoints (x, y) ++ [(x-1, y-1), (x+1, y-1), (x
 
 binToInt :: [Bool] -> Int
 binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
+{-# INLINE binToInt #-}
 
-signedDecimal :: Parser Int
+signedDecimal :: (MonadParsec e s m, Token s ~ Char, Num a) => m a
 signedDecimal = L.decimal <|> P.char '-' *> (negate <$> L.decimal)
 
 bitP :: Parser Bool

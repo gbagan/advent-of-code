@@ -27,6 +27,7 @@ executable aoc2022
                 Day13
                 Day14
                 Day15
+                Day16
                 Util
                 Util.Matrix
 
