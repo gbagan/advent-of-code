@@ -10,7 +10,7 @@ import           Util (Parser, aoc', cartesianProduct)
 import           Data.HashTable.ST.Basic as H
 
 type Scan = [(Int, Int)]
-type Rocks = Set.HashSet (Int, Int)
+type Rocks = HashSet (Int, Int)
 
 parser :: Parser [Scan]
 parser = scan `sepEndBy1` eol where
@@ -74,22 +74,7 @@ solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aoc' parser (pure . precomp) part1 part2
 
 
-
-
 {- old implementations
 part2 :: Rocks -> Int
 part2 rocks = 1 + fillUntil (== origin) rocks
-
-part2 :: Rocks -> Int 
-part2 rocks = Set.size $ foldl' iterRow Set.empty [0..bottom] where
-    iterRow units j = foldl' (iterColumn j) units [500-j..500+j]
-    iterColumn j units i = if j == 0 
-                       || not ((i, j) `Set.member` rocks)
-                        &&  ((i-1, j-1) `Set.member` units
-                            || (i  , j-1) `Set.member` units
-                            || (i+1, j-1) `Set.member` units 
-                        )
-                    then Set.insert (i, j) units
-                    else units
-    bottom = 1 + maximum (map snd (Set.toList rocks))
 -}

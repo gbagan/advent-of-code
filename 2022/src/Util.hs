@@ -29,7 +29,7 @@ duration m = do
     let strDiff = Text.pack $ if diff >= 10000 then
                                 show (diff `div` 1000) <> " milliseconds"
                               else
-                                show diff <> " nanoseconds"
+                                show diff <> " microseconds"
     pure (strDiff, res)
 
 aoc' :: (Show c, Show d, HasLogFunc env) =>

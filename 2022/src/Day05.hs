@@ -1,4 +1,6 @@
 -- https://adventofcode.com/2022/day/5
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use <$>" #-}
 module Day05 (solve) where
 import           RIO hiding (some)
 import           RIO.Lens (ix)
@@ -11,7 +13,7 @@ import           Util (Parser, aoc)
 
 type Crate = Char
 type Ship = [[Crate]]
-type Instr = (Int, Int, Int)
+data Instr = Instr !Int !Int !Int
 data Input = Input Ship [Instr]
 
 parser :: Parser Input
@@ -29,16 +31,16 @@ parser = Input <$> ship <* garbage <*> instrs where
         from <- decimal
         _ <- string " to "
         to_ <- decimal
-        pure (move_, from, to_)
+        pure $ Instr move_ from to_
 
 move :: Bool -> Instr -> Ship -> Ship
-move multi (nb, fromIdx, toIdx) ship = ship' where
+move needReverse (Instr nb fromIdx toIdx) ship = ship' where
     (toMove, toKeep) = splitAt nb $ ship !! (fromIdx-1)
-    ship' =  ship & ix (fromIdx-1) .~ toKeep
-                  & ix (toIdx-1) %~ ((if multi then id else reverse) toMove ++)
+    ship' = ship & ix (fromIdx-1) .~ toKeep
+                 & ix (toIdx-1) %~ ((if needReverse then reverse else id) toMove ++)
 
 solve' :: Bool -> Input -> String
 solve' multi (Input ship instrs) = map head $ foldl' (flip $ move multi) ship instrs
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aoc parser (solve' False) (solve' True)
+solve = aoc parser (solve' True) (solve' False)
