@@ -5,11 +5,11 @@ import           RIO.List (find)
 import           RIO.List.Partial (head)
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol, string)
-import           Util (Parser, aoc, cartesianProduct, signedDecimal)
+import           Util (Parser, aoc, signedDecimal)
 
-data Coords = Coords !Int !Int deriving (Eq)
+data Coords = Coords !Int !Int deriving (Eq, Show)
 data Interval = Interval !Int !Int deriving (Eq)
-data Scan = Scan !Coords !Coords
+data Scan = Scan !Coords !Coords !Int
 
 parser :: Parser [Scan]
 parser = line `sepEndBy1` eol where
@@ -21,7 +21,10 @@ parser = line `sepEndBy1` eol where
         _ <- string ": closest beacon is at x="
         x2 <- signedDecimal
         _ <- string ", y="
-        Scan (Coords x1 y1) . Coords x2 <$> signedDecimal
+        y2 <- signedDecimal
+        let sensor = Coords x1 y1
+        let beacon = Coords x2 y2
+        pure $ Scan sensor beacon (manhattan sensor beacon)
 
 -- | manhattan distance
 manhattan :: Coords -> Coords -> Int
@@ -45,9 +48,9 @@ toDisjointUnion (itv:itvs) = case find (quasiOverlap itv) itvs of
     Nothing -> itv : toDisjointUnion itvs
     Just itv' -> toDisjointUnion $ union itv itv' : filter (/= itv') itvs
 
--- | interval between a circle (w.r.t. Manhattan distance) and a row
-intersectionCircleWithRow :: Coords -> Int -> Int -> Maybe Interval
-intersectionCircleWithRow (Coords cx cy) radius row
+-- | interval between a ball (w.r.t. Manhattan distance) and a row
+intersectionBallWithRow :: Coords -> Int -> Int -> Maybe Interval
+intersectionBallWithRow (Coords cx cy) radius row
     | dx < 0 = Nothing
     | otherwise = Just $ Interval (cx - dx) (cx + dx)
     where dx = radius - abs (cy - row)
@@ -60,41 +63,50 @@ itvLength (Interval a b) = b - a + 1
 intervalsWithoutBeacons :: Int -> [Scan] -> [Interval]
 intervalsWithoutBeacons y =
         toDisjointUnion
-        . mapMaybe (\(Scan scanner beacon) ->
-            let dist = manhattan scanner beacon
-            in intersectionCircleWithRow scanner dist y
-        )
+        . mapMaybe (\(Scan sensor _ dist) -> intersectionBallWithRow sensor dist y)
 
 part1 :: [Scan] -> Int
 part1 pairs = nbBeacons - nbDetectedBeacons where
     nbBeacons = sum . map itvLength $ intervalsWithoutBeacons yTarget pairs
-    nbDetectedBeacons = length $ nubOrd [x | Scan _ (Coords x y) <- pairs, y == yTarget]
+    nbDetectedBeacons = length $ nubOrd [x | Scan _ (Coords x y) _ <- pairs, y == yTarget]
     yTarget = 2000000
 
-part2 :: [Scan] -> Maybe Int
-part2 pairs = sol where
-    itvsPerRow = map (\y -> (y, intervalsWithoutBeacons y pairs)) [0..4000000]
-    sol = find (\(_, itv) -> length itv >=2) itvsPerRow
-               <&> \(j, intvs) -> let Interval _ b = head intvs in 4000000 * (b + 1) + j
+corners :: Scan -> [Coords]
+corners (Scan (Coords x y) _ dist) = [l, u, r, d] where
+    l = Coords (x-dist-1) y
+    r = Coords (x+dist+1) y
+    u = Coords x (y-dist-1)
+    d = Coords x (y+dist+1)
 
 {-
-diagonals :: (Coords, Int) -> [(Coords, Coords)]
-diagonals (Coords x y, dist) = [(l, d), (l, u), (r, d), (r, u)] where
-    l = Coords (x-dist) y
-    r = Coords (x+dist) y
-    u = Coords x (y-dist)
-    d = Coords x (y+dist)
-
+x1 + q = x2 + r
+y1 + q = y2 - r
+=> x1 + y1 + 2q = x2 + y2 
+=> q = (x2 + y2 - x1 - y1) / 2
+-}
 
 diagonalIntersection :: Coords -> Coords -> [Coords]
 diagonalIntersection (Coords x1 y1) (Coords x2 y2) =
-    let q = y1 + y2 - x1 - x2
-        r = x1 - x2 + y2 - y1 in
-        if even q && even r
-        then [Coords (x1+q`div`2) (y1+r`div`2), Coords (x2-q`div`2) (y2-q`div`2)]
-        else []
+    if x1 <= x2
+    then [Coords (x1+q) (y1+q), Coords (x2-q) (y2-q)]
+    else []
+    where
+    q = (x2 + y2 - x1 - y1) `div` 2
 
--}
+isNotDetected :: [Scan] -> Coords -> Bool
+isNotDetected scans point =
+    scans & all \(Scan sensor beacon dist) ->
+                    point /= beacon && manhattan sensor point >= dist
+
+part2 :: [Scan] -> Maybe Int
+part2 scans = do
+    Coords x y <- find (isNotDetected scans) candidates 
+    pure $ x * 4000000 + y
+    where
+    vs = scans >>= corners
+    candidates = concat (diagonalIntersection <$> vs <*> vs)
+                        & filter \(Coords x y) -> x >= 0 && x < 4000000 
+                                                && y >= 0 && y < 4000000
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
 solve = aoc parser part1 part2

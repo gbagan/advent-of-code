@@ -6,13 +6,13 @@ import qualified Data.IntSet as IS
 import qualified RIO.Vector as V
 import           RIO.Vector.Partial ((!))
 import qualified RIO.HashMap as M
-import qualified RIO.HashMap.Partial as M
+import qualified RIO.HashMap.Partial as M ((!))
 import           Text.Megaparsec (sepEndBy1, sepBy1, some)
 import           Text.Megaparsec.Char (eol, string, upperChar)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, maximumDef)
 
-data Input = Input !Graph !DistanceMat Int
+data Input = Input !Graph !DistanceMat !Int
 data Valve = Valve !Int ![Int]
 type Graph = Vector Valve
 type DistanceMat = HashMap (Int, Int) Int
