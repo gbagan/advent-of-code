@@ -2,12 +2,11 @@
 module Day15 (solve) where
 import           RIO
 import           RIO.List (find)
-import           RIO.List.Partial (head)
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol, string)
 import           Util (Parser, aoc, signedDecimal)
 
-data Coords = Coords !Int !Int deriving (Eq, Show)
+data Coords = Coords !Int !Int deriving (Eq)
 data Interval = Interval !Int !Int deriving (Eq)
 data Scan = Scan !Coords !Coords !Int
 
