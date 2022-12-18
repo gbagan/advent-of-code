@@ -70,7 +70,7 @@ part2 rocks = runST $ do
     H.size sand
     where bottom = 1 + maximum (map snd (Set.toList rocks))
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc' parser (pure . precomp) part1 part2
 
 

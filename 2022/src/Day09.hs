@@ -47,5 +47,5 @@ solve' n dirs = Set.size vis where
         rope' = moveRope rope dir
         visited' = Set.insert (last rope') visited
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser (solve' 2) (solve' 10)

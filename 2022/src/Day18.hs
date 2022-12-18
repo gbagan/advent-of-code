@@ -48,5 +48,5 @@ part2 points = dfs [V3 minX minY minZ] Set.empty 0 where
                        && minY <= y && y <= maxY
                        && minZ <= z && z <= maxZ
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

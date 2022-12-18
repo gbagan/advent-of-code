@@ -21,5 +21,5 @@ part2 :: [(Interval, Interval)] -> Int
 part2 = count overlaps where
     overlaps (Interval x1 y1, Interval x2 y2) = max x1 x2 <= min y1 y2
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

@@ -32,5 +32,5 @@ part2 pairs = index1 * index2 where
     index1 = 1 + count (< Packet [Packet [PInt 2]]) packets
     index2 = 2 + count (< Packet [Packet [PInt 6]]) packets
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

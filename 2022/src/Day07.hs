@@ -56,5 +56,5 @@ part2 fs@(T.Node (File _ _ totalSize) _) = minimum [s | (File Directory _ s) <- 
                                                       , totalSize - s <= 40000000
                                                    ]
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc' parser precomp part1 part2

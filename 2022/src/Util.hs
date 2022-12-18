@@ -16,7 +16,7 @@ type Point = (Int, Int)
 
 -- templates
 
-aoc :: (Show b, Show c) => Parser a -> (a -> b) -> (a -> c) -> Text -> RIO env ()
+aoc :: (MonadIO m, Show b, Show c) => Parser a -> (a -> b) -> (a -> c) -> Text -> m ()
 aoc parser = aoc' parser pure
 
 duration :: MonadIO m => m a -> m (Text, a)
@@ -31,8 +31,8 @@ duration m = do
                                 show diff <> " microseconds"
     pure (strDiff, res)
 
-aoc' :: (Show c, Show d) =>
-        Parser a -> (a -> Maybe b) -> (b -> c) -> (b -> d) -> Text -> RIO env ()
+aoc' :: (MonadIO m, Show c, Show d) =>
+        Parser a -> (a -> Maybe b) -> (b -> c) -> (b -> d) -> Text -> m ()
 aoc' parser precomp part1 part2 input = do
     case parse parser "" input of
         Left err -> liftIO $ putStrLn $ Text.pack $ errorBundlePretty err

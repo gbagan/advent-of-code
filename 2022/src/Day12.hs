@@ -24,5 +24,5 @@ solve' target m = do
                                 || [v, v'] `elem` ["Ez", "Ey", "aS"] -> True
                             _ -> False
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser (solve' 'S') (solve' 'a')

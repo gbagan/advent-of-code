@@ -32,5 +32,5 @@ part2 = unlines . map (zipWith drawPixel [0..]) . chunksOf 40 where
 part2' :: [Int] -> Int
 part2' xs = trace (Text.pack $ part2 xs) 0
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc' parser (pure . runInstrs 1) part1 part2'

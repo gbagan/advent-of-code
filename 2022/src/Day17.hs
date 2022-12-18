@@ -94,5 +94,5 @@ part2 jets = height * cycles + height' where
                                         (Stream.drop rockIdx rockStream)
                                         (Stream.drop jetIdx jetStream)
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

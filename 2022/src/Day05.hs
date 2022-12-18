@@ -42,5 +42,5 @@ move needReverse (Instr nb fromIdx toIdx) ship = ship' where
 solve' :: Bool -> Input -> String
 solve' multi (Input ship instrs) = map head $ foldl' (flip $ move multi) ship instrs
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser (solve' True) (solve' False)

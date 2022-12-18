@@ -24,5 +24,5 @@ part1 = sum . map findTheSame where
 part2 :: [String] -> Int
 part2 = sum . map (priority . head . foldl1' intersect) . chunksOf 3
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

@@ -22,5 +22,5 @@ part1 = sum . map score
 part2 :: [(Int, Int)] -> Int
 part2 = sum . map score'
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

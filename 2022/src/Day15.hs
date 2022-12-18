@@ -107,5 +107,5 @@ part2 scans = do
                         & filter \(Coords x y) -> x >= 0 && x < 4000000 
                                                 && y >= 0 && y < 4000000
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

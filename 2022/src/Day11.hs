@@ -55,5 +55,5 @@ solve' part nbRounds mks = monkeyBusiness $ iterate runRound mks !! nbRounds whe
 
     monkeyBusiness = product . takeEnd 2 . sort . map _inspected
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser (solve' Part1 20) (solve' Part2 10000)

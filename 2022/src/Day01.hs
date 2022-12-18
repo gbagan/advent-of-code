@@ -13,5 +13,5 @@ parser = (decimal `sepEndBy1` eol) `sepEndBy1` eol
 solve' :: Int -> [[Int]] -> Int
 solve' n = sum . takeEnd n . sort . map sum
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser (solve' 1) (solve' 3)

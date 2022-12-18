@@ -12,5 +12,5 @@ parser = some anySingle
 solve' :: Int -> String -> Maybe Int
 solve' n = fmap (+n) . findIndex allUnique . divvy n 1
 
-solve :: Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser (solve' 4) (solve' 14)
