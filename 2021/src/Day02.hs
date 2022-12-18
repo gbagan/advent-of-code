@@ -6,7 +6,7 @@ import           Text.Megaparsec.Char (string, eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 
-data Instr = Forward Int | IDown Int
+data Instr = Forward !Int | IDown !Int
 
 parser :: Parser [Instr]
 parser = line `sepEndBy1` eol where

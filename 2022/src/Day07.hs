@@ -56,5 +56,5 @@ part2 fs@(T.Node (File _ _ totalSize) _) = minimum [s | (File Directory _ s) <- 
                                                       , totalSize - s <= 40000000
                                                    ]
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: Text -> RIO env ()
 solve = aoc' parser precomp part1 part2

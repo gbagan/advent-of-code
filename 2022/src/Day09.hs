@@ -47,5 +47,5 @@ solve' n dirs = Set.size vis where
         rope' = moveRope rope dir
         visited' = Set.insert (last rope') visited
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: Text -> RIO env ()
 solve = aoc parser (solve' 2) (solve' 10)

@@ -12,8 +12,9 @@ import           Text.Megaparsec.Char (eol, string, upperChar)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, maximumDef)
 
+type Duration = Int
 data Input = Input !Graph !DistanceMat !Int
-data Valve = Valve !Int ![Int]
+data Valve = Valve !Int ![Int] -- flow rate and neighbors
 type Graph = Vector Valve
 type DistanceMat = HashMap (Int, Int) Int
 
@@ -39,6 +40,9 @@ mapToInput m = Input graph dist init where
     dist = distance graph
     init = reverseMap M.! "AA"
 
+usefulValves :: Input -> [Int]
+usefulValves (Input graph _ _) = [name | (name, Valve flow _) <- zip [0..] (V.toList graph), flow > 0]
+
 distance :: Graph -> DistanceMat
 distance graph = foldl' go initdistance $ (,,) <$> keys <*> keys <*> keys where 
     keys = [0 .. V.length graph - 1]
@@ -47,7 +51,7 @@ distance graph = foldl' go initdistance $ (,,) <$> keys <*> keys <*> keys where
     get dist (i, j) | i == j = 0
                     | otherwise = fromMaybe 10000 (M.lookup (i, j) dist)
 
-travel :: Input -> Int -> IntSet -> Int
+travel :: Input -> Duration -> IntSet -> Int
 travel (Input graph dist init) = go init where
     go current duration remaining =
         maximumDef 0 [ duration' * flow + go nextv duration' (IS.delete nextv remaining)
@@ -58,8 +62,8 @@ travel (Input graph dist init) = go init where
                      ]
 
 part1 :: Input -> Int
-part1 input@(Input graph _ _) = travel input 30 valves where
-    valves = IS.fromList [name | (name, Valve flow _) <- zip [0..] (V.toList graph), flow > 0]
+part1 input = travel input 30 valves where
+    valves = IS.fromList $ usefulValves input
 
 splits :: [a] -> [([a], [a])]
 splits [] = [([], [])]
@@ -67,11 +71,10 @@ splits [x] = [([x], [])]
 splits (x:xs) = splits xs >>= \(l1, l2) -> [(x:l1, l2), (l1, x:l2)]
 
 part2 :: Input -> Int
-part2 input@(Input graph _ _) = maximum [ travel input 26 (IS.fromList valves1) 
-                                         + travel input 26 (IS.fromList valves2)
-                                        | (valves1, valves2) <- splits valves
-                                        ] where
-    valves = [name | (name, Valve flow _) <- zip [0..] (V.toList graph), flow > 0]
+part2 input = maximum [ travel input 26 (IS.fromList valves1) 
+                      + travel input 26 (IS.fromList valves2)
+                      | (valves1, valves2) <- splits (usefulValves input)
+                      ]
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: Text -> RIO env ()
 solve = aoc parser part1 part2

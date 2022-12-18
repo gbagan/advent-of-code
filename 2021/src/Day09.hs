@@ -6,10 +6,10 @@ import           Data.Map.Lazy ((!))
 import qualified Data.Map.Lazy as LMap
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (digitChar, eol)
-import           Util (Parser, Point, aoc, adjacentPoints, freqs, listTo2dMap)
+import           Util (Parser, Point, aoc, adjacentPoints, freqs, listTo2dMap')
 
 parser :: Parser (Map Point Int)
-parser = listTo2dMap <$> line `sepEndBy1` eol where
+parser = listTo2dMap' <$> line `sepEndBy1` eol where
         line = some (digitToInt <$> digitChar)
 
 flow :: Map Point Int -> Map Point (Maybe Point)

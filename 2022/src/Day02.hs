@@ -22,5 +22,5 @@ part1 = sum . map score
 part2 :: [(Int, Int)] -> Int
 part2 = sum . map score'
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: Text -> RIO env ()
 solve = aoc parser part1 part2

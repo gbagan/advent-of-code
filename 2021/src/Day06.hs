@@ -7,7 +7,7 @@ import           Text.Megaparsec.Char (char)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, count)
 
-data Vec = Vec Int Int Int Int Int Int Int Int Int
+data Vec = Vec !Int !Int !Int !Int !Int !Int !Int !Int !Int
 
 parser :: Parser [Int]
 parser = decimal `sepBy1` char ','

@@ -34,5 +34,5 @@ part2 vec = maximum [viewingDistance (x, y) h | (x, y, h) <- M.elemsWithIndex ve
     viewingDistance xy h = product [distance xy h dxy | dxy <- directions]
     distance xy h dxy = length $ takeWhile' (<h) $ heightsInTheDirection vec xy dxy
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: Text -> RIO env ()
 solve = aoc parser part1 part2

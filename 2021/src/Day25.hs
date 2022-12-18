@@ -1,28 +1,29 @@
 module Day25  where
 import           RIO
 import           RIO.List (findIndex, iterate)
-import qualified RIO.Map as Map
-import           RIO.Map.Partial (findMax)
+import qualified RIO.HashMap as Map
+import           RIO.List.Partial (maximum)
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (char, eol)
 import           Util (Parser, Point, aoc, listTo2dMap)
 
-data Cell = Empty | East | South deriving (Eq)
-type Board = Map Point Cell
+data Cell = Empty | East | South deriving (Eq, Ord)
+type Board = HashMap Point Cell
+data Input = Input !Int !Int !Board
 
-parser :: Parser (Int, Int, Board)
+parser :: Parser Input
 parser = withDimensions . listTo2dMap <$> line `sepEndBy1` eol where
     line = some cell
     cell = char '.' $> Empty <|> char '>' $> East <|> char 'v' $> South
-    withDimensions mp = (nbCols+1, nbRows+1, Map.filter (/=Empty) mp) where
-        ((nbCols, nbRows), _) = findMax mp
+    withDimensions mp = Input (nbCols+1) (nbRows+1) (Map.filter (/=Empty) mp) where
+        ((nbCols, nbRows), _) = maximum (Map.toList mp)
 
 step :: Int -> Int -> Cell -> Board -> (Board, Bool)
 step nbCols nbRows direction board = (insertAll moved direction . deleteAll movable $ board, movable /= [])
     where
     movable = filter canMove . Map.keys $ Map.filter (==direction) board
     moved = map move movable
-    canMove (x, y) = p `Map.notMember` board where
+    canMove (x, y) = not $ p `Map.member` board where
                 x' = (x + 1) `mod` nbCols 
                 y' = (y + 1) `mod` nbRows
                 p = if direction == East then (x', y) else (x, y')
@@ -37,8 +38,8 @@ step' nbCols nbRows (board, _) = (board2, modif1 || modif2) where
     (board1, modif1) = step nbCols nbRows East board
     (board2, modif2) = step nbCols nbRows South board1
 
-part1 :: (Int, Int, Board) -> Maybe Int
-part1 (nbCols, nbRows, board) = findIndex (not . snd) $ iterate (step' nbCols nbRows) (board, True)
+part1 :: Input -> Maybe Int
+part1 (Input nbCols nbRows board) = findIndex (not . snd) $ iterate (step' nbCols nbRows) (board, True)
 
 solve :: (HasLogFunc env) => Text -> RIO env ()
-solve = aoc parser part1 (const 0)
+solve = aoc parser part1 (const (0 :: Int))

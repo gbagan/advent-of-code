@@ -2,15 +2,17 @@ module Util where
 import           RIO
 import           RIO.List (sort, genericLength)
 import           RIO.List.Partial ((!!))
-import qualified RIO.Set as Set
+import qualified RIO.Map as Map
+import qualified RIO.HashMap as HM
 import qualified RIO.Text as Text
 import qualified RIO.Vector as V
 import           RIO.Vector ((!?))
 import           RIO.Vector.Partial ((!))
+import           System.CPUTime (getCPUTime)
 import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
-import qualified Data.Map as Map
+
 
 type Parser = Parsec Void Text
 type BinParser = Parsec Void [Bool]
@@ -22,6 +24,18 @@ aoc :: (Show b, Show c, HasLogFunc env) =>
         Parser a -> (a -> b) -> (a -> c) -> Text -> RIO env ()
 aoc parser = aoc' parser pure
 
+duration :: MonadIO m => m a -> m (Text, a)
+duration m = do
+    begin <- liftIO getCPUTime
+    !res <- m
+    end <- liftIO getCPUTime
+    let diff = (end - begin) `div` 1000000 -- in nano seconds 
+    let strDiff = Text.pack $ if diff >= 10000 then
+                                show (diff `div` 1000) <> " milliseconds"
+                              else
+                                show diff <> " microseconds"
+    pure (strDiff, res)
+
 aoc' :: (Show c, Show d, HasLogFunc env) =>
         Parser a -> (a -> Maybe b) -> (b -> c) -> (b -> d) -> Text -> RIO env ()
 aoc' parser precomp part1 part2 input = do
@@ -31,8 +45,12 @@ aoc' parser precomp part1 part2 input = do
             case precomp parsed of
                 Nothing -> logInfo "  precomputation has failed"
                 Just p -> do
-                    logInfo $ "  part 1: " <> displayShow (part1 p)
-                    logInfo $ "  part 2: " <> displayShow (part2 p)
+                    (duration1, res1) <- duration (pure $ part1 p)
+                    logInfo $ "  part 1: " <> displayShow res1 
+                            <> " in " <> display duration1
+                    (duration2, res2) <- duration (let !v = part2 p in pure v)
+                    logInfo $ "  part 2: " <> displayShow res2 
+                            <> " in " <> display duration2
 
 adjacentPoints :: Point -> [Point]
 adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
@@ -58,8 +76,16 @@ majority f l = 2* count f l >= length l
 median :: Ord a => [a] -> a
 median l = sort l !! (length l `div` 2)
 
-listTo2dMap :: [[a]] -> Map Point a
+listTo2dMap :: [[a]] -> HashMap Point a
 listTo2dMap l = 
+    HM.fromList
+        [((i, j), v) 
+        | (j, row) <- zip [0..] l
+        , (i, v) <- zip [0..] row
+        ]
+
+listTo2dMap' :: [[a]] -> Map Point a
+listTo2dMap' l = 
     Map.fromList
         [((i, j), v) 
         | (j, row) <- zip [0..] l

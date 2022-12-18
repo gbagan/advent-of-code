@@ -18,7 +18,10 @@ import qualified Day13 (solve)
 import qualified Day14 (solve)
 import qualified Day15 (solve)
 import qualified Day16 (solve)
+import qualified Day17 (solve)
+import qualified Day18 (solve)
 import System.Environment (getArgs)
+import Data.Text.IO (putStrLn)
 
 solutions :: Map String (Text -> RIO SimpleApp ())
 solutions = Map.fromList
@@ -38,14 +41,16 @@ solutions = Map.fromList
             ,   ("14", Day14.solve)
             ,   ("15", Day15.solve)
             ,   ("16", Day16.solve)
+            ,   ("17", Day17.solve)
+            ,   ("18", Day18.solve)
             ]
 
 solveProblem :: String -> RIO SimpleApp ()
 solveProblem name = case Map.lookup name solutions of
     Just solve -> do
-        logInfo $ "Solve day " <> display (Text.pack name)
+        liftIO $ putStrLn $ "Solve day " <> Text.pack name
         solve =<< readFileUtf8 ("./data/data" <> name)
-    Nothing -> logInfo $ "Day not implemented: " <> display (Text.pack name)
+    Nothing -> liftIO $ putStrLn $ "Day not implemented: " <> Text.pack name
 
 main :: IO ()
 main = runSimpleApp do

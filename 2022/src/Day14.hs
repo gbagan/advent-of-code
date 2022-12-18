@@ -70,11 +70,11 @@ part2 rocks = runST $ do
     H.size sand
     where bottom = 1 + maximum (map snd (Set.toList rocks))
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: Text -> RIO env ()
 solve = aoc' parser (pure . precomp) part1 part2
 
 
-{- old implementations
+{- old implementation
 part2 :: Rocks -> Int
 part2 rocks = 1 + fillUntil (== origin) rocks
 -}

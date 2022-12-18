@@ -5,7 +5,7 @@ import           Text.Megaparsec.Char (string)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, cartesianProduct, count)
 
-data Area = Area Int Int Int Int
+data Area = Area !Int !Int !Int !Int
 
 parser :: Parser Area
 parser = Area <$> (string "target area: x=" *> decimal) <* string ".." <*> decimal <*

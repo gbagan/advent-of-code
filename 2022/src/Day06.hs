@@ -12,5 +12,5 @@ parser = some anySingle
 solve' :: Int -> String -> Maybe Int
 solve' n = fmap (+n) . findIndex allUnique . divvy n 1
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: Text -> RIO env ()
 solve = aoc parser (solve' 4) (solve' 14)

@@ -13,5 +13,5 @@ parser = (decimal `sepEndBy1` eol) `sepEndBy1` eol
 solve' :: Int -> [[Int]] -> Int
 solve' n = sum . takeEnd n . sort . map sum
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: Text -> RIO env ()
 solve = aoc parser (solve' 1) (solve' 3)

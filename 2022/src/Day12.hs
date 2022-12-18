@@ -24,5 +24,5 @@ solve' target m = do
                                 || [v, v'] `elem` ["Ez", "Ey", "aS"] -> True
                             _ -> False
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: Text -> RIO env ()
 solve = aoc parser (solve' 'S') (solve' 'a')

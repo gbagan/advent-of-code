@@ -28,6 +28,8 @@ executable aoc2022
                 Day14
                 Day15
                 Day16
+                Day17
+                Day18
                 Util
                 Util.Matrix
 
@@ -63,3 +65,5 @@ executable aoc2022
                      , rosezipper
                      , search-algorithms 
                      , split
+                     , streams
+                     , text
