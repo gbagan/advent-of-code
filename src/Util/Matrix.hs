@@ -8,6 +8,12 @@ import qualified RIO.Vector.Partial as V ((!))
 
 newtype Matrix a = Matrix (Vector (Vector a))
 
+nbRows :: Matrix a -> Int
+nbRows (Matrix m) = V.length m
+
+nbColumns :: Matrix a -> Int
+nbColumns (Matrix m) = V.length (m V.! 0)
+
 (!) :: Matrix a -> (Int, Int) -> a
 (Matrix v) ! (i, j) = v V.! i V.! j
 

@@ -4,7 +4,7 @@ import           RIO
 import           RIO.List (partition)
 import           RIO.List.Partial (maximum, minimum)
 import qualified RIO.HashSet as Set
-import           RIO.State (State, execState, state)
+import           RIO.State (execState, modify')
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (char, eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
@@ -33,7 +33,8 @@ part2 points = execState (dfsM nborFunc (V3 minX minY minZ)) 0 where
     nborFunc v = do
         let nbors = filter isInside (map (+v) directions)
         let (members, nonMembers) = partition (`Set.member` pset) nbors
-        state \counter -> (nonMembers, counter + length members)
+        modify' (+ length members)
+        pure nonMembers
 
     pset = Set.fromList points
     minX = minimum [x | V3 x _ _ <- points] - 1

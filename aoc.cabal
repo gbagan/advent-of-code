@@ -1,12 +1,48 @@
 name:                aoc2022
 version:             0.1.0.0
--- synopsis:
--- description:
-license:             None
+license:             MIT
 author:              Guillaume Bagan
 copyright:           2022 Guillaume Bagan
 build-type:          Simple
 cabal-version:       >=1.10
+
+executable aoc2020
+    hs-source-dirs:      src
+    main-is:             AOC2020/Main.hs
+    other-modules:
+                AOC2020.Day01
+                AOC2020.Day02
+                AOC2020.Day03
+                AOC2020.Day04
+                AOC2020.Day05
+                AOC2020.Day06
+                Util
+                Util.Matrix
+                Util.Search
+
+    default-language: Haskell2010
+    default-extensions:
+                    BangPatterns
+                    BlockArguments
+                    LambdaCase
+                    MultiWayIf
+                    NoImplicitPrelude
+                    OverloadedStrings
+                    TupleSections
+                    TypeFamilies
+
+    ghc-options:
+              -Wall
+              -Wcompat
+              -Wincomplete-uni-patterns
+              -Wredundant-constraints
+    build-depends: base >= 4.15 && < 5
+                   , array
+                   , containers
+                   , linear
+                   , megaparsec
+                   , rio
+                   , text
 
 executable aoc2021
     hs-source-dirs:      src
@@ -64,7 +100,6 @@ executable aoc2021
                    , linear
                    , massiv
                    , megaparsec
-                   , search-algorithms
                    , rio
                    , text
 
@@ -98,8 +133,6 @@ executable aoc2022
     default-extensions:
                     BangPatterns
                     BlockArguments
-                    FlexibleContexts
-                    FlexibleInstances
                     LambdaCase
                     MultiWayIf
                     NamedFieldPuns

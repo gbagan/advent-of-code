@@ -29,13 +29,13 @@ dfsM nborFunc start = go HSet.empty [start] where
             nbors <- nborFunc v
             go (HSet.insert v visited) (nbors ++ queue)
 
-dijkstra :: (Ord v, Real w) => (v -> [(v, w)]) -> v -> v -> Maybe w
-dijkstra nbors source target = go Set.empty (Set.singleton (0, source)) where
+dijkstra :: (Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> v -> Maybe w
+dijkstra nborFunc targetFunc source = go Set.empty (Set.singleton (0, source)) where
     go visited queue = case Set.minView queue of
         Nothing -> Nothing
         Just ((cost, v), queue')
-            | v == target          -> Just cost
+            | targetFunc v         -> Just cost
             | Set.member v visited -> go visited queue'
             | otherwise            -> go
                                         (Set.insert v visited)
-                                        (foldl' (flip Set.insert) queue' [(w+cost, u) | (u, w) <- nbors v])
+                                        (foldl' (flip Set.insert) queue' [(w+cost, u) | (u, w) <- nborFunc v])
