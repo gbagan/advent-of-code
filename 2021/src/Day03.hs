@@ -32,5 +32,5 @@ part2 l = binToInt x * binToInt y where
     x = filterCode MostCommon l
     y = filterCode LeastCommon l
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

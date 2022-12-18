@@ -48,5 +48,5 @@ part2 g = go ["start"] False "start" where
                 guard $ nbor /= "start"
                 pure $ go (if all isUpper nbor then visited else nbor : visited) (nbor `elem` visited) nbor
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

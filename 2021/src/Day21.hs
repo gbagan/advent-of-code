@@ -39,5 +39,5 @@ scores = listArray bds
 part2 :: (Int, Int) -> Int
 part2 (p1, p2) = max x y where V2 x y = scores ! (p1-1, p2-1, 0, 0)
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

@@ -66,3 +66,4 @@ executable aoc2021
                      , massiv
                      , megaparsec
                      , rio
+                     , text

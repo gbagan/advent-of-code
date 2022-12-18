@@ -1,0 +1,130 @@
+name:                aoc2022
+version:             0.1.0.0
+-- synopsis:
+-- description:
+license:             None
+author:              Guillaume Bagan
+copyright:           2022 Guillaume Bagan
+build-type:          Simple
+cabal-version:       >=1.10
+
+executable aoc2021
+    hs-source-dirs:      src
+    main-is:             AOC2021/Main.hs
+    other-modules:
+                AOC2021.Day01
+                AOC2021.Day02
+                AOC2021.Day03
+                AOC2021.Day04
+                AOC2021.Day05
+                AOC2021.Day06
+                AOC2021.Day07
+                AOC2021.Day08
+                AOC2021.Day09
+                AOC2021.Day10
+                AOC2021.Day11
+                AOC2021.Day12
+                AOC2021.Day13
+                AOC2021.Day14
+                AOC2021.Day15
+                AOC2021.Day16
+                AOC2021.Day17
+                AOC2021.Day18
+                AOC2021.Day19
+                AOC2021.Day20
+                AOC2021.Day21
+                AOC2021.Day22
+                AOC2021.Day23
+                AOC2021.Day24
+                AOC2021.Day25
+                Util
+                Util.Matrix
+                Util.Search
+
+    default-language: Haskell2010
+    default-extensions:
+                    BangPatterns
+                    BlockArguments
+                    LambdaCase
+                    MultiWayIf
+                    NoImplicitPrelude
+                    OverloadedStrings
+                    TupleSections
+                    TypeFamilies
+
+    ghc-options:
+              -Wall
+              -Wcompat
+              -Wincomplete-uni-patterns
+              -Wredundant-constraints
+    build-depends: base >= 4.15 && < 5
+                   , array
+                   , containers
+                   , either
+                   , linear
+                   , massiv
+                   , megaparsec
+                   , search-algorithms
+                   , rio
+                   , text
+
+executable aoc2022
+    hs-source-dirs:      src
+    main-is:             AOC2022/Main.hs
+    other-modules:
+                AOC2022.Day01
+                AOC2022.Day02
+                AOC2022.Day03
+                AOC2022.Day04
+                AOC2022.Day05
+                AOC2022.Day06
+                AOC2022.Day07
+                AOC2022.Day08
+                AOC2022.Day09
+                AOC2022.Day10
+                AOC2022.Day11
+                AOC2022.Day12
+                AOC2022.Day13
+                AOC2022.Day14
+                AOC2022.Day15
+                AOC2022.Day16
+                AOC2022.Day17
+                AOC2022.Day18
+                Util
+                Util.Matrix
+                Util.Search
+
+    default-language:    Haskell2010
+    default-extensions:
+                    BangPatterns
+                    BlockArguments
+                    FlexibleContexts
+                    FlexibleInstances
+                    LambdaCase
+                    MultiWayIf
+                    NamedFieldPuns
+                    NoImplicitPrelude
+                    OverloadedStrings
+                    RecordWildCards
+                    TemplateHaskell
+                    TupleSections
+                    TypeApplications
+                    TypeFamilies
+    ghc-options:
+              -Wall
+              -Wcompat
+              -Wincomplete-uni-patterns
+              -Wredundant-constraints
+    build-depends:   base >= 4.15 && < 5
+                     , containers
+                     , extra
+                     , hashtables
+                     , linear
+                     , megaparsec
+                     , microlens-th
+                     , rio
+                     , rosezipper
+                     , search-algorithms 
+                     , split
+                     , streams
+                     , text

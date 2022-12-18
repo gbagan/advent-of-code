@@ -47,5 +47,5 @@ part2 scans = maximum [dist x y | x <- positions, y <- positions] where
     positions = map snd scans
     dist v1 v2 = sum . abs $ v1 - v2
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc' parser alignAll part1 part2

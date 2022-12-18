@@ -38,5 +38,5 @@ part1 = sum . map (count (==0) . Map.elems) . take 100 . tail
 part2 :: [HashMap Point Int] -> Maybe Int
 part2 = findIndex (all (==0) . Map.elems)
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc' parser (pure . precomp) part1 part2

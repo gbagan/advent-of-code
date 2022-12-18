@@ -45,5 +45,5 @@ part2 (Input draw boards) = go draw boards where
             [] -> x * score (head bs')
             bs'' -> go xs bs''
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

@@ -18,5 +18,5 @@ part2 xs = sum [bin . abs $ x - m | x <- xs] where
         m = floor (average xs)
         bin n = n * (n + 1) `div` 2
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

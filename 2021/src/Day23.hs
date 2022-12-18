@@ -97,5 +97,5 @@ extendBoard (rooms, hall) = (Vec.imap (\i room -> head room : middle i ++ [last 
 part2 :: Board -> Maybe Int
 part2 board = fst <$> dijkstraAssoc (neighbors 4) (== finalBoard 4) (extendBoard board) 
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

@@ -49,5 +49,5 @@ part1 = totalVolume . computeCubes . mapMaybe (intersect' cube)
 part2 :: [Cube] -> Int 
 part2 = totalVolume . computeCubes
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

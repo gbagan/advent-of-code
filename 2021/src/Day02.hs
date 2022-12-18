@@ -30,5 +30,5 @@ part2 l = tx * ty where
                 IDown v   -> (x, y, aim + v)
             ) (0, 0, 0) l
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

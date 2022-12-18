@@ -37,5 +37,5 @@ precomp instrs = fst $ foldl' go ((p, q), []) [0..13] where
     p = 99999999999999
     q = 11111111111111
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc' parser (pure . precomp) fst snd

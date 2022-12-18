@@ -40,5 +40,5 @@ part2 (Input paper folds) = trace (Text.pack str) 0 where
     xMax = maximum (Set.map fst folded)
     yMax = maximum (Set.map snd folded)
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

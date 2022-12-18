@@ -12,6 +12,6 @@ parser = decimal `sepEndBy1` eol
 algo :: Int -> [Int] -> Int
 algo n l = count id $ zipWith (<) l (drop n l)
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser (algo 1) (algo 3)
 

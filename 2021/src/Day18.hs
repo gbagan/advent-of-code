@@ -52,5 +52,5 @@ part1 = magnitude . foldl1' add
 part2 :: [Snailfish] -> Int
 part2 sfs = maximum [magnitude $ add a b | a <- sfs, b <- sfs, a /= b]
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

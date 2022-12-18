@@ -85,5 +85,5 @@ part2 :: Packet -> Int
 part2 (Packet _ (Lit n)) = n
 part2 (Packet _ (Op f packets)) = f (map part2 packets)
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc' parser precomp part1 part2

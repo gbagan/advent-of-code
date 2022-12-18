@@ -24,5 +24,5 @@ part2 :: Matrix Int -> Maybe Int
 part2 mat = fst <$> dijkstraAssoc (neighbors mat') (== (499, 499)) (0, 0)  where
         mat' = duplicateGrid mat
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

@@ -41,5 +41,5 @@ step' nbCols nbRows (board, _) = (board2, modif1 || modif2) where
 part1 :: Input -> Maybe Int
 part1 (Input nbCols nbRows board) = findIndex (not . snd) $ iterate (step' nbCols nbRows) (board, True)
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 (const (0 :: Int))

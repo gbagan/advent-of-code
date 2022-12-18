@@ -12,7 +12,7 @@ import           System.CPUTime (getCPUTime)
 import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
-
+import           Data.Text.IO (putStrLn)
 
 type Parser = Parsec Void Text
 type BinParser = Parsec Void [Bool]
@@ -20,8 +20,8 @@ type Point = (Int, Int)
 
 -- templates
 
-aoc :: (Show b, Show c, HasLogFunc env) =>
-        Parser a -> (a -> b) -> (a -> c) -> Text -> RIO env ()
+aoc :: (Show b, Show c, MonadIO m) =>
+        Parser a -> (a -> b) -> (a -> c) -> Text -> m ()
 aoc parser = aoc' parser pure
 
 duration :: MonadIO m => m a -> m (Text, a)
@@ -36,21 +36,19 @@ duration m = do
                                 show diff <> " microseconds"
     pure (strDiff, res)
 
-aoc' :: (Show c, Show d, HasLogFunc env) =>
-        Parser a -> (a -> Maybe b) -> (b -> c) -> (b -> d) -> Text -> RIO env ()
+aoc' :: (MonadIO m, Show c, Show d) =>
+        Parser a -> (a -> Maybe b) -> (b -> c) -> (b -> d) -> Text -> m ()
 aoc' parser precomp part1 part2 input = do
     case parse parser "" input of
-        Left err -> logInfo $ display $ Text.pack $ errorBundlePretty err
+        Left err -> liftIO . putStrLn . Text.pack $ errorBundlePretty err
         Right parsed ->
             case precomp parsed of
-                Nothing -> logInfo "  precomputation has failed"
+                Nothing -> liftIO $ putStrLn "  precomputation has failed"
                 Just p -> do
                     (duration1, res1) <- duration (pure $ part1 p)
-                    logInfo $ "  part 1: " <> displayShow res1 
-                            <> " in " <> display duration1
+                    liftIO $ putStrLn $ "  part 1: " <> tshow res1 <> " in " <> duration1
                     (duration2, res2) <- duration (let !v = part2 p in pure v)
-                    logInfo $ "  part 2: " <> displayShow res2 
-                            <> " in " <> display duration2
+                    liftIO $ putStrLn $ "  part 2: " <> tshow res2 <> " in " <> duration2
 
 adjacentPoints :: Point -> [Point]
 adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]

@@ -1,0 +1,24 @@
+module Util.Matrix where
+
+import           RIO
+import qualified RIO.Vector as V
+import qualified RIO.Vector.Partial as V ((!))
+
+-- matrices i.e. two dimensional arrays
+
+newtype Matrix a = Matrix (Vector (Vector a))
+
+(!) :: Matrix a -> (Int, Int) -> a
+(Matrix v) ! (i, j) = v V.! i V.! j
+
+(!?) :: Matrix a -> (Int, Int) -> Maybe a
+(Matrix v) !? (i, j) = v V.!? i >>= (V.!? j)
+
+elemsWithIndex :: Matrix a -> [(Int, Int, a)]
+elemsWithIndex (Matrix m) = join . zipWith (\x -> zipWith (x,,) [0..]) [0..] . map V.toList . V.toList $ m
+
+fromList :: [[a]] -> Matrix a
+fromList = Matrix . V.fromList . map V.fromList
+
+generate :: Int -> Int -> (Int -> Int -> a) -> Matrix a
+generate n m f = Matrix $ V.generate n \i -> V.generate m (f i)

@@ -56,5 +56,5 @@ decodeLine (Line l r) = do
 part2 :: [Line] -> Maybe Int
 part2 xs = sum <$> traverse decodeLine xs
 
-solve :: (HasLogFunc env) => Text -> RIO env ()
+solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2
