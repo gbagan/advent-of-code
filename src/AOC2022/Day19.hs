@@ -49,16 +49,17 @@ solve' totalTime (Blueprint oreRobotCost clayRobotCost obsidianRobotCost geodeRo
             pure []
         else do
             let newRessources = ressources + robots
-            pure . mapMaybe threshold $ 
-                [(newRessources, robots, time-1)]
-                ++ [(newRessources - oreRobotCost , robots + V4 1 0 0 0, time-1)
+            let nbors =
+                 [(newRessources - oreRobotCost , robots + V4 1 0 0 0, time-1)
                     | all (>=0) (ressources - oreRobotCost)]
-                ++ [(newRessources - clayRobotCost, robots + V4 0 1 0 0, time-1)
+                 ++ [(newRessources - clayRobotCost, robots + V4 0 1 0 0, time-1)
                     | all (>=0) (ressources - clayRobotCost)]
-                ++ [(newRessources - obsidianRobotCost, robots + V4 0 0 1 0, time-1) 
+                 ++ [(newRessources - obsidianRobotCost, robots + V4 0 0 1 0, time-1) 
                     | all (>=0) (ressources - obsidianRobotCost)]
-                ++ [(newRessources - geodeRobotCost, robots + V4 0 0 0 1, time-1)
+                 ++ [(newRessources - geodeRobotCost, robots + V4 0 0 0 1, time-1)
                     | all (>=0) (ressources - geodeRobotCost)]
+            pure . mapMaybe threshold $ if null nbors then [(newRessources, robots, time-1)] else nbors
+               
     threshold (V4 ore clay obsidian geode, robots@(V4 oreRobots clayRobots obsidianRobots _), time) =
         if oreRobots > maxOreCost || clayRobots > maxClayCost then
             Nothing
