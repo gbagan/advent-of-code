@@ -4,8 +4,8 @@ import           RIO
 import           RIO.List.Partial (maximum)
 import           RIO.State (execState, modify')
 import           Linear.V4 (V4(..), _x, _y, _z)
-import           Text.Megaparsec (sepBy1, sepEndBy1)
-import           Text.Megaparsec.Char (char, eol, string)
+import           Text.Megaparsec (sepEndBy1)
+import           Text.Megaparsec.Char (eol, string)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 import           Util.Search (dfsM)
@@ -16,22 +16,15 @@ data Blueprint = Blueprint !Resource !Resource !Resource !Resource
 parser :: Parser [Blueprint]
 parser = blueprint `sepEndBy1` eol where
     blueprint = do
-        _ <- string "Blueprint " *> (decimal :: Parser Int) *> string ": "
-        oreRobot <- robot "ore"
-        _ <- char ' '
-        clayRobot <- robot "clay"
-        _ <- char ' '
-        obsidianRobot <- robot "obsidian"
-        _ <- char ' '
-        geodeRobot <- robot "geode"
-        pure $ Blueprint oreRobot clayRobot obsidianRobot geodeRobot
-
-    robot :: Text -> Parser Resource
-    robot r = string ("Each " <> r <> " robot costs " ) *> (sum <$> (ore `sepBy1` string " and ")) <* char '.'
-    ore = oreFunc <$> (decimal <* char ' ') <*> (string "ore" <|> string "clay"  <|> string "obsidian")
-    oreFunc d "ore" = V4 d 0 0 0
-    oreFunc d "clay" = V4 0 d 0 0
-    oreFunc d _ = V4 0 0 d 0
+        _ <- string "Blueprint " *> (decimal :: Parser Int) 
+        ore1 <- string  ": Each ore robot costs " *> decimal
+        ore2 <- string " ore. Each clay robot costs " *> decimal
+        ore3 <- string " ore. Each obsidian robot costs " *> decimal
+        clay3 <- string " ore and " *> decimal
+        ore4 <- string " clay. Each geode robot costs " *> decimal
+        obs4 <- string " ore and " *> decimal
+        _ <- string " obsidian."
+        pure $ Blueprint (V4 ore1 0 0 0) (V4 ore2 0 0 0) (V4 ore3 clay3 0 0) (V4 ore4 0 obs4 0)
 
 solve' :: Int -> Blueprint -> Int
 solve' totalTime (Blueprint oreRobotCost clayRobotCost obsidianRobotCost geodeRobotCost) =
