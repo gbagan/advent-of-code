@@ -10,8 +10,8 @@ import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 import           Util.Search (dfsM)
 
-type Ressource = V4 Int -- ore clay obsidian geode
-data Blueprint = Blueprint !Ressource !Ressource !Ressource !Ressource
+type Resource = V4 Int -- ore clay obsidian geode
+data Blueprint = Blueprint !Resource !Resource !Resource !Resource
 
 parser :: Parser [Blueprint]
 parser = blueprint `sepEndBy1` eol where
@@ -26,7 +26,7 @@ parser = blueprint `sepEndBy1` eol where
         geodeRobot <- robot "geode"
         pure $ Blueprint oreRobot clayRobot obsidianRobot geodeRobot
 
-    robot :: Text -> Parser Ressource
+    robot :: Text -> Parser Resource
     robot r = string ("Each " <> r <> " robot costs " ) *> (sum <$> (ore `sepBy1` string " and ")) <* char '.'
     ore = oreFunc <$> (decimal <* char ' ') <*> (string "ore" <|> string "clay"  <|> string "obsidian")
     oreFunc d "ore" = V4 d 0 0 0
@@ -42,23 +42,23 @@ solve' totalTime (Blueprint oreRobotCost clayRobotCost obsidianRobotCost geodeRo
     maxClayCost = maximum $ map (view _y) costs
     maxObsidianCost = view _z geodeRobotCost
     initState = (V4 0 0 0 0, V4 1 0 0 0, totalTime)
-    nborFunc (ressources, robots, time) = do
-        let V4 _ _ _ geodes = ressources
+    nborFunc (resources, robots, time) = do
+        let V4 _ _ _ geodes = resources
         if time == 0 then do
             modify' (max geodes)
             pure []
         else do
-            let newRessources = ressources + robots
-            let nbors =
-                 [(newRessources - oreRobotCost , robots + V4 1 0 0 0, time-1)
-                    | all (>=0) (ressources - oreRobotCost)]
-                 ++ [(newRessources - clayRobotCost, robots + V4 0 1 0 0, time-1)
-                    | all (>=0) (ressources - clayRobotCost)]
-                 ++ [(newRessources - obsidianRobotCost, robots + V4 0 0 1 0, time-1) 
-                    | all (>=0) (ressources - obsidianRobotCost)]
-                 ++ [(newRessources - geodeRobotCost, robots + V4 0 0 0 1, time-1)
-                    | all (>=0) (ressources - geodeRobotCost)]
-            pure . mapMaybe threshold $ if null nbors then [(newRessources, robots, time-1)] else nbors
+            let newResources = resources + robots
+            let nbors = (newResources, robots, time-1)
+                 : [(newResources - oreRobotCost , robots + V4 1 0 0 0, time-1)
+                    | all (>=0) (resources - oreRobotCost)]
+                 ++ [(newResources - clayRobotCost, robots + V4 0 1 0 0, time-1)
+                    | all (>=0) (resources - clayRobotCost)]
+                 ++ [(newResources - obsidianRobotCost, robots + V4 0 0 1 0, time-1) 
+                    | all (>=0) (resources - obsidianRobotCost)]
+                 ++ [(newResources - geodeRobotCost, robots + V4 0 0 0 1, time-1)
+                    | all (>=0) (resources - geodeRobotCost)]
+            pure . mapMaybe threshold $ nbors
                
     threshold (V4 ore clay obsidian geode, robots@(V4 oreRobots clayRobots obsidianRobots _), time) =
         if oreRobots > maxOreCost || clayRobots > maxClayCost then
