@@ -19,6 +19,8 @@ executable aoc2020
                 AOC2020.Day07
                 AOC2020.Day08
                 AOC2020.Day09
+                AOC2020.Day10
+                AOC2020.Day11
                 Util
                 Util.Matrix
                 Util.Search

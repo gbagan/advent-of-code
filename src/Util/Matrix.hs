@@ -6,7 +6,7 @@ import qualified RIO.Vector.Partial as V ((!))
 
 -- matrices i.e. two dimensional arrays
 
-newtype Matrix a = Matrix (Vector (Vector a))
+newtype Matrix a = Matrix (Vector (Vector a)) deriving (Eq)
 
 nbRows :: Matrix a -> Int
 nbRows (Matrix m) = V.length m
@@ -19,6 +19,9 @@ nbColumns (Matrix m) = V.length (m V.! 0)
 
 (!?) :: Matrix a -> (Int, Int) -> Maybe a
 (Matrix v) !? (i, j) = v V.!? i >>= (V.!? j)
+
+elems :: Matrix a -> [a]
+elems (Matrix m) = concatMap V.toList . V.toList $ m
 
 elemsWithIndex :: Matrix a -> [(Int, Int, a)]
 elemsWithIndex (Matrix m) = join . zipWith (\x -> zipWith (x,,) [0..]) [0..] . map V.toList . V.toList $ m
