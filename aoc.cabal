@@ -16,6 +16,9 @@ executable aoc2020
                 AOC2020.Day04
                 AOC2020.Day05
                 AOC2020.Day06
+                AOC2020.Day07
+                AOC2020.Day08
+                AOC2020.Day09
                 Util
                 Util.Matrix
                 Util.Search
@@ -41,7 +44,9 @@ executable aoc2020
                    , containers
                    , linear
                    , megaparsec
+                   , microlens-platform
                    , rio
+                   , split
                    , text
 
 executable aoc2021
@@ -126,6 +131,7 @@ executable aoc2022
                 AOC2022.Day17
                 AOC2022.Day18
                 AOC2022.Day19
+                AOC2022.Day20
                 Util
                 Util.Matrix
                 Util.Search

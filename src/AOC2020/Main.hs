@@ -8,6 +8,9 @@ import qualified AOC2020.Day03 (solve)
 import qualified AOC2020.Day04 (solve)
 import qualified AOC2020.Day05 (solve)
 import qualified AOC2020.Day06 (solve)
+import qualified AOC2020.Day07 (solve)
+import qualified AOC2020.Day08 (solve)
+import qualified AOC2020.Day09 (solve)
 import System.Environment (getArgs)
 import Data.Text.IO (putStrLn)
 
@@ -19,6 +22,9 @@ solutions = Map.fromList
             ,   ("04", AOC2020.Day04.solve)
             ,   ("05", AOC2020.Day05.solve)
             ,   ("06", AOC2020.Day06.solve)
+            ,   ("07", AOC2020.Day07.solve)
+            ,   ("08", AOC2020.Day08.solve)
+            ,   ("09", AOC2020.Day09.solve)
             ]
 
 solveProblem :: Text -> Text -> RIO SimpleApp ()

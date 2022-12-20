@@ -62,9 +62,9 @@ solve' totalTime (Blueprint oreRobotCost clayRobotCost obsidianRobotCost geodeRo
             Nothing
         else
             Just (V4 (min ore (time*maxOreCost-oreRobots*(time-1)))
-                (min clay (time*maxClayCost-clayRobots*(time-1)))
-                (min obsidian (time*maxObsidianCost-obsidianRobots*(time-1)))
-                geode
+                    (min clay (time*maxClayCost-clayRobots*(time-1)))
+                    (min obsidian (time*maxObsidianCost-obsidianRobots*(time-1)))
+                    geode
                 , robots
                 , time
                 )
