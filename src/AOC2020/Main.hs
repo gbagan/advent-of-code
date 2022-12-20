@@ -13,6 +13,7 @@ import qualified AOC2020.Day08 (solve)
 import qualified AOC2020.Day09 (solve)
 import qualified AOC2020.Day10 (solve)
 import qualified AOC2020.Day11 (solve)
+import qualified AOC2020.Day12 (solve)
 import System.Environment (getArgs)
 import Data.Text.IO (putStrLn)
 
@@ -29,6 +30,7 @@ solutions = Map.fromList
             ,   ("09", AOC2020.Day09.solve)
             ,   ("10", AOC2020.Day10.solve)
             ,   ("11", AOC2020.Day11.solve)
+            ,   ("12", AOC2020.Day12.solve)
             ]
 
 solveProblem :: Text -> Text -> RIO SimpleApp ()
