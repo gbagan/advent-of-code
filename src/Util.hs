@@ -56,6 +56,10 @@ takeEnd :: Int -> [a] -> [a]
 takeEnd n xs = drop (length xs - n) xs
 {-# INLINE takeEnd #-}
 
+slice :: Int -> Int -> [a] -> [a]
+slice start end = take (end - start + 1) . drop start
+{-# INLINE slice #-}
+
 freqs :: Ord a => [a] -> Map a Int
 freqs = Map.fromListWith (+) . map (,1)
 {-# INLINE freqs #-}
