@@ -59,7 +59,7 @@ move2 grid (pos, dir)
 
 solve' :: (Grid -> (V2 Int, V2 Int) -> (V2 Int, V2 Int)) -> Input -> Int
 solve' move (Input grid instrs) = (r+1) * 1000 + (c+1) * 4 + dirScore finalDir where
-    (V2 r c, finalDir) = foldl' go (initPosition, V2 0 1) instrs where
+    (V2 r c, finalDir) = foldl' go (initPosition, V2 0 1) instrs
     go (pos, dir) = \case
         L -> (pos, goLeft dir)
         R -> (pos, goRight dir)
