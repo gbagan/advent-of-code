@@ -14,8 +14,7 @@ data Op = Add | Sub | Mul | Div
 parser :: Parser (HashMap Text Job)
 parser = Map.fromList <$> line `sepEndBy1` eol where
     line = (,) <$> monkey <* string ": " <*> job
-    job = JInt <$> decimal <|> job'
-    job' = Job <$> monkey <*> op <*> monkey
+    job = JInt <$> decimal <|> Job <$> monkey <*> op <*> monkey
     op = Add <$ string " + " <|> Sub <$ string " - "
         <|> Mul <$ string " * " <|> Div <$ string " / "
     monkey = Text.pack <$> some lowerChar

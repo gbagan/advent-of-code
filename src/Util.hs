@@ -5,6 +5,7 @@ import           RIO.List.Partial (maximum, (!!))
 import qualified RIO.Map as Map
 import qualified RIO.HashMap as HMap
 import qualified RIO.Text as Text
+import           Linear.V2 (V2(..))
 import           System.CPUTime (getCPUTime)
 import           Text.Megaparsec (Parsec, parse, errorBundlePretty, Token, MonadParsec)
 import qualified Text.Megaparsec.Char as P
@@ -91,7 +92,7 @@ clamp (l, u) = max l . min u
 {-# INLINE clamp #-}
 
 
-listTo2dMap :: [[a]] -> HashMap Point a
+listTo2dMap :: [[a]] -> HashMap (Int, Int) a
 listTo2dMap l = 
     HMap.fromList
         [((i, j), v) 
@@ -99,12 +100,12 @@ listTo2dMap l =
         , (i, v) <- zip [0..] row
         ]
 
-listTo2dMap' :: [[a]] -> Map Point a
+listTo2dMap' :: [[a]] -> HashMap (V2 Int) a
 listTo2dMap' l = 
-    Map.fromList
-        [((i, j), v) 
-        | (j, row) <- zip [0..] l
-        , (i, v) <- zip [0..] row
+    HMap.fromList
+        [(V2 i j, v) 
+        | (i, row) <- zip [0..] l
+        , (j, v) <- zip [0..] row
         ]
 
 adjacentPoints :: Point -> [Point]

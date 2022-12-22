@@ -14,11 +14,20 @@ nbRows (Matrix m) = V.length m
 nbColumns :: Matrix a -> Int
 nbColumns (Matrix m) = V.length (m V.! 0)
 
+-- partial
 (!) :: Matrix a -> (Int, Int) -> a
 (Matrix v) ! (i, j) = v V.! i V.! j
 
 (!?) :: Matrix a -> (Int, Int) -> Maybe a
 (Matrix v) !? (i, j) = v V.!? i >>= (V.!? j)
+
+-- partial
+row :: Int -> Matrix a -> Vector a
+row i (Matrix m) = m V.! i
+
+-- partial
+column :: Int -> Matrix a -> Vector a
+column i m = V.generate (nbRows m) \j -> m ! (j, i)
 
 elems :: Matrix a -> [a]
 elems (Matrix m) = concatMap V.toList . V.toList $ m

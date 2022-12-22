@@ -1,14 +1,14 @@
 -- https://adventofcode.com/2022/day/15
 module AOC2022.Day15 (solve) where
 import           RIO
-import           RIO.List (find)
+import           RIO.List (find, genericLength)
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol, string)
 import           Util (Parser, aoc, signedDecimal)
 
-data Coords = Coords !Int !Int deriving (Eq)
-data Interval = Interval !Int !Int deriving (Eq)
-data Scan = Scan !Coords !Coords !Int
+data Coords = Coords !Integer !Integer deriving (Eq)
+data Interval = Interval !Integer !Integer deriving (Eq)
+data Scan = Scan !Coords !Coords !Integer
 
 parser :: Parser [Scan]
 parser = line `sepEndBy1` eol where
@@ -26,7 +26,7 @@ parser = line `sepEndBy1` eol where
         pure $ Scan sensor beacon (manhattan sensor beacon)
 
 -- | manhattan distance
-manhattan :: Coords -> Coords -> Int
+manhattan :: Coords -> Coords -> Integer
 manhattan (Coords x1 y1) (Coords x2 y2) = abs (x1 - x2) + abs (y1 - y2)
 
 -- | two (discrete) intervals quasioverlap if their union is an interval
@@ -48,26 +48,26 @@ toDisjointUnion (itv:itvs) = case find (quasiOverlap itv) itvs of
     Just itv' -> toDisjointUnion $ union itv itv' : filter (/= itv') itvs
 
 -- | interval between a ball (w.r.t. Manhattan distance) and a row
-intersectionBallWithRow :: Coords -> Int -> Int -> Maybe Interval
+intersectionBallWithRow :: Coords -> Integer -> Integer -> Maybe Interval
 intersectionBallWithRow (Coords cx cy) radius row
     | dx < 0 = Nothing
     | otherwise = Just $ Interval (cx - dx) (cx + dx)
     where dx = radius - abs (cy - row)
 
 -- | number of points on the interval
-itvLength :: Interval -> Int
+itvLength :: Interval -> Integer
 itvLength (Interval a b) = b - a + 1
 
 -- | union of disjoint intervals that does not cointain non detected beacons
-intervalsWithoutBeacons :: Int -> [Scan] -> [Interval]
+intervalsWithoutBeacons :: Integer -> [Scan] -> [Interval]
 intervalsWithoutBeacons y =
         toDisjointUnion
         . mapMaybe (\(Scan sensor _ dist) -> intersectionBallWithRow sensor dist y)
 
-part1 :: [Scan] -> Int
+part1 :: [Scan] -> Integer
 part1 pairs = nbBeacons - nbDetectedBeacons where
     nbBeacons = sum . map itvLength $ intervalsWithoutBeacons yTarget pairs
-    nbDetectedBeacons = length $ nubOrd [x | Scan _ (Coords x y) _ <- pairs, y == yTarget]
+    nbDetectedBeacons = genericLength $ nubOrd [x | Scan _ (Coords x y) _ <- pairs, y == yTarget]
     yTarget = 2000000
 
 corners :: Scan -> [Coords]
@@ -97,7 +97,7 @@ isNotDetected scans point =
     scans & all \(Scan sensor beacon dist) ->
                     point /= beacon && manhattan sensor point >= dist
 
-part2 :: [Scan] -> Maybe Int
+part2 :: [Scan] -> Maybe Integer
 part2 scans = do
     Coords x y <- find (isNotDetected scans) candidates 
     pure $ x * 4000000 + y
