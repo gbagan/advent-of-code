@@ -11,7 +11,7 @@ import           Linear.V2 (V2(..))
 import           Data.List.Split (divvy)
 import           Util (Parser, aoc, freqs, kingAdjacentPoints')
 
-type Rule = HashSet (V2 Int) -> V2 Int -> Maybe (V2 Int)
+type Rule = ([V2 Int], V2 Int)
 
 parser :: Parser (HashSet (V2 Int))
 parser = listToV2Set <$> some tile `sepEndBy1` eol where
@@ -27,6 +27,7 @@ listToV2Set l =
         , v
         ]
 
+{-
 rules :: [Rule]
 rules = cycle
     [   \elves elf -> if not $ any (`Set.member` elves) [elf - V2 1 i | i <- [-1..1]]
@@ -42,16 +43,27 @@ rules = cycle
                      then Just (elf + V2 0 1)
                      else Nothing
     ]
+-}
+rules :: [Rule]
+rules = cycle
+    [ ([V2 (-1) i | i <- [-1..1]], V2 (-1) 0)
+    , ([V2 1 i | i <- [-1..1]], V2 1 0)
+    , ([V2 i (-1) | i <- [-1..1]], V2 0 (-1))
+    , ([V2 i 1 | i <- [-1..1]], V2 0 1)
+    ]
 
 runRound :: [Rule] -> HashSet (V2 Int) -> HashSet (V2 Int)
 runRound rules' elves = elves' where
     transitions = elves & Set.map \elf ->
         if not $ any (`Set.member` elves) (kingAdjacentPoints' elf)
         then (elf, elf)
-        else (elf, fromMaybe elf . listToMaybe $ catMaybes [rule elves elf | rule <- rules'])
-    elfMap = freqs . map snd $ Set.toList transitions
+        else (elf, fromMaybe elf . listToMaybe $ mapMaybe (applyRule elf) rules')
+    applyRule elf (checks, move) = if not $ any ((`Set.member` elves) . (+elf)) checks
+                     then Just (elf + move)
+                     else Nothing
+    elfCounter = freqs . map snd $ Set.toList transitions
     elves' = transitions & Set.map \(elf, elf') ->
-        if elfMap Map.! elf' >= 2 then elf else elf'
+        if elfCounter Map.! elf' >= 2 then elf else elf'
 
 simulate :: HashSet (V2 Int) -> [HashSet (V2 Int)]
 simulate elves = scanl' (flip runRound) elves rules' where
@@ -60,7 +72,7 @@ simulate elves = scanl' (flip runRound) elves rules' where
 part1 :: HashSet (V2 Int) -> Int
 part1 elves = (maxr - minr + 1) * (maxc - minc + 1) - Set.size elves' where
     elves' = simulate elves !! 10
-    minr = minimum [r | V2 r _ <- Set.toList elves'] 
+    minr = minimum [r | V2 r _ <- Set.toList elves']
     maxr = maximum [r | V2 r _ <- Set.toList elves']
     minc = minimum [c | V2 _ c <- Set.toList elves']
     maxc = maximum [c | V2 _ c <- Set.toList elves']
