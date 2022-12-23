@@ -2,8 +2,8 @@ module AOC2021.Day19 (solve) where
 import           RIO hiding (some)
 import           RIO.List (scanl, transpose)
 import           RIO.List.Partial (maximum)
+import qualified RIO.HashMap as Map
 import           Data.Either.Combinators (maybeToRight)
-import qualified Data.Map as Map
 import           Linear.V3 (V3(..))
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (char, eol, numberChar, string)

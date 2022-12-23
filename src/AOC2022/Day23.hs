@@ -3,14 +3,13 @@ module AOC2022.Day23 (solve) where
 import           RIO hiding (some)
 import           RIO.List (cycle, scanl')
 import           RIO.List.Partial (minimum, maximum, (!!))
-import qualified RIO.HashMap as Map
 import qualified RIO.HashMap.Partial as Map ((!))
 import qualified RIO.HashSet as Set
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (char, eol)
 import           Linear.V2 (V2(..))
 import           Data.List.Split (divvy)
-import           Util (Parser, aoc, kingAdjacentPoints')
+import           Util (Parser, aoc, freqs, kingAdjacentPoints')
 
 type Rule = HashSet (V2 Int) -> V2 Int -> Maybe (V2 Int)
 
@@ -50,7 +49,7 @@ runRound rules' elves = elves' where
         if not $ any (`Set.member` elves) (kingAdjacentPoints' elf)
         then (elf, elf)
         else (elf, fromMaybe elf . listToMaybe $ catMaybes [rule elves elf | rule <- rules'])
-    elfMap = Map.fromListWith (+) [(elf, 1::Int) | (_, elf) <- Set.toList transitions]
+    elfMap = freqs . map snd $ Set.toList transitions
     elves' = transitions & Set.map \(elf, elf') ->
         if elfMap Map.! elf' >= 2 then elf else elf'
 

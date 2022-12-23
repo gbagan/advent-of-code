@@ -2,7 +2,6 @@ module Util where
 import           RIO
 import           RIO.List (sort, genericLength)
 import           RIO.List.Partial (maximum, (!!))
-import qualified RIO.Map as Map
 import qualified RIO.HashMap as HMap
 import qualified RIO.Text as Text
 import           Linear.V2 (V2(..))
@@ -61,8 +60,8 @@ slice :: Int -> Int -> [a] -> [a]
 slice start end = take (end - start + 1) . drop start
 {-# INLINE slice #-}
 
-freqs :: Ord a => [a] -> Map a Int
-freqs = Map.fromListWith (+) . map (,1)
+freqs :: Hashable a => [a] -> HashMap a Int
+freqs = HMap.fromListWith (+) . map (,1)
 {-# INLINE freqs #-}
 
 allUnique :: Ord a => [a] -> Bool
