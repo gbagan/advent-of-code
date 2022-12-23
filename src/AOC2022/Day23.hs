@@ -17,7 +17,6 @@ parser :: Parser (HashSet (V2 Int))
 parser = listToV2Set <$> some tile `sepEndBy1` eol where
     tile = False <$ char '.' <|> True <$ char '#'
 
-
 listToV2Set :: [[Bool]] -> HashSet (V2 Int)
 listToV2Set l =
     Set.fromList
@@ -27,23 +26,6 @@ listToV2Set l =
         , v
         ]
 
-{-
-rules :: [Rule]
-rules = cycle
-    [   \elves elf -> if not $ any (`Set.member` elves) [elf - V2 1 i | i <- [-1..1]]
-                     then Just (elf - V2 1 0)
-                     else Nothing
-    ,   \elves elf -> if not $ any (`Set.member` elves) [elf + V2 1 i | i <- [-1..1]]
-                     then Just (elf + V2 1 0)
-                     else Nothing
-    ,   \elves elf -> if not $ any (`Set.member` elves) [elf - V2 i 1 | i <- [-1..1]]
-                     then Just (elf - V2 0 1)
-                     else Nothing
-    ,   \elves elf -> if not $ any (`Set.member` elves) [elf + V2 i 1 | i <- [-1..1]]
-                     then Just (elf + V2 0 1)
-                     else Nothing
-    ]
--}
 rules :: [Rule]
 rules = cycle
     [ ([V2 (-1) i | i <- [-1..1]], V2 (-1) 0)
