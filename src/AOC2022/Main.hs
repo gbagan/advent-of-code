@@ -25,6 +25,7 @@ import qualified AOC2022.Day20 (solve)
 import qualified AOC2022.Day21 (solve)
 import qualified AOC2022.Day22 (solve)
 import qualified AOC2022.Day23 (solve)
+import qualified AOC2022.Day24 (solve)
 import System.Environment (getArgs)
 import Data.Text.IO (putStrLn)
 
@@ -53,6 +54,7 @@ solutions = Map.fromList
             ,   ("21", AOC2022.Day21.solve)
             ,   ("22", AOC2022.Day22.solve)
             ,   ("23", AOC2022.Day23.solve)
+            ,   ("24", AOC2022.Day24.solve)
             ]
 
 solveProblem :: Text -> Text -> RIO SimpleApp ()
