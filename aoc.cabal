@@ -139,6 +139,7 @@ executable aoc2022
                 AOC2022.Day22
                 AOC2022.Day23
                 AOC2022.Day24
+                AOC2022.Day25
                 Util
                 Util.Matrix
                 Util.Search
