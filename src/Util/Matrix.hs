@@ -16,10 +16,10 @@ nbColumns (Matrix m) = V.length (m V.! 0)
 
 -- partial
 (!) :: Matrix a -> (Int, Int) -> a
-(Matrix v) ! (i, j) = v V.! i V.! j
+Matrix v ! (i, j) = v V.! i V.! j
 
 (!?) :: Matrix a -> (Int, Int) -> Maybe a
-(Matrix v) !? (i, j) = v V.!? i >>= (V.!? j)
+Matrix v !? (i, j) = v V.!? i >>= (V.!? j)
 
 -- partial
 row :: Int -> Matrix a -> Vector a
@@ -39,4 +39,4 @@ fromList :: [[a]] -> Matrix a
 fromList = Matrix . V.fromList . map V.fromList
 
 generate :: Int -> Int -> (Int -> Int -> a) -> Matrix a
-generate n m f = Matrix $ V.generate n \i -> V.generate m (f i)
+generate n m f = Matrix $ V.generate n (V.generate m . f)

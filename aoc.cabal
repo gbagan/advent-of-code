@@ -1,4 +1,4 @@
-name:                aoc2022
+name:                aoc
 version:             0.1.0.0
 license:             MIT
 author:              Guillaume Bagan
@@ -95,6 +95,7 @@ executable aoc2021
                     OverloadedStrings
                     TupleSections
                     TypeFamilies
+                    TypeOperators
 
     ghc-options:
               -Wall
@@ -158,6 +159,7 @@ executable aoc2022
                     TupleSections
                     TypeApplications
                     TypeFamilies
+                    TypeOperators
     ghc-options:
               -Wall
               -Wcompat
@@ -172,7 +174,45 @@ executable aoc2022
                      , microlens-th
                      , rio
                      , rosezipper
-                     , search-algorithms 
+                     , split
+                     , streams
+                     , text
+
+executable aoc2023
+    hs-source-dirs:      src
+    main-is:             AOC2023/Main.hs
+    other-modules:
+                AOC2023.Day01
+                Util
+                Util.Matrix
+                Util.Search
+
+    default-language:    Haskell2010
+    default-extensions:
+                    BangPatterns
+                    BlockArguments
+                    LambdaCase
+                    MultiWayIf
+                    NamedFieldPuns
+                    NoImplicitPrelude
+                    OverloadedStrings
+                    RecordWildCards
+                    TemplateHaskell
+                    TupleSections
+                    TypeApplications
+                    TypeFamilies
+                    TypeOperators
+    ghc-options:
+              -Wall
+              -Wcompat
+              -Wincomplete-uni-patterns
+              -Wredundant-constraints
+    build-depends:   base >= 4.15 && < 5
+                     , containers
+                     , extra
+                     , linear
+                     , megaparsec
+                     , rio
                      , split
                      , streams
                      , text

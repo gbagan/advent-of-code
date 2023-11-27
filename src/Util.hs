@@ -2,10 +2,13 @@ module Util where
 import           RIO
 import           RIO.List (sort, genericLength)
 import           RIO.List.Partial (maximum, (!!))
+import           Prelude (type (~))
+import qualified RIO.Map as Map
 import qualified RIO.HashMap as HMap
 import qualified RIO.Text as Text
 import           Linear.V2 (V2(..))
 import           System.CPUTime (getCPUTime)
+import           System.Environment (getArgs)
 import           Text.Megaparsec (Parsec, parse, errorBundlePretty, Token, MonadParsec)
 import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -14,6 +17,18 @@ import           Data.Text.IO (putStrLn)
 type Parser = Parsec Void Text
 type BinParser = Parsec Void [Bool]
 type Point = (Int, Int)
+
+solveProblem :: Map Text (Text -> RIO SimpleApp ()) -> Text -> Text -> RIO SimpleApp ()
+solveProblem solutions year name = case Map.lookup name solutions of
+    Just solve -> do
+        liftIO $ putStrLn $ "Solve day " <> name
+        solve =<< readFileUtf8 (Text.unpack $ "./data/" <> year <> "/data" <> name)
+    Nothing -> liftIO $ putStrLn $ "Day not implemented: " <> name
+
+aocMain :: Text -> Map Text (Text -> RIO SimpleApp ()) -> IO ()
+aocMain year solutions = runSimpleApp do
+    args <- map Text.pack <$> liftIO getArgs
+    traverse_ (solveProblem solutions year) if null args then Map.keys solutions else args
 
 -- templates
 
@@ -77,7 +92,7 @@ average xs = realToFrac (sum xs) / genericLength xs
 {-# INLINE average #-}
 
 majority :: (a -> Bool) -> [a] -> Bool
-majority f l = 2* count f l >= length l
+majority f l = 2 * count f l >= length l
 
 median :: Ord a => [a] -> a
 median l = sort l !! (length l `div` 2)

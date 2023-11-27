@@ -72,9 +72,3 @@ part2 rocks = runST $ do
 
 solve :: MonadIO m => Text -> m ()
 solve = aoc' parser (pure . precomp) part1 part2
-
-
-{- old implementation
-part2 :: Rocks -> Int
-part2 rocks = 1 + fillUntil (== origin) rocks
--}
