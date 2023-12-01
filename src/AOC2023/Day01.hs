@@ -2,7 +2,7 @@
 module AOC2023.Day01 (solve) where
 import           RIO hiding (some)
 import           RIO.Char (isDigit)
-import           RIO.List (find, isPrefixOf)
+import           RIO.List (tails, isPrefixOf)
 import           RIO.List.Partial (head, last)
 import           RIO.Partial (read)
 import           Text.Megaparsec (sepEndBy1, some)
@@ -13,20 +13,16 @@ parser :: Parser [String]
 parser = some alphaNumChar `sepEndBy1` eol
 
 solveWith :: (String -> String) -> [String] -> Int
-solveWith f = sum . map readInt where
-    readInt s = let x = f s in read @Int [head x, last x]
+solveWith toDigits = sum . map lineToInt where
+    lineToInt s = let x = toDigits s in read @Int [head x, last x]
 
-filter1 :: String -> String
-filter1 = filter isDigit
+toDigits1 :: String -> String
+toDigits1 = filter isDigit
 
-filter2 :: String -> String
-filter2 "" = ""
-filter2 (x:xs) | isDigit x = x : filter2 xs
-               | otherwise =
-                    case pairs & find \(_, digit) -> digit `isPrefixOf` (x:xs) of
-                        Nothing -> filter2 xs
-                        Just (c, _) -> c : filter2 xs
-    where pairs = zip ['1'..'9'] ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+toDigits2 :: String -> String
+toDigits2 = concatMap matchToken . tails where
+    matchToken xs = [digit | (digit, token) <- tokens, token `isPrefixOf` xs]
+    tokens = zip (['1'..'9'] ++ ['1'..'9']) ["1", "2", "3", "4", "5", "6", "7", "8", "9", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
 
 solve :: MonadIO m => Text -> m ()
-solve = aoc parser (solveWith filter1) (solveWith filter2)
+solve = aoc parser (solveWith toDigits1) (solveWith toDigits2)
