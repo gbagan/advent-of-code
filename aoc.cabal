@@ -183,6 +183,7 @@ executable aoc2023
     main-is:             AOC2023/Main.hs
     other-modules:
                 AOC2023.Day01
+                AOC2023.Day02
                 Util
                 Util.Matrix
                 Util.Search

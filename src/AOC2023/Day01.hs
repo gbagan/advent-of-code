@@ -2,7 +2,7 @@
 module AOC2023.Day01 (solve) where
 import           RIO hiding (some)
 import           RIO.Char (isDigit)
-import           RIO.List (isPrefixOf)
+import           RIO.List (find, isPrefixOf)
 import           RIO.List.Partial (head, last)
 import           RIO.Partial (read)
 import           Text.Megaparsec (sepEndBy1, some)
@@ -21,17 +21,12 @@ filter1 = filter isDigit
 
 filter2 :: String -> String
 filter2 "" = ""
-filter2 (x:xs) | "one" `isPrefixOf` (x:xs) = '1' : filter2 xs
-               | "two" `isPrefixOf` (x:xs) = '2' : filter2 xs
-               | "three" `isPrefixOf` (x:xs) = '3' : filter2 xs
-               | "four" `isPrefixOf` (x:xs) = '4' : filter2 xs
-               | "five" `isPrefixOf` (x:xs) = '5' : filter2 xs
-               | "six" `isPrefixOf` (x:xs) = '6' : filter2 xs
-               | "seven" `isPrefixOf` (x:xs) = '7' : filter2 xs
-               | "eight" `isPrefixOf` (x:xs) = '8' : filter2 xs
-               | "nine" `isPrefixOf` (x:xs) = '9' : filter2 xs
-               | isDigit x = x : filter2 xs
-               | otherwise = filter2 xs
+filter2 (x:xs) | isDigit x = x : filter2 xs
+               | otherwise =
+                    case pairs & find \(_, digit) -> digit `isPrefixOf` (x:xs) of
+                        Nothing -> filter2 xs
+                        Just (c, _) -> c : filter2 xs
+    where pairs = zip ['1'..'9'] ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
 
 solve :: MonadIO m => Text -> m ()
 solve = aoc parser (solveWith filter1) (solveWith filter2)

@@ -1,5 +1,5 @@
--- https://adventofcode.com/2022/day/1
-module AOC2022.Day01 (solve) where
+-- https://adventofcode.com/2023/day/2
+module AOC2023.Day02 (solve) where
 import           RIO
 import           RIO.List (sort)
 import           Text.Megaparsec (sepEndBy1)
@@ -10,8 +10,8 @@ import           Util (Parser, aoc, takeEnd)
 parser :: Parser [[Int]]
 parser = (decimal `sepEndBy1` eol) `sepEndBy1` eol
 
-solveWith :: Int -> [[Int]] -> Int
-solveWith n = sum . takeEnd n . sort . map sum
+solve' :: Int -> [[Int]] -> Int
+solve' n = sum . takeEnd n . sort . map sum
 
 solve :: MonadIO m => Text -> m ()
-solve = aoc parser (solveWith 1) (solveWith 3)
+solve = aoc parser (solve' 1) (solve' 3)
