@@ -12,10 +12,9 @@ import           Util (Parser, aoc)
 parser :: Parser [String]
 parser = some alphaNumChar `sepEndBy1` eol
 
-solve' :: (String -> String) -> [String] -> Int
-solve' f = sum . map readInt where
-    readInt :: String -> Int
-    readInt s = let x = f s in read [head x, last x]
+solveWith :: (String -> String) -> [String] -> Int
+solveWith f = sum . map readInt where
+    readInt s = let x = f s in read @Int [head x, last x]
 
 filter1 :: String -> String
 filter1 = filter isDigit
@@ -35,4 +34,4 @@ filter2 (x:xs) | "one" `isPrefixOf` (x:xs) = '1' : filter2 xs
                | otherwise = filter2 xs
 
 solve :: MonadIO m => Text -> m ()
-solve = aoc parser (solve' filter1) (solve' filter2)
+solve = aoc parser (solveWith filter1) (solveWith filter2)
