@@ -184,6 +184,7 @@ executable aoc2023
     other-modules:
                 AOC2023.Day01
                 AOC2023.Day02
+                AOC2023.Day03
                 Util
                 Util.Matrix
                 Util.Search
