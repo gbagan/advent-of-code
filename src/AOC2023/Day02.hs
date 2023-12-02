@@ -6,9 +6,7 @@ import           Text.Megaparsec.Char (char, eol, string)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 
-data Color = Red | Green | Blue
-
-data Game = Game Int [(Int, Color)]
+data Game = Game Int [(Int, Int, Int)]
 
 parser :: Parser [Game]
 parser = game `sepEndBy1` eol where
@@ -16,30 +14,24 @@ parser = game `sepEndBy1` eol where
         _ <- string "Game "
         id_ <- decimal
         _ <- string ": "
-        sets_ <- set_ `sepEndBy1` (string "; " <|> string ", ")
-        return (Game id_ sets_)
-    set_ = do
+        sets_ <- rgbSet `sepEndBy1` (string "; " <|> string ", ")
+        return $ Game id_ sets_
+    rgbSet = do
         n <- decimal
         _ <- char ' '
-        color <- Blue <$ string "blue" <|> Red <$ string "red" <|> Green <$ string "green"
-        return (n, color)
+        (n, 0, 0) <$ string "red" <|> (0, n, 0) <$ string "green" <|> (0, 0, n) <$ string "blue"
 
-solve1 :: Int -> Int -> Int -> [Game] -> Int
-solve1 red green blue = sum . map solveGame where
+solve1 :: [Game] -> Int
+solve1 = sum . map solveGame where
     solveGame (Game id_ sets_) | all isPossibleSet sets_ = id_
                                | otherwise = 0
-    isPossibleSet (n, color) = case color of
-        Red -> n <= red
-        Green -> n <= green
-        Blue -> n <= blue
+    isPossibleSet (r, g, b) = r <= 12 && g <= 13 && b <= 14
 
 solve2 :: [Game] -> Int
 solve2 = sum . map solveGame where
-    solveGame (Game _ sets_) = r * g * b where (r, g, b) = foldl' go (0, 0, 0) sets_
-    go (red, green, blue) (n, color) = case color of
-        Red -> (max red n, green, blue)
-        Green -> (red, max n green, blue)
-        Blue -> (red, green, max n blue)
+    solveGame (Game _ sets_) = power . foldl' maxSet (0, 0, 0) $ sets_
+    maxSet (r, g, b) (r', g', b') = (max r r', max g g', max b b')
+    power (r, g, b) = r * g * b
 
 solve :: MonadIO m => Text -> m ()
-solve = aoc parser (solve1 12 13 14) solve2
+solve = aoc parser solve1 solve2
