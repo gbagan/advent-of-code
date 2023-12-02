@@ -31,12 +31,12 @@ solve1 table = sum . map (\(_, _, _, n) -> n) . filter checkBorders $ findNumber
 
 solve2 :: [[Char]] -> Int
 solve2 table = sum (map gear positions) where
-    gear (r, c, ch) = case adjacentRanges r c ch of
+    gear (r, c, _) = case adjacentRanges r c of
         [(_, _, _, x), (_, _, _, y)] -> x * y
         _ -> 0
-    adjacentRanges r c ch = ranges & filter \(row, start, end, _) -> ch == '*' && row-1 <= r && r <= row+1 && start-1 <= c && c <= end+1
+    adjacentRanges r c = ranges & filter \(row, start, end, _) -> row-1 <= r && r <= row+1 && start-1 <= c && c <= end+1
     ranges = findNumberRanges table
-    positions = [(r, c, ch) | (r, row) <- zip [0..] table, (c, ch) <- zip [0..] row]
+    positions = [(r, c, ch) | (r, row) <- zip [0..] table, (c, ch) <- zip [0..] row, ch == '*']
 
 solve :: MonadIO m => Text -> m ()
 solve = aoc parser solve1 solve2
