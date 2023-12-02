@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2023/day/2
 module AOC2023.Day02 (solve) where
-import           RIO
+import           RIO hiding (id, sets)
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (char, eol, string)
 import           Text.Megaparsec.Char.Lexer (decimal)
@@ -11,25 +11,22 @@ data Game = Game Int [(Int, Int, Int)]
 parser :: Parser [Game]
 parser = game `sepEndBy1` eol where
     game = do
-        _ <- string "Game "
-        id_ <- decimal
-        _ <- string ": "
-        sets_ <- rgbSet `sepEndBy1` (string "; " <|> string ", ")
-        return $ Game id_ sets_
+        id <- string "Game " *> decimal <* string ": "
+        sets <- rgbSet `sepEndBy1` (string "; " <|> string ", ")
+        pure $ Game id sets
     rgbSet = do
-        n <- decimal
-        _ <- char ' '
+        n <- decimal <* char ' '
         (n, 0, 0) <$ string "red" <|> (0, n, 0) <$ string "green" <|> (0, 0, n) <$ string "blue"
 
 solve1 :: [Game] -> Int
 solve1 = sum . map solveGame where
-    solveGame (Game id_ sets_) | all isPossibleSet sets_ = id_
-                               | otherwise = 0
+    solveGame (Game id sets) | all isPossibleSet sets = id
+                             | otherwise = 0
     isPossibleSet (r, g, b) = r <= 12 && g <= 13 && b <= 14
 
 solve2 :: [Game] -> Int
 solve2 = sum . map solveGame where
-    solveGame (Game _ sets_) = power . foldl' maxSet (0, 0, 0) $ sets_
+    solveGame (Game _ sets) = power . foldl' maxSet (0, 0, 0) $ sets
     maxSet (r, g, b) (r', g', b') = (max r r', max g g', max b b')
     power (r, g, b) = r * g * b
 
