@@ -8,7 +8,7 @@ import           Text.Megaparsec.Char (eol)
 import           Util (Parser, aoc)
 import qualified Util.Matrix as M
 
-type Token = (Int, Int, Int)
+type Token = (Int, Int, Int) -- row, start column, end column
 
 parser :: Parser (M.Matrix Char)
 parser = M.fromList <$> some (anySingleBut '\n') `sepEndBy1` eol
@@ -22,7 +22,7 @@ findTokens mat = concatMap tokensInRow $ [0..m-1] where
             [] | isDigit c -> [(i, j, j)]
                | otherwise -> []
             (row, start, end):ts | isDigit c && end == j-1 -> (row, start, end+1) : ts
-                                 | isDigit c -> (row, j, j):tokens
+                                 | isDigit c -> (row, j, j) : tokens
                                  | otherwise -> tokens
     n = M.nbColumns mat
     m = M.nbRows mat
