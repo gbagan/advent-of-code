@@ -12,9 +12,8 @@ parser :: Parser [Game]
 parser = game `sepEndBy1` eol where
     game = do
         id <- string "Game " *> decimal <* string ": "
-        sets <- rgbSet `sepEndBy1` (string "; " <|> string ", ")
-        pure $ Game id sets
-    rgbSet = do
+        Game id <$> colorSet `sepEndBy1` (string "; " <|> string ", ")
+    colorSet = do
         n <- decimal <* char ' '
         (n, 0, 0) <$ string "red" <|> (0, n, 0) <$ string "green" <|> (0, 0, n) <$ string "blue"
 
