@@ -35,7 +35,7 @@ solve1 red green blue = sum . map solveGame where
 
 solve2 :: [Game] -> Int
 solve2 = sum . map solveGame where
-    solveGame (Game _ sets_) = let (r, g, b) = foldl' go (0, 0, 0) sets_ in r * g * b
+    solveGame (Game _ sets_) = r * g * b where (r, g, b) = foldl' go (0, 0, 0) sets_
     go (red, green, blue) (n, color) = case color of
         Red -> (max red n, green, blue)
         Green -> (red, max n green, blue)
