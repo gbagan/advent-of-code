@@ -23,7 +23,11 @@ findNumberRanges grid = concatMap rangesInRow (zip [0..] grid) where
 
 part1 :: [[Char]] -> Int
 part1 grid = sum [n | (range, n) <- findNumberRanges grid, checkBorders range]  where
-    checkBorders (row, start, end) = any (maybe False isSymbol) [mat !? Ix2 r c | r <- [row-1..row+1], c <- [start-1..end+1]]
+    checkBorders (row, start, end) =
+        any (maybe False isSymbol) [ mat !? Ix2 r c
+                                   | r <- [row-1..row+1]
+                                   , c <- [start-1..end+1]
+                                   ]
     isSymbol ch = not (isDigit ch || ch == '.')
     mat = fromLists' @U Seq grid
 
@@ -32,9 +36,14 @@ part2 grid = sum . map gearOf $ starPositions where
     gearOf (r, c) = case adjacentRanges r c of
         [(_, x), (_, y)] -> x * y
         _ -> 0
-    adjacentRanges r c = ranges & filter \((row, start, end), _) -> row-1 <= r && r <= row+1 && start-1 <= c && c <= end+1
+    adjacentRanges r c = filter (isAdjacentTo r c) ranges 
+    isAdjacentTo r c ((row, start, end), _) = row-1 <= r && r <= row+1 && start-1 <= c && c <= end+1
     ranges = findNumberRanges grid
-    starPositions = [(r, c) | (r, row) <- zip [0..] grid, (c, ch) <- zip [0..] row, ch == '*']
+    starPositions = [ (r, c) 
+                    | (r, row) <- zip [0..] grid
+                    , (c, ch) <- zip [0..] row
+                    , ch == '*'
+                    ]
 
 solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2
