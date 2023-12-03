@@ -7,6 +7,7 @@ import           RIO.Char (isDigit)
 import           Text.Megaparsec (anySingleBut, sepEndBy1, some)
 import           Text.Megaparsec.Char (eol)
 import           Util (Parser, aoc)
+import           Data.List.Split (splitWhen)
 import           Util.Matrix ((!?), fromList)
 
 type NumberRange = (Int, Int, Int, Int) -- position of a number: row, start column, end column, the scanned number
@@ -16,12 +17,10 @@ parser = some (anySingleBut '\n') `sepEndBy1` eol
 
 findNumberRanges :: [[Char]] -> [NumberRange]
 findNumberRanges table = concatMap rangesInRow (zip [0..] table) where
-    rangesInRow (i, row) = go i (zip [0..] row)
-    go i js =
-        case break (isDigit . snd) js of
-            (_, []) -> []
-            (_, after) -> case span (isDigit . snd) after of
-                (before', after') -> (i, fst (head before'), fst (last before'), read @Int $ map snd before') : go i after'
+    rangesInRow (i, row) = [ (i, fst (head w), fst (last w), read @Int (map snd w)) 
+                           | w <- splitWhen (not . isDigit . snd) (zip [0..] row)
+                           , not (null w)
+                           ]
 
 solve1 :: [[Char]] -> Int
 solve1 table = sum . map (\(_, _, _, n) -> n) . filter checkBorders $ findNumberRanges table where
