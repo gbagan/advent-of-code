@@ -106,6 +106,13 @@ clamp (l, u) = max l . min u
 {-# INLINE clamp #-}
 
 
+flattenWithIndex :: [[a]] -> [(Int, Int, a)]
+flattenWithIndex l =
+    [(i, j, v)
+    | (i, row) <- zip [0..] l
+    , (j, v) <- zip [0..] row
+    ]
+
 listTo2dMap :: [[a]] -> HashMap (Int, Int) a
 listTo2dMap l =
     HMap.fromList

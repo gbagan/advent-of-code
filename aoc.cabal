@@ -23,7 +23,6 @@ executable aoc2020
                 AOC2020.Day11
                 AOC2020.Day12
                 Util
-                Util.Matrix
                 Util.Search
 
     default-language: Haskell2010
@@ -46,6 +45,7 @@ executable aoc2020
                    , array
                    , containers
                    , linear
+                   , massiv
                    , megaparsec
                    , microlens-platform
                    , rio
@@ -82,7 +82,6 @@ executable aoc2021
                 AOC2021.Day24
                 AOC2021.Day25
                 Util
-                Util.Matrix
                 Util.Search
 
     default-language: Haskell2010
@@ -142,7 +141,6 @@ executable aoc2022
                 AOC2022.Day24
                 AOC2022.Day25
                 Util
-                Util.Matrix
                 Util.Search
 
     default-language:    Haskell2010
@@ -171,6 +169,7 @@ executable aoc2022
                      , hashtables
                      , linear
                      , megaparsec
+                     , massiv
                      , microlens-th
                      , rio
                      , rosezipper
@@ -185,8 +184,8 @@ executable aoc2023
                 AOC2023.Day01
                 AOC2023.Day02
                 AOC2023.Day03
+                AOC2023.Day04
                 Util
-                Util.Matrix
                 Util.Search
 
     default-language:    Haskell2010
@@ -213,6 +212,7 @@ executable aoc2023
                      , containers
                      , extra
                      , linear
+                     , massiv
                      , megaparsec
                      , rio
                      , split
