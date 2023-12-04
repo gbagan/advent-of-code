@@ -217,4 +217,5 @@ executable aoc2023
                      , rio
                      , split
                      , streams
+                     , vector
                      , text
