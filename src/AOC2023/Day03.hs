@@ -17,7 +17,7 @@ parser = some (anySingleBut '\n') `sepEndBy1` eol
 
 findNumberRanges :: [[Char]] -> [NumberRange]
 findNumberRanges grid = concatMap rangesInRow (zip [0..] grid) where
-    rangesInRow (i, row) = [ ((i, fst (head w), fst (last w)), read @Int (map snd w)) 
+    rangesInRow (i, row) = [ ((i, fst (head w), fst (last w)), read @Int (map snd w))
                            | w <- wordsBy (not . isDigit . snd) (zip [0..] row)
                            ]
 

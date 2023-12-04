@@ -39,8 +39,8 @@ move needReverse (Instr nb fromIdx toIdx) ship = ship' where
     ship' = ship & ix (fromIdx-1) .~ toKeep
                  & ix (toIdx-1) %~ ((if needReverse then reverse else id) toMove ++)
 
-solve' :: Bool -> Input -> String
-solve' multi (Input ship instrs) = map head $ foldl' (flip $ move multi) ship instrs
+solveWith :: Bool -> Input -> String
+solveWith multi (Input ship instrs) = map head $ foldl' (flip $ move multi) ship instrs
 
 solve :: MonadIO m => Text -> m ()
-solve = aoc parser (solve' True) (solve' False)
+solve = aoc parser (solveWith True) (solveWith False)

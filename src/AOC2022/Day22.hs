@@ -57,8 +57,8 @@ move2 grid (pos, dir)
                                | otherwise -> (V2 (-1) 0, V2 199 (c-100))
         x -> x
 
-solve' :: (Grid -> (V2 Int, V2 Int) -> (V2 Int, V2 Int)) -> Input -> Int
-solve' move (Input grid instrs) = (r+1) * 1000 + (c+1) * 4 + dirScore finalDir where
+solveWith :: (Grid -> (V2 Int, V2 Int) -> (V2 Int, V2 Int)) -> Input -> Int
+solveWith move (Input grid instrs) = (r+1) * 1000 + (c+1) * 4 + dirScore finalDir where
     (V2 r c, finalDir) = foldl' go (initPosition, V2 0 1) instrs
     go (pos, dir) = \case
         L -> (pos, goLeft dir)
@@ -74,4 +74,4 @@ solve' move (Input grid instrs) = (r+1) * 1000 + (c+1) * 4 + dirScore finalDir w
     dirScore _ = 3
 
 solve :: MonadIO m => Text -> m ()
-solve = aoc parser (solve' move1) (solve' move2)
+solve = aoc parser (solveWith move1) (solveWith move2)

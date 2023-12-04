@@ -4,11 +4,12 @@ import           RIO
 import           RIO.Lens (ix)
 import           RIO.List (genericLength, iterate, sort)
 import           RIO.List.Partial ((!!))
+import           Data.List.Extra (takeEnd)
 import           Lens.Micro.TH (makeLenses)
 import           Text.Megaparsec (anySingle, manyTill, sepBy1, sepEndBy1)
 import           Text.Megaparsec.Char (eol, string)
 import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc, takeEnd)
+import           Util (Parser, aoc)
 
 data Monkey = Monkey {
         _items :: ![Integer]

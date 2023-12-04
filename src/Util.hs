@@ -18,17 +18,17 @@ type Parser = Parsec Void Text
 type BinParser = Parsec Void [Bool]
 type Point = (Int, Int)
 
-solveProblem :: Map Text (Text -> RIO SimpleApp ()) -> Text -> Text -> RIO SimpleApp ()
-solveProblem solutions year name = case Map.lookup name solutions of
-    Just solve -> do
-        liftIO $ putStrLn $ "Solve day " <> name
-        solve =<< readFileUtf8 (Text.unpack $ "./data/" <> year <> "/data" <> name)
-    Nothing -> liftIO $ putStrLn $ "Day not implemented: " <> name
-
 aocMain :: Text -> Map Text (Text -> RIO SimpleApp ()) -> IO ()
 aocMain year solutions = runSimpleApp do
     args <- map Text.pack <$> liftIO getArgs
-    traverse_ (solveProblem solutions year) if null args then Map.keys solutions else args
+    traverse_ solveProblem if null args then Map.keys solutions else args
+    where
+    solveProblem name = case Map.lookup name solutions of
+        Just solve -> do
+            liftIO $ putStrLn $ "Solve day " <> name
+            solve =<< readFileUtf8 (Text.unpack $ "./data/" <> year <> "/data" <> name)
+        Nothing -> liftIO $ putStrLn $ "Day not implemented: " <> name
+
 
 -- templates
 
@@ -55,7 +55,7 @@ aoc' parser precomp part1 part2 input = do
         Right parsed ->
             case precomp parsed of
                 Nothing -> liftIO $ putStrLn "  precomputation has failed"
-                Just p -> do
+                Just !p -> do
                     (duration1, res1) <- duration (pure $ part1 p)
                     liftIO $ putStrLn $ "  part 1: " <> tshow res1 <> " in " <> duration1
                     (duration2, res2) <- duration (let !v = part2 p in pure v)
@@ -66,10 +66,6 @@ aoc' parser precomp part1 part2 input = do
 count :: (a -> Bool) -> [a] -> Int
 count f = length . filter f
 {-# INLINE count #-}
-
-takeEnd :: Int -> [a] -> [a]
-takeEnd n xs = drop (length xs - n) xs
-{-# INLINE takeEnd #-}
 
 slice :: Int -> Int -> [a] -> [a]
 slice start end = take (end - start + 1) . drop start
@@ -104,7 +100,6 @@ cartesianProduct l1 l2 = (,) <$> l1 <*> l2
 clamp :: Ord a => (a, a) -> a -> a
 clamp (l, u) = max l . min u
 {-# INLINE clamp #-}
-
 
 flattenWithIndex :: [[a]] -> [(Int, Int, a)]
 flattenWithIndex l =
