@@ -29,10 +29,6 @@ travel maps seed = foldl' destFromSource seed maps where
             [] -> x
             (d:_) -> d
 
-reverseMaps :: [AMap] -> [AMap]
-reverseMaps = reverse . map (map reverseMap) where
-    reverseMap (dest, source, len) = (source, dest, len)
-
 part1 :: Almanac -> Int
 part1 (Almanac seeds maps) = minimum $ map (travel maps) seeds
 
@@ -44,10 +40,11 @@ pairwise (x:y:xs) = (x, y) : pairwise xs
 part2 :: Almanac -> Maybe Int
 part2 (Almanac seeds maps) = find isValid [approx-1000..approx+1000] where
     approx = fromJust $ find isValid [0,1000..]
-    isValid = isSeed . travel maps'
+    isValid = isSeed . travel reverseMaps
     seeds' = [(start, start+len-1) | (start, len) <- pairwise seeds]
     isSeed x = seeds' & any \(start, end) -> start <= x && x <= end
-    maps' = reverseMaps maps
+    reverseMaps = reverse . map (map reverseMap) $ maps
+    reverseMap (dest, source, len) = (source, dest, len)
 
 solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2
