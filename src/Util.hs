@@ -56,9 +56,9 @@ aoc' parser precomp part1 part2 input = do
             case precomp parsed of
                 Nothing -> liftIO $ putStrLn "  precomputation has failed"
                 Just !p -> do
-                    (duration1, res1) <- duration (pure $ part1 p)
+                    (duration1, !res1) <- duration (pure $ part1 p)
                     liftIO $ putStrLn $ "  part 1: " <> tshow res1 <> " in " <> duration1
-                    (duration2, res2) <- duration (let !v = part2 p in pure v)
+                    (duration2, !res2) <- duration (pure $ part2 p)
                     liftIO $ putStrLn $ "  part 2: " <> tshow res2  <> " in " <> duration2
 
 -- functions on lists

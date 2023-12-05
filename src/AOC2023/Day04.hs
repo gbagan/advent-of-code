@@ -29,8 +29,9 @@ part1 = sum . map pow2 where
 part2 :: [Int] -> Int
 part2 = go . map (,1) where
     go [] = 0
-    go ((score, freq):xs) = freq + go (map (second (+freq)) before ++ after)  where
+    go ((score, freq):xs) = freq + go (before' ++ after) where
         (before, after) = splitAt score xs
+        before' = map (second (+freq)) before
 
 solve :: MonadIO m => Text -> m ()
 solve = aoc' parser (Just . precomp) part1 part2
