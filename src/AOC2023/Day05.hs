@@ -4,7 +4,7 @@ import           RIO hiding (some)
 import           RIO.List (find)
 import           RIO.List.Partial (minimum)
 import           RIO.Partial (fromJust) 
-import           Text.Megaparsec (anySingleBut, sepBy1, sepEndBy1, some)
+import           Text.Megaparsec (takeWhileP, sepBy1, sepEndBy1)
 import           Text.Megaparsec.Char (char, string, eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
@@ -15,10 +15,7 @@ data Almanac = Almanac [Int] [AMap]
 parser :: Parser Almanac
 parser = Almanac <$> seeds <* eol <* eol <*> amap `sepEndBy1` eol where
     seeds = string "seeds: " *> decimal `sepBy1` char ' '
-    amap = do
-        _ <- some (anySingleBut '\n')
-        _ <- eol
-        range `sepEndBy1` eol
+    amap = takeWhileP Nothing (/= '\n') *> eol *> range `sepEndBy1` eol
     range = (,,) <$> decimal <* char ' ' <*> decimal <* char ' ' <*> decimal
 
 

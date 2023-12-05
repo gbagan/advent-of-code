@@ -3,7 +3,7 @@ module AOC2023.Day04 (solve) where
 import           RIO hiding (some, many)
 import           RIO.List (splitAt)
 import qualified Data.IntSet as S
-import           Text.Megaparsec (anySingleBut, sepEndBy1, some, many)
+import           Text.Megaparsec (takeWhileP, sepEndBy1, some, many)
 import           Text.Megaparsec.Char (char, eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc')
@@ -13,7 +13,7 @@ type Card = ([Int], [Int])
 parser :: Parser [Card]
 parser = card `sepEndBy1` eol where
     card = do
-        _ <- some (anySingleBut ':') *> char ':'
+        _ <- takeWhileP Nothing (/= ':') *> char ':'
         (,) <$> list <* char '|' <*> list
     list = many (char ' ') *> decimal `sepEndBy1` some (char ' ')
 
