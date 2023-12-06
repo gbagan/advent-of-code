@@ -14,11 +14,11 @@ parser = (,) <$> ("Time:" *> list) <*> (eol *> "Distance:" *> list) where
     list = hspace *> decimal `sepEndBy1` hspace
 
 solveWith :: (Input -> [(Int, Int)]) -> Input -> Int
-solveWith toRaces = product . map forRace . toRaces where
-    forRace (time, distance) = ceiling root2 - floor root1 - 1 where
+solveWith toRaces = product . map solveForRace . toRaces where
+    solveForRace (time, distance) = max 0 (ceiling root2 - floor root1 - 1) where
         t = fromIntegral time :: Double
         d = fromIntegral distance :: Double
-        delta = sqrt (t*t - 4*d)
+        delta = sqrt $ max 0 (t*t - 4*d)
         root1 = (t - delta) / 2
         root2 = (t + delta) / 2
 
