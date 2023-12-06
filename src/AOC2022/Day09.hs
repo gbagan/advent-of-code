@@ -5,7 +5,7 @@ import           RIO.List (scanl')
 import           RIO.List.Partial (last)
 import qualified RIO.Set as Set
 import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, eol, space)
+import           Text.Megaparsec.Char (eol, space)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, clamp)
 
@@ -16,10 +16,10 @@ type Rope = [Knot]
 parser :: Parser [Direction]
 parser = concat <$> (line `sepEndBy1` eol) where
     line = flip replicate <$> direction <* space <*> decimal
-    direction = L <$ char 'L'
-            <|> R <$ char 'R'
-            <|> U <$ char 'U'
-            <|> D <$ char 'D'
+    direction = L <$ "L"
+            <|> R <$ "R"
+            <|> U <$ "U"
+            <|> D <$ "D"
 
 moveKnot :: Knot -> Direction -> Knot
 moveKnot (Knot x y) dir = case dir of

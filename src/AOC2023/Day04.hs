@@ -3,8 +3,8 @@ module AOC2023.Day04 (solve) where
 import           RIO hiding (some, many)
 import           RIO.List (splitAt)
 import qualified Data.IntSet as S
-import           Text.Megaparsec (takeWhileP, sepEndBy1, some, many)
-import           Text.Megaparsec.Char (char, eol)
+import           Text.Megaparsec (takeWhileP, sepEndBy1)
+import           Text.Megaparsec.Char (char, eol, hspace)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc')
 
@@ -15,7 +15,7 @@ parser = card `sepEndBy1` eol where
     card = do
         _ <- takeWhileP Nothing (/= ':') *> char ':'
         (,) <$> list <* "|" <*> list
-    list = many (char ' ') *> decimal `sepEndBy1` some (char ' ')
+    list = hspace *> decimal `sepEndBy1` hspace
 
 precomp :: [Card] -> [Int]
 precomp = map score where

@@ -3,7 +3,7 @@ import           RIO
 import           RIO.List (iterate)
 import qualified RIO.HashMap as Map
 import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, eol, string)
+import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, freqs)
 
@@ -12,8 +12,8 @@ data Diag = Diag | NoDiag deriving Eq
 
 parser :: Parser [Line]
 parser = line `sepEndBy1` eol where
-    coord = (,) <$> decimal <* char ',' <*> decimal
-    line = Line <$> coord <* string " -> " <*> coord
+    coord = (,) <$> decimal <* "," <*> decimal
+    line = Line <$> coord <* " -> " <*> coord
 
 points :: Diag -> Line -> [(Int, Int)]
 points diag (Line (x1, y1) (x2, y2))
@@ -27,7 +27,7 @@ points diag (Line (x1, y1) (x2, y2))
     | otherwise    = []
 
 countIntersections :: Diag -> [Line] -> Int
-countIntersections diag = Map.size . Map.filter (>1) . freqs . (>>= points diag)
+countIntersections diag = Map.size . Map.filter (>1) . freqs . concatMap (points diag)
 
 solve :: MonadIO m => Text -> m ()
 solve = aoc parser (countIntersections NoDiag) (countIntersections Diag)

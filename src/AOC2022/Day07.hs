@@ -3,7 +3,7 @@ module AOC2022.Day07 (solve) where
 import           RIO hiding (some)
 import           RIO.List.Partial (minimum)
 import           Text.Megaparsec (some)
-import           Text.Megaparsec.Char (alphaNumChar, char, eol, string)
+import           Text.Megaparsec.Char (alphaNumChar, char, eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import qualified Data.Tree as T
 import qualified Data.Tree.Zipper as Z
@@ -17,12 +17,12 @@ type ZFS = Z.TreePos Z.Full File
 
 parser :: Parser [Cmd]
 parser = some (cd <|> ls) where
-    cd = Cd <$> (string "$ cd " *> filename <* eol)
-    ls = Ls <$> (string "$ ls" *> eol *> some file)
+    cd = Cd <$> ("$ cd " *> filename <* eol)
+    ls = Ls <$> ("$ ls" *> eol *> some file)
     filename = some (alphaNumChar <|> char '.' <|> char '/')
     file = (rfile <|> dir) <* eol
-    rfile = flip (File RegularFile) <$> (decimal <* char ' ') <*> filename
-    dir = flip (File Directory) 0 <$> (string "dir " *> filename)
+    rfile = flip (File RegularFile) <$> (decimal <* " ") <*> filename
+    dir = flip (File Directory) 0 <$> ("dir " *> filename)
 
 changeDir :: String -> ZFS -> Maybe ZFS
 changeDir name = go <=< Z.firstChild where

@@ -7,7 +7,7 @@ import           RIO.Lens (ix)
 import           RIO.List (splitAt, transpose)
 import           RIO.List.Partial (head, (!!))
 import           Text.Megaparsec (anySingle, between, manyTill, sepEndBy1, sepBy1)
-import           Text.Megaparsec.Char (char, eol, string, upperChar)
+import           Text.Megaparsec.Char (eol, upperChar)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 
@@ -19,17 +19,17 @@ data Input = Input Ship [Instr]
 parser :: Parser Input
 parser = Input <$> ship <* garbage <*> instrs where
     ship = map catMaybes . transpose <$> shipLine `sepEndBy1` eol
-    shipLine = (crate <|> emptySlot) `sepBy1` char ' '
-    crate = Just <$> between (char '[') (char ']') upperChar
-    emptySlot = Nothing <$ string "   "
+    shipLine = (crate <|> emptySlot) `sepBy1` " "
+    crate = Just <$> between "[" "]" upperChar
+    emptySlot = Nothing <$ "   "
     garbage = manyTill anySingle eol *> eol
     instrs = instr `sepEndBy1` eol
     instr = do
-        _ <- string "move "
+        _ <- "move "
         move_ <- decimal
-        _ <- string " from "
+        _ <- " from "
         from <- decimal
-        _ <- string " to "
+        _ <- " to "
         to_ <- decimal
         pure $ Instr move_ from to_
 

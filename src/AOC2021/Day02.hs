@@ -2,7 +2,7 @@
 module AOC2021.Day02 (solve) where
 import           RIO
 import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (string, eol)
+import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 
@@ -10,9 +10,9 @@ data Instr = Forward !Int | IDown !Int
 
 parser :: Parser [Instr]
 parser = line `sepEndBy1` eol where
-    line = Forward <$> (string "forward " *> decimal)
-       <|> IDown <$> (string "down " *> decimal)
-       <|> IDown . negate <$> (string "up " *> decimal)
+    line = Forward <$> ("forward " *> decimal)
+       <|> IDown <$> ("down " *> decimal)
+       <|> IDown . negate <$> ("up " *> decimal)
 
 part1 :: [Instr] -> Int
 part1 l = tx * ty where

@@ -3,7 +3,7 @@ module AOC2023.Day06 (solve) where
 import           RIO
 import           RIO.Partial (read)
 import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, eol)
+import           Text.Megaparsec.Char (eol, hspace)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 
@@ -11,7 +11,7 @@ type Input = ([Int], [Int])
 
 parser :: Parser Input
 parser = (,) <$> ("Time:" *> list) <*> (eol *> "Distance:" *> list) where
-    list = many (char ' ') *> decimal `sepEndBy1` some (char ' ')
+    list = hspace *> decimal `sepEndBy1` hspace
 
 solveWith :: (Input -> [(Int, Int)]) -> Input -> Int
 solveWith f = product . map raceScore . f where

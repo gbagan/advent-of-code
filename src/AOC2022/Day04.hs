@@ -2,7 +2,7 @@
 module AOC2022.Day04 (solve) where
 import           RIO
 import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, eol)
+import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, count)
 
@@ -10,8 +10,8 @@ data Interval = Interval !Int !Int
 
 parser :: Parser [(Interval, Interval)]
 parser = pair `sepEndBy1` eol where
-    pair = (,) <$> assignment <* char ',' <*> assignment
-    assignment = Interval <$> decimal <* char '-' <*> decimal 
+    pair = (,) <$> assignment <* "," <*> assignment
+    assignment = Interval <$> decimal <* "-" <*> decimal 
 
 part1 :: [(Interval, Interval)] -> Int
 part1 = count fullyContains where

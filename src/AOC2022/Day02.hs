@@ -2,13 +2,13 @@
 module AOC2022.Day02 (solve) where
 import           RIO
 import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, space, eol)
+import           Text.Megaparsec.Char (space, eol)
 import           Util (Parser, aoc)
 
 parser :: Parser [(Int, Int)]
 parser = ((,) <$> select1 <* space <*> select2) `sepEndBy1` eol where
-    select1 = 0 <$ char 'A' <|> 1 <$ char 'B' <|> 2 <$ char 'C'
-    select2 = 0 <$ char 'X' <|> 1 <$ char 'Y' <|> 2 <$ char 'Z'
+    select1 = 0 <$ "A" <|> 1 <$ "B" <|> 2 <$ "C"
+    select2 = 0 <$ "X" <|> 1 <$ "Y" <|> 2 <$ "Z"
 
 score :: (Int, Int) -> Int
 score (s1, s2) = 3 * ((s2 - s1 + 1) `mod` 3) + s2 + 1
