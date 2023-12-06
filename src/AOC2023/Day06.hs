@@ -19,9 +19,8 @@ solveWith f = product . map raceScore . f where
         t = fromIntegral t' :: Double
         d = fromIntegral d' :: Double
         delta = sqrt (t*t - 4*d)
-        root1 =  (t - delta) / 2
-        root2 =  (t + delta) / 2
-
+        root1 = (t - delta) / 2
+        root2 = (t + delta) / 2
 
 parsePart2 :: Input -> [(Int, Int)]
 parsePart2 (l1, l2) = [(f l1, f l2)] where
@@ -29,7 +28,3 @@ parsePart2 (l1, l2) = [(f l1, f l2)] where
 
 solve :: MonadIO m => Text -> m ()
 solve = aoc parser (solveWith $ uncurry zip) (solveWith parsePart2)
-
-
-
- -- [0..t] & count \x -> x*(t-x) > d
