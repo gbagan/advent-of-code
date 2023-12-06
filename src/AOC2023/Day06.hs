@@ -14,17 +14,17 @@ parser = (,) <$> ("Time:" *> list) <*> (eol *> "Distance:" *> list) where
     list = hspace *> decimal `sepEndBy1` hspace
 
 solveWith :: (Input -> [(Int, Int)]) -> Input -> Int
-solveWith f = product . map raceScore . f where
-    raceScore (t', d') = floor root2 - ceiling root1 + 1 where
-        t = fromIntegral t' :: Double
-        d = fromIntegral d' :: Double
+solveWith toRaces = product . map forRace . toRaces where
+    forRace (time, distance) = floor root2 - ceiling root1 + 1 where
+        t = fromIntegral time :: Double
+        d = fromIntegral distance :: Double
         delta = sqrt (t*t - 4*d)
         root1 = (t - delta) / 2
         root2 = (t + delta) / 2
 
-parsePart2 :: Input -> [(Int, Int)]
-parsePart2 (l1, l2) = [(f l1, f l2)] where
+toOneRace :: Input -> [(Int, Int)]
+toOneRace (l1, l2) = [(f l1, f l2)] where
     f = read . concatMap show
 
 solve :: MonadIO m => Text -> m ()
-solve = aoc parser (solveWith $ uncurry zip) (solveWith parsePart2)
+solve = aoc parser (solveWith $ uncurry zip) (solveWith toOneRace)
