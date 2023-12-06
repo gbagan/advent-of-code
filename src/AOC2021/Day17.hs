@@ -1,15 +1,14 @@
 module AOC2021.Day17 (solve) where
 import           RIO
 import           RIO.List (iterate)
-import           Text.Megaparsec.Char (string)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, cartesianProduct, count)
 
 data Area = Area !Int !Int !Int !Int
 
 parser :: Parser Area
-parser = Area <$> (string "target area: x=" *> decimal) <* string ".." <*> decimal <*
-                    string ", y=-" <*> (negate <$> decimal) <* string "..-" <*> (negate <$> decimal)
+parser = Area <$> ("target area: x=" *> decimal) <* ".." <*> decimal <*
+                    ", y=-" <*> (negate <$> decimal) <* "..-" <*> (negate <$> decimal)
 
 part1 :: Area -> Int 
 part1 (Area _ _ ymin _) = (-ymin) * (-ymin -1) `div` 2 

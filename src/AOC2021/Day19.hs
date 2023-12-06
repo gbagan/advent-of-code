@@ -6,15 +6,16 @@ import qualified RIO.HashMap as Map
 import           Data.Either.Combinators (maybeToRight)
 import           Linear.V3 (V3(..))
 import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (char, eol, numberChar, string)
-import           Util (Parser, aoc', freqs, signedDecimal)
+import           Text.Megaparsec.Char (eol, numberChar)
+import           Util (Parser, aoc', freqs)
+import           Util.Parser (signedDecimal)
 
 type Scan = [V3 Int]
 
 parser :: Parser [Scan]
 parser = scan `sepEndBy1` eol where
-    scan = string "--- scanner " *> some numberChar *> string " ---" *> eol *> (coords `sepEndBy1` eol)
-    coords = V3 <$> signedDecimal <* char ',' <*> signedDecimal <* char ',' <*> signedDecimal
+    scan = "--- scanner " *> some numberChar *> " ---" *> eol *> (coords `sepEndBy1` eol)
+    coords = V3 <$> signedDecimal <* "," <*> signedDecimal <* "," <*> signedDecimal
 
 rotations :: V3 Int -> [V3 Int]
 rotations p = scanl (&) p [r,t,t,t,r,c,c,c,r,t,t,t,r,c,c,c,r,t,t,t,r,c,c,c]

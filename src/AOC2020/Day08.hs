@@ -7,7 +7,7 @@ import qualified RIO.Vector.Partial as V ((!))
 import qualified Lens.Micro.Platform ()
 import           RIO.Lens (ix)
 import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, eol, string)
+import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 
@@ -15,9 +15,9 @@ data Instr = Noop !Int | Acc !Int | Jmp !Int
 
 parser :: Parser (Vector Instr)
 parser = V.fromList <$> instr `sepEndBy1` eol where
-    instr = instr' <* char ' ' <*> signedDecimal
-    instr' = Noop <$ string "nop" <|> Acc <$ string "acc" <|> Jmp <$ string "jmp"
-    signedDecimal = (id <$ char '+' <|> negate <$ char '-') <*> decimal
+    instr = instr' <* " " <*> signedDecimal
+    instr' = Noop <$ "nop" <|> Acc <$ "acc" <|> Jmp <$ "jmp"
+    signedDecimal = (id <$ "+" <|> negate <$ "-") <*> decimal
 
 simulate :: Vector Instr -> Either (IntSet, Int) Int
 simulate instrs = go 0 0 Set.empty where

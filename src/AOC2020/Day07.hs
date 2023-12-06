@@ -5,7 +5,7 @@ import qualified RIO.Text as Text
 import qualified RIO.HashSet as Set
 import qualified RIO.HashMap as Map
 import           Text.Megaparsec (optional, sepBy1, sepEndBy1, some)
-import           Text.Megaparsec.Char (char, lowerChar, eol, string)
+import           Text.Megaparsec.Char (char, lowerChar, eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 
@@ -13,14 +13,14 @@ type Input = (Text, [(Int, Text)])
 
 parser :: Parser [Input]
 parser = input `sepEndBy1` eol where
-    input = (,) <$> bag <* string " contain " <*> 
-        ([] <$ "no other bags"  <|> (bags `sepBy1` string ", ")) <* char '.' 
-    bag = Text.pack <$> ((++) <$> some lowerChar <* char ' ' <*> some lowerChar <* string " bag" <* optional (char 's'))
+    input = (,) <$> bag <* " contain " <*> 
+        ([] <$ "no other bags"  <|> (bags `sepBy1` ", ")) <* char '.' 
+    bag = Text.pack <$> ((++) <$> some lowerChar <* " " <*> some lowerChar <* " bag" <* optional "s")
     bags = (,) <$> decimal <* char ' ' <*> bag 
 
 part1 :: [Input] -> Int
 part1 is = Set.size (go "shinygold") - 1 where
-    reverseMap = Map.fromListWith (++) [(y, [x]) | (x, ys) <- is, (_, y) <- ys] 
+    reverseMap = Map.fromListWith (++) [(y, [x]) | (x, ys) <- is, (_, y) <- ys]
     go name = Set.insert name $ Set.unions (map go (Map.lookupDefault [] name reverseMap))
 
 part2 :: [Input] -> Int

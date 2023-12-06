@@ -1,4 +1,5 @@
 -- https://adventofcode.com/2022/day/11
+{-# OPTIONS_GHC -Wno-unused-top-binds #-}
 module AOC2022.Day11 (solve) where
 import           RIO
 import           RIO.Lens (ix)
@@ -6,10 +7,11 @@ import           RIO.List (genericLength, iterate, sort)
 import           RIO.List.Partial ((!!))
 import           Data.List.Extra (takeEnd)
 import           Lens.Micro.TH (makeLenses)
-import           Text.Megaparsec (anySingle, manyTill, sepBy1, sepEndBy1)
-import           Text.Megaparsec.Char (eol, string)
+import           Text.Megaparsec (sepBy1, sepEndBy1)
+import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
+import           Util.Parser (skipLine)
 
 data Monkey = Monkey {
         _items :: ![Integer]
@@ -27,17 +29,17 @@ data Part = Part1 | Part2 deriving (Eq)
 parser :: Parser [Monkey]
 parser = monkey `sepEndBy1` eol where
     monkey = do
-        _ <- manyTill anySingle eol
-        _items <- string "  Starting items: " *> (decimal `sepBy1` string ", ") <* eol
-        _operation <- string "  Operation: new = old " *> op <* eol
-        _divBy <- string "  Test: divisible by " *> decimal <* eol
-        _ifTrue <- string "    If true: throw to monkey " *> decimal <* eol
-        _ifFalse <- string "    If false: throw to monkey " *> decimal <* eol
+        skipLine
+        _items <- "  Starting items: " *> (decimal `sepBy1` ", ") <* eol
+        _operation <- "  Operation: new = old " *> op <* eol
+        _divBy <- "  Test: divisible by " *> decimal <* eol
+        _ifTrue <- "    If true: throw to monkey " *> decimal <* eol
+        _ifFalse <- "    If false: throw to monkey " *> decimal <* eol
         let _inspected = 0
         pure $ Monkey {..}
     op = sqrOp <|> binop <*> decimal 
-    sqrOp = (\x -> x * x)  <$ string "* old"
-    binop = (+) <$ string "+ " <|> (*) <$ string "* "
+    sqrOp = (\x -> x * x)  <$ "* old"
+    binop = (+) <$ "+ " <|> (*) <$ "* "
 
 solve' :: Part -> Int -> [Monkey] -> Integer
 solve' part nbRounds mks = monkeyBusiness $ iterate runRound mks !! nbRounds where
@@ -49,8 +51,8 @@ solve' part nbRounds mks = monkeyBusiness $ iterate runRound mks !! nbRounds whe
                             & ix i . inspected %~ (+ genericLength (_items ithMonkey))
 
     throwItem sender monkeys item = monkeys & ix receiver . items %~ (newItem :) where
-        newItem = (if part == Part1 then (`div` 3) else (`mod` modulo)) $ (sender ^. operation) item
-        receiver = if newItem `mod` (sender ^. divBy) == 0 then sender ^. ifTrue else sender ^. ifFalse
+        newItem = (if part == Part1 then (`div` 3) else (`mod` modulo)) $ _operation sender item
+        receiver = if newItem `mod` (sender ^. divBy) == 0 then _ifTrue sender else _ifFalse sender
     
     modulo = product $ map _divBy mks
 

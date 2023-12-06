@@ -8,7 +8,7 @@ import qualified RIO.Map as Map
 import qualified Data.IntSet as IS
 import qualified RIO.Set as Set
 import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (eol, lowerChar, hspace1, string)
+import           Text.Megaparsec.Char (eol, lowerChar, hspace1)
 import           Util (Parser, aoc)
 
 type Digit = IntSet
@@ -18,7 +18,7 @@ parser :: Parser [Line]
 parser = sepEndBy1 line eol where
     segment = (\c -> ord c - ord 'a') <$> lowerChar
     digits = (IS.fromList <$> some segment) `sepEndBy1` hspace1
-    line = Line <$> (Set.fromList <$> digits) <* string "| " <*> digits
+    line = Line <$> (Set.fromList <$> digits) <* "| " <*> digits
 
 part1 :: [Line] -> Int
 part1 xs = length $ xs >>= \(Line _ r) -> filter (\w -> IS.size w `elem` [2, 3, 4, 7]) r

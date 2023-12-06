@@ -2,20 +2,16 @@ module Util where
 import           RIO
 import           RIO.List (sort, genericLength)
 import           RIO.List.Partial (maximum, (!!))
-import           Prelude (type (~))
+import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
 import qualified RIO.Map as Map
 import qualified RIO.HashMap as HMap
 import qualified RIO.Text as Text
 import           Linear.V2 (V2(..))
 import           System.CPUTime (getCPUTime)
 import           System.Environment (getArgs)
-import           Text.Megaparsec (Parsec, parse, errorBundlePretty, Token, MonadParsec)
-import qualified Text.Megaparsec.Char as P
-import qualified Text.Megaparsec.Char.Lexer as L
 import           Data.Text.IO (putStrLn)
 
 type Parser = Parsec Void Text
-type BinParser = Parsec Void [Bool]
 type Point = (Int, Int)
 
 aocMain :: Text -> Map Text (Text -> RIO SimpleApp ()) -> IO ()
@@ -138,8 +134,3 @@ binToInt :: [Bool] -> Int
 binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
 {-# INLINE binToInt #-}
 
-signedDecimal :: (MonadParsec e s m, Token s ~ Char, Num a) => m a
-signedDecimal = L.decimal <|> P.char '-' *> (negate <$> L.decimal)
-
-bitP :: Parser Bool
-bitP = False <$ P.char '0' <|> True <$ P.char '1'

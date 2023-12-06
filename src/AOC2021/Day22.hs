@@ -1,16 +1,17 @@
 module AOC2021.Day22 (solve) where
 import           RIO
 import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol, string)
-import           Util (Parser, aoc, signedDecimal)
+import           Text.Megaparsec.Char (eol)
+import           Util (Parser, aoc)
+import           Util.Parser (signedDecimal)
 
 data Cube = Cube !Bool !(Int, Int) !(Int, Int) !(Int, Int)
 
 parser :: Parser [Cube]
 parser = cube `sepEndBy1` eol where
-    cube = Cube <$> onoff <* string " x=" <*> pair <* string ",y=" <*> pair <* string ",z=" <*> pair 
-    pair = (,) <$> signedDecimal <* string ".." <*> signedDecimal
-    onoff = True <$ string "on" <|> False <$ string "off"
+    cube = Cube <$> onoff <* " x=" <*> pair <* ",y=" <*> pair <* ",z=" <*> pair 
+    pair = (,) <$> signedDecimal <* ".." <*> signedDecimal
+    onoff = True <$ "on" <|> False <$ "off"
 
 disjoint :: Cube -> Cube -> Bool
 disjoint (Cube _ (xmin, xmax) (ymin, ymax) (zmin, zmax))

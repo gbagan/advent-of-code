@@ -4,7 +4,7 @@ import           RIO hiding (some)
 import qualified RIO.HashMap as Map
 import qualified RIO.Text as Text
 import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (eol, lowerChar, string)
+import           Text.Megaparsec.Char (eol, lowerChar)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 
@@ -13,10 +13,10 @@ data Op = Add | Sub | Mul | Div
 
 parser :: Parser (HashMap Text Job)
 parser = Map.fromList <$> line `sepEndBy1` eol where
-    line = (,) <$> monkey <* string ": " <*> job
+    line = (,) <$> monkey <* ": " <*> job
     job = JInt <$> decimal <|> Job <$> monkey <*> op <*> monkey
-    op = Add <$ string " + " <|> Sub <$ string " - "
-        <|> Mul <$ string " * " <|> Div <$ string " / "
+    op = Add <$ " + " <|> Sub <$ " - "
+        <|> Mul <$ " * " <|> Div <$ " / "
     monkey = Text.pack <$> some lowerChar
 
 calc :: Text -> HashMap Text Job -> Maybe Integer

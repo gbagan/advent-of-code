@@ -8,7 +8,7 @@ import           RIO.Vector.Partial ((!))
 import qualified RIO.HashMap as M
 import qualified RIO.HashMap.Partial as M ((!))
 import           Text.Megaparsec (sepEndBy1, sepBy1, some)
-import           Text.Megaparsec.Char (eol, string, upperChar)
+import           Text.Megaparsec.Char (eol, upperChar)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, maximumDef)
 
@@ -21,12 +21,10 @@ type DistanceMat = HashMap (Int, Int) Int
 parser :: Parser Input
 parser = mapToInput . M.fromList <$> valve `sepEndBy1` eol where
     valve = do
-        _ <- string "Valve "
-        name <- some upperChar
-        _ <- string " has flow rate="
-        rate <- decimal
-        _ <- string "; tunnels lead to valves " <|> string "; tunnel leads to valve "
-        nbors <- some upperChar `sepBy1` string ", "
+        name <- "Valve " *> some upperChar
+        rate <- " has flow rate=" *> decimal
+        _ <- "; tunnels lead to valves " <|> "; tunnel leads to valve "
+        nbors <- some upperChar `sepBy1` ", "
         pure (name, (rate, nbors))
 
 mapToInput :: HashMap String (Int, [String]) -> Input

@@ -4,7 +4,8 @@ import           RIO.List (unzip)
 import           RIO.List.Partial (maximum, minimum)
 import           Text.Megaparsec (anySingle, count, some, takeP, parseMaybe, takeRest)
 import           Text.Megaparsec.Char (hexDigitChar)
-import           Util (Parser, BinParser, aoc', binToInt)
+import           Util (Parser, aoc', binToInt)
+import           Util.Parser (BinParser)
 
 data Packet = Packet Int PacketData
 data PacketData = Lit Int | Op ([Int] -> Int) [Packet]

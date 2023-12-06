@@ -4,10 +4,11 @@ import           RIO hiding (some)
 import           RIO.List (sortOn)
 import           RIO.List.Partial (minimum)
 import           Data.Tuple.Extra (both, snd3, thd3)
-import           Text.Megaparsec (takeWhileP, sepBy1, sepEndBy1)
+import           Text.Megaparsec (sepBy1, sepEndBy1)
 import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
+import           Util.Parser (skipLine)
 
 type Interval = (Int, Int)
 type Range = (Int, Int, Int)
@@ -17,7 +18,7 @@ data Almanac = Almanac [Int] [AMap]
 parser :: Parser Almanac
 parser = Almanac <$> seeds <* eol <* eol <*> amap `sepEndBy1` eol where
     seeds = "seeds: " *> decimal `sepBy1` " "
-    amap = takeWhileP Nothing (/= '\n') *> eol *> range `sepEndBy1` eol
+    amap = skipLine *> range `sepEndBy1` eol
     range = (,,) <$> decimal <* " " <*> decimal <* " " <*> decimal
 
 chunksOf2 :: [a] -> [(a, a)]

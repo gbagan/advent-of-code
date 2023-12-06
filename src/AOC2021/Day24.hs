@@ -3,8 +3,9 @@ module AOC2021.Day24 (solve) where
 import           RIO
 import           RIO.List.Partial ((!!))
 import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, eol, string)
-import           Util (Parser, aoc', signedDecimal)
+import           Text.Megaparsec.Char (char, eol)
+import           Util (Parser, aoc')
+import           Util.Parser (signedDecimal)
 
 data Var = W | X | Y | Z deriving (Eq, Ord)
 data Val = Var Var | Int Int
@@ -12,13 +13,13 @@ data Instr = Input Var | Add Var Val |  Mul Var Val | Div Var Val | Mod Var Val 
 
 parser :: Parser [Instr]
 parser = instr `sepEndBy1` eol where
-    instr = input <|> binop <*> var <* char ' ' <*> val
-    input = string "inp " $> Input <*> var
-    binop = string "add " $> Add
-        <|> string "mul " $> Mul
-        <|> string "div " $> Div
-        <|> string "mod " $> Mod
-        <|> string "eql " $> Eql 
+    instr = input <|> binop <*> var <* " " <*> val
+    input = "inp " $> Input <*> var
+    binop = "add " $> Add
+        <|> "mul " $> Mul
+        <|> "div " $> Div
+        <|> "mod " $> Mod
+        <|> "eql " $> Eql 
     var = char 'w' $> W <|> char 'x' $> X <|> char 'y' $> Y <|> char 'z' $> Z
     val = Var <$> var <|> Int <$> signedDecimal
 

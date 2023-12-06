@@ -5,7 +5,7 @@ import           RIO.List.Partial (maximum)
 import           RIO.State (execState, modify')
 import           Linear.V4 (V4(..), _x, _y, _z)
 import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol, string)
+import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 import           Util.Search (dfsM)
@@ -16,14 +16,13 @@ data Blueprint = Blueprint !Resource !Resource !Resource !Resource
 parser :: Parser [Blueprint]
 parser = blueprint `sepEndBy1` eol where
     blueprint = do
-        _ <- string "Blueprint " *> (decimal :: Parser Int) 
-        ore1 <- string  ": Each ore robot costs " *> decimal
-        ore2 <- string " ore. Each clay robot costs " *> decimal
-        ore3 <- string " ore. Each obsidian robot costs " *> decimal
-        clay3 <- string " ore and " *> decimal
-        ore4 <- string " clay. Each geode robot costs " *> decimal
-        obs4 <- string " ore and " *> decimal
-        _ <- string " obsidian."
+        _ <- "Blueprint " *> (decimal :: Parser Int) 
+        ore1 <- ": Each ore robot costs " *> decimal
+        ore2 <- " ore. Each clay robot costs " *> decimal
+        ore3 <- " ore. Each obsidian robot costs " *> decimal
+        clay3 <- " ore and " *> decimal
+        ore4 <- " clay. Each geode robot costs " *> decimal
+        obs4 <- " ore and " *> decimal <* " obsidian."
         pure $ Blueprint (V4 ore1 0 0 0) (V4 ore2 0 0 0) (V4 ore3 clay3 0 0) (V4 ore4 0 obs4 0)
 
 solve' :: Int -> Blueprint -> Int

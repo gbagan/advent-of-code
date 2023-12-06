@@ -4,7 +4,8 @@ import           RIO.List (partition, transpose)
 import           RIO.List.Partial ((!!))
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (eol)
-import           Util (Parser, aoc, binToInt, bitP, majority)
+import           Util (Parser, aoc, binToInt, majority)
+import           Util.Parser (bitP)
 
 parser :: Parser [[Bool]]
 parser = some bitP `sepEndBy1` eol

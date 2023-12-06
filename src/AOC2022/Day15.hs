@@ -3,8 +3,9 @@ module AOC2022.Day15 (solve) where
 import           RIO
 import           RIO.List (find, genericLength)
 import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol, string)
-import           Util (Parser, aoc, signedDecimal)
+import           Text.Megaparsec.Char (eol)
+import           Util (Parser, aoc)
+import           Util.Parser (signedDecimal)
 
 data Coords = Coords !Integer !Integer deriving (Eq)
 data Interval = Interval !Integer !Integer deriving (Eq)
@@ -13,14 +14,10 @@ data Scan = Scan !Coords !Coords !Integer
 parser :: Parser [Scan]
 parser = line `sepEndBy1` eol where
     line = do
-        _ <- string "Sensor at x="
-        x1 <- signedDecimal
-        _ <- string ", y="
-        y1 <- signedDecimal
-        _ <- string ": closest beacon is at x="
-        x2 <- signedDecimal
-        _ <- string ", y="
-        y2 <- signedDecimal
+        x1 <- "Sensor at x=" *> signedDecimal
+        y1 <- ", y=" *> signedDecimal
+        x2 <- ": closest beacon is at x=" *> signedDecimal
+        y2 <- ", y=" *> signedDecimal
         let sensor = Coords x1 y1
         let beacon = Coords x2 y2
         pure $ Scan sensor beacon (manhattan sensor beacon)

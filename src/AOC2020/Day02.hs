@@ -2,7 +2,7 @@
 module AOC2020.Day02 (solve) where
 import           RIO hiding (some)
 import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (char, eol, lowerChar, string)
+import           Text.Megaparsec.Char (eol, lowerChar)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, count)
 import           RIO.Lens (ix) 
@@ -13,11 +13,11 @@ parser :: Parser [Input]
 parser = input `sepEndBy1` eol where
     input = do
         x <- decimal
-        _ <- char '-'
+        _ <- "-"
         y <- decimal
-        _ <- char ' '
+        _ <- " "
         c <- lowerChar
-        _ <- string ": "
+        _ <- ": "
         pwd <- some lowerChar
         pure $ Input x y c pwd
 

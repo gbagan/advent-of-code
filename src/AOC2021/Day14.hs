@@ -1,10 +1,10 @@
 module AOC2021.Day14 (solve) where
 import           RIO hiding (some)
-import           RIO.List (iterate, repeat)
+import           RIO.List (iterate)
 import           RIO.List.Partial (head, last, minimum, maximum, (!!))
 import qualified RIO.Map as Map
 import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (eol, string, upperChar)
+import           Text.Megaparsec.Char (eol, upperChar)
 import           Util (Parser, aoc)
 
 type Rules = Map String Char
@@ -14,16 +14,16 @@ data Input = Input String Rules
 parser :: Parser Input
 parser = Input <$> some upperChar <* eol <* eol <*> rules where
     rules = Map.fromList <$> sepEndBy1 rule eol
-    rule = (,) <$> some upperChar <* string " -> " <*> upperChar
+    rule = (,) <$> some upperChar <* " -> " <*> upperChar
 
 stringToPairsMap :: String -> PairsMap
-stringToPairsMap s = Map.fromListWith (+) $ zip (zip s (drop 1 s)) (repeat 1) 
+stringToPairsMap s = Map.fromListWith (+) $ zipWith (curry (,1)) s (drop 1 s)
 
 step :: Rules -> PairsMap -> PairsMap
 step rules = Map.fromListWith (+)
                 . Map.foldlWithKey' (\acc (a, b) v ->
                     case Map.lookup [a, b] rules of
-                        Nothing -> ((a, b), v) : acc 
+                        Nothing -> ((a, b), v) : acc
                         Just c  -> ((a, c), v) : ((c, b), v) : acc
                 ) []
 

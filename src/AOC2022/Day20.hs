@@ -8,7 +8,8 @@ import qualified RIO.Seq as Seq
 import           RIO.Seq (Seq(..), (><))
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol)
-import           Util (Parser, aoc, signedDecimal)
+import           Util (Parser, aoc)
+import           Util.Parser (signedDecimal)
 
 parser :: Parser [Int]
 parser = signedDecimal `sepEndBy1` eol

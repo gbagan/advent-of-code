@@ -4,7 +4,7 @@ import           RIO
 import           RIO.List.Partial (maximum)
 import qualified RIO.HashSet as Set
 import           Text.Megaparsec (sepEndBy1, sepBy1)
-import           Text.Megaparsec.Char (char, eol, string)
+import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc', cartesianProduct)
 import           Data.HashTable.ST.Basic as H
@@ -14,8 +14,8 @@ type Rocks = HashSet (Int, Int)
 
 parser :: Parser [Scan]
 parser = scan `sepEndBy1` eol where
-    scan = position `sepBy1` string " -> "
-    position = (,) <$> decimal <* char ',' <*> decimal
+    scan = position `sepBy1` " -> "
+    position = (,) <$> decimal <* "," <*> decimal
 
 origin :: (Int, Int)
 origin = (500, 0)

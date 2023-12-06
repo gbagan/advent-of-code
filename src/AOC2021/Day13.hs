@@ -7,7 +7,7 @@ import           RIO.List.Partial (head)
 import qualified RIO.Set as Set
 import qualified RIO.Text as Text
 import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (char, eol, string)
+import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, Point, aoc)
 
@@ -18,9 +18,9 @@ data Input = Input (Set Point) [Fold]
 parser :: Parser Input
 parser = Input <$> points <* eol <*> sepEndBy1 fold eol where
      points = Set.fromList <$> some point
-     point = (,) <$> decimal <* char ',' <*> decimal <* eol
-     fold = Fold <$> (string "fold along " *> axis) <* char '=' <*> decimal
-     axis = X <$ char 'x' <|> Y <$ char 'y'
+     point = (,) <$> decimal <* "," <*> decimal <* eol
+     fold = Fold <$> ("fold along " *> axis) <* "=" <*> decimal
+     axis = X <$ "x" <|> Y <$ "y"
 
 foldPaper :: Fold -> Set Point -> Set Point
 foldPaper (Fold X i) = Set.map \(x, y) -> (min x (2*i - x), y)
@@ -31,7 +31,7 @@ part1 (Input paper folds) = Set.size $ foldPaper (head folds) paper
 
 part2 :: Input -> Int
 part2 (Input paper folds) = trace (Text.pack str) 0 where
-    str = intercalate "\n" 
+    str = intercalate "\n"
         [
             [if Set.member (x, y) folded then '#' else ' ' | x <- [0..xMax]]
             | y <- [0..yMax]        
