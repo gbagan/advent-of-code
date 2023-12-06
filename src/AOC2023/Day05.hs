@@ -5,7 +5,7 @@ import           RIO.List (sortOn)
 import           RIO.List.Partial (minimum)
 import           Data.Tuple.Extra (both, snd3, thd3)
 import           Text.Megaparsec (takeWhileP, sepBy1, sepEndBy1)
-import           Text.Megaparsec.Char (char, string, eol)
+import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 
@@ -16,9 +16,9 @@ data Almanac = Almanac [Int] [AMap]
 
 parser :: Parser Almanac
 parser = Almanac <$> seeds <* eol <* eol <*> amap `sepEndBy1` eol where
-    seeds = string "seeds: " *> decimal `sepBy1` char ' '
+    seeds = "seeds: " *> decimal `sepBy1` " "
     amap = takeWhileP Nothing (/= '\n') *> eol *> range `sepEndBy1` eol
-    range = (,,) <$> decimal <* char ' ' <*> decimal <* char ' ' <*> decimal
+    range = (,,) <$> decimal <* " " <*> decimal <* " " <*> decimal
 
 chunksOf2 :: [a] -> [(a, a)]
 chunksOf2 (x:y:xs) = (x, y) : chunksOf2 xs

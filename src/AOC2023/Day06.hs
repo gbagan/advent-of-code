@@ -3,14 +3,14 @@ module AOC2023.Day06 (solve) where
 import           RIO
 import           RIO.Partial (read)
 import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, eol, string)
+import           Text.Megaparsec.Char (char, eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 
 type Input = ([Int], [Int])
 
 parser :: Parser Input
-parser = (,) <$> (string "Time:" *> list) <*> (eol *> "Distance:" *> list) where
+parser = (,) <$> ("Time:" *> list) <*> (eol *> "Distance:" *> list) where
     list = many (char ' ') *> decimal `sepEndBy1` some (char ' ')
 
 solveWith :: (Input -> [(Int, Int)]) -> Input -> Int

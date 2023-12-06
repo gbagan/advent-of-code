@@ -14,7 +14,7 @@ parser :: Parser [Card]
 parser = card `sepEndBy1` eol where
     card = do
         _ <- takeWhileP Nothing (/= ':') *> char ':'
-        (,) <$> list <* char '|' <*> list
+        (,) <$> list <* "|" <*> list
     list = many (char ' ') *> decimal `sepEndBy1` some (char ' ')
 
 precomp :: [Card] -> [Int]
