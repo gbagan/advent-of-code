@@ -20,9 +20,9 @@ parser = Almanac <$> seeds <* eol <* eol <*> amap `sepEndBy1` eol where
     amap = takeWhileP Nothing (/= '\n') *> eol *> range `sepEndBy1` eol
     range = (,,) <$> decimal <* char ' ' <*> decimal <* char ' ' <*> decimal
 
-pairwise :: [a] -> [(a, a)]
-pairwise (x:y:xs) = (x, y) : pairwise xs
-pairwise _ = []
+chunksOf2 :: [a] -> [(a, a)]
+chunksOf2 (x:y:xs) = (x, y) : chunksOf2 xs
+chunksOf2 _ = []
 
 solve' :: [AMap] -> [Interval] -> Int
 solve' maps seedIntervals = minimum (map fst finalIntervals) where
@@ -40,7 +40,7 @@ part1 :: Almanac -> Int
 part1 (Almanac seeds maps) = solve' maps [(s, s) | s <- seeds]
 
 part2 :: Almanac -> Int
-part2 (Almanac seeds maps) = solve' maps [(start, start+len-1) | (start, len) <- pairwise seeds]
+part2 (Almanac seeds maps) = solve' maps [(start, start+len-1) | (start, len) <- chunksOf2 seeds]
 
 solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2
