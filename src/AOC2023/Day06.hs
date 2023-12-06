@@ -15,7 +15,7 @@ parser = (,) <$> ("Time:" *> list) <*> (eol *> "Distance:" *> list) where
 
 solveWith :: (Input -> [(Int, Int)]) -> Input -> Int
 solveWith toRaces = product . map forRace . toRaces where
-    forRace (time, distance) = floor root2 - ceiling root1 + 1 where
+    forRace (time, distance) = ceiling root2 - floor root1 - 1 where
         t = fromIntegral time :: Double
         d = fromIntegral distance :: Double
         delta = sqrt (t*t - 4*d)
