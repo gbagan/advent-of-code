@@ -191,6 +191,7 @@ executable aoc2023
                 AOC2023.Day05
                 AOC2023.Day06
                 AOC2023.Day07
+                AOC2023.Day08
                 Util
                 Util.Parser
                 Util.Search

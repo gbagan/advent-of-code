@@ -8,7 +8,7 @@ import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, count)
 
 data HandAndBid = HandAndBid
-    { hand ::[Card]
+    { hand :: [Card]
     , bid :: Int
     }
 

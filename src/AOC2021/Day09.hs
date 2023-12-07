@@ -1,7 +1,7 @@
 module AOC2021.Day09 (solve) where
 import           RIO hiding (some)
 import           RIO.Char.Partial (digitToInt)
-import           RIO.List (find, sort)
+import           RIO.List (find, sortOn)
 import qualified RIO.HashMap as HMap
 import           Data.Map.Lazy ((!))
 import qualified Data.Map.Lazy as LMap
@@ -31,14 +31,14 @@ closure :: Map Point (Maybe Point) -> Map Point Point
 closure m = cl where
         cl = LMap.mapWithKey (\p -> \case
                      Nothing -> p
-                     Just c -> cl ! c  
+                     Just c -> cl ! c
                   ) m
 
 part1 :: Map Point Int -> Int
 part1 m = sum . map ((+1) . (m!) . fst) . filter (isNothing . snd) . LMap.toList . flow $ m 
 
 part2 :: Map Point Int -> Int
-part2 = product . take 3 . reverse . sort . HMap.elems . freqs . LMap.elems . closure . flow . LMap.filter (<9)
+part2 = product . take 3 . sortOn Down . HMap.elems . freqs . LMap.elems . closure . flow . LMap.filter (<9)
 
 solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2

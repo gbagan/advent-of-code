@@ -8,6 +8,7 @@ import qualified AOC2023.Day04 (solve)
 import qualified AOC2023.Day05 (solve)
 import qualified AOC2023.Day06 (solve)
 import qualified AOC2023.Day07 (solve)
+import qualified AOC2023.Day08 (solve)
 import           Util (aocMain)
 
 solutions :: Map Text (Text -> RIO SimpleApp ())
@@ -19,6 +20,7 @@ solutions = Map.fromList
             ,   ("05", AOC2023.Day05.solve)
             ,   ("06", AOC2023.Day06.solve)
             ,   ("07", AOC2023.Day07.solve)
+            ,   ("08", AOC2023.Day08.solve)
             ]
 
 main :: IO ()
