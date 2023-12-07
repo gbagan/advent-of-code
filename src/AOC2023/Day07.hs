@@ -11,6 +11,7 @@ import           Util (Parser, aoc, count, freqs')
 type Bid = ([Card], Int)
 type Input = [Bid]
 data Card = C2 | C3 | C4 | C5 |  C6 | C7 | C8 | C9 | T | J | Q | K | A deriving (Eq, Ord)
+type CardFreq = [Int]
 data HandType = HighCard | OnePair | TwoPair | Three |  Full | Four | Five deriving (Eq, Ord)
 newtype Card' = Card' Card deriving (Eq)
 
@@ -29,10 +30,10 @@ parser = line `sepEndBy1` eol where
         <|>  J <$ "J" <|>  Q <$ "Q" <|>  K <$ "K"
         <|>  A <$ "A"
 
-cardFreq :: [Card] -> [Int]
+cardFreq :: [Card] -> CardFreq
 cardFreq = sortBy (comparing Down) . Map.elems . freqs'
 
-handType' :: [Int] -> HandType
+handType' :: CardFreq -> HandType
 handType' = \case
     [5] -> Five
     (4:_) -> Four
@@ -41,13 +42,12 @@ handType' = \case
     (2:2:_) -> TwoPair
     (2:_) -> OnePair
     _ -> HighCard
-
     
 handType :: [Card] -> HandType
 handType = handType' . cardFreq
 
-handType2 :: [Card] -> HandType
-handType2 cards = handType' . addJokers . cardFreq . filter (/=J) $ cards where
+handTypeWithJokers :: [Card] -> HandType
+handTypeWithJokers cards = handType' . addJokers . cardFreq . filter (/=J) $ cards where
     nbJokers = count (==J) cards
     addJokers [] = [nbJokers]
     addJokers (c:cs) = c+nbJokers : cs
@@ -61,7 +61,7 @@ part1 :: Input -> Int
 part1 = solveWith \cards -> (handType cards, cards)
 
 part2 :: Input -> Int
-part2 = solveWith \cards -> (handType2 cards, map Card' cards)
+part2 = solveWith \cards -> (handTypeWithJokers cards, map Card' cards)
 
 solve :: MonadIO m => Text -> m ()
 solve = aoc parser part1 part2
