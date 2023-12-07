@@ -71,10 +71,6 @@ freqs :: Hashable a => [a] -> HashMap a Int
 freqs = HMap.fromListWith (+) . map (,1)
 {-# INLINE freqs #-}
 
-freqs' :: Ord a => [a] -> Map a Int
-freqs' = Map.fromListWith (+) . map (,1)
-{-# INLINE freqs' #-}
-
 allUnique :: Ord a => [a] -> Bool
 allUnique xs = length (nubOrd xs) == length xs
 {-# INLINE allUnique #-}
