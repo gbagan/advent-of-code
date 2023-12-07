@@ -25,18 +25,18 @@ solveWith startPred endPred (Input instrs nodes) = foldl' lcm 1 steps where
     starts = filter startPred $ Map.keys nodeDict
     steps = [ fromJust $ findIndex endPred walk
             | start <- starts
-            , let walk = scanl' go start (cycle instrs)
+            , let walk = scanl' goNext start (cycle instrs)
             ]
-    go address = goNext (nodeDict ! address)
-    goNext (Node _ left right) = \case
+    goNext address = \case
         L -> left
         R -> right
+        where Node _ left right = nodeDict ! address
     nodeDict = Map.fromList [(source, node) | node@(Node source _ _) <- nodes]
 
 part1 :: Input -> Int
 part1 = solveWith (=="AAA") (=="ZZZ")
 
--- only works because the length to go from 'A' to 'Z' is the same as the lenght of a loop
+-- only works because the length to go from 'A' to 'Z' is the same as the length of a loop
 part2 :: Input -> Int
 part2 = solveWith ((=='A') . last) ((=='Z') . last)
 
