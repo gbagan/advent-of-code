@@ -10,10 +10,10 @@ import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 import           Util.Parser (skipLine)
 
-type Interval = (Int, Int)
-type Range = (Int, Int, Int)
+type Interval = (Int, Int) -- start, end
+type Range = (Int, Int, Int) -- destination, source, length
 type AMap = [Range]
-data Almanac = Almanac [Int] [AMap]
+data Almanac = Almanac [Int] [AMap] -- seeds, maps
 
 parser :: Parser Almanac
 parser = Almanac <$> seeds <* eol <* eol <*> amap `sepEndBy1` eol where

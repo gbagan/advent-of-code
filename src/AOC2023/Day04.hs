@@ -8,7 +8,7 @@ import           Text.Megaparsec.Char (char, eol, hspace)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc')
 
-type Card = ([Int], [Int])
+type Card = ([Int], [Int]) -- owned numbers, winning numbers
 
 parser :: Parser [Card]
 parser = card `sepEndBy1` eol where
@@ -29,9 +29,9 @@ part1 = sum . map pow2 where
 part2 :: [Int] -> Int
 part2 = go . map (,1) where
     go [] = 0
-    go ((score, freq):xs) = freq + go (before' ++ after) where
-        (before, after) = splitAt score xs
-        before' = map (second (+freq)) before
+    go ((score, freq):xs) = freq + go (affected' ++ nonAffected) where
+        (affected, nonAffected) = splitAt score xs
+        affected' = map (second (+freq)) affected
 
 solve :: MonadIO m => Text -> m ()
 solve = aoc' parser (Just . precomp) part1 part2

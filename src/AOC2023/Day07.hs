@@ -7,7 +7,11 @@ import           Text.Megaparsec.Char (eol, hspace)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, count)
 
-type HandAndBid = ([Card], Int)
+data HandAndBid = HandAndBid
+    { hand ::[Card]
+    , bid :: Int
+    }
+
 type Input = [HandAndBid]
 data Card = C2 | C3 | C4 | C5 |  C6 | C7 | C8 | C9 | T | J | Q | K | A deriving (Eq, Ord)
 type CardFreq = [Int] -- frequency of each card by decreasing order 
@@ -21,7 +25,7 @@ instance Ord Card' where
 
 parser :: Parser Input
 parser = line `sepEndBy1` eol where
-    line = (,) <$> some card <* hspace <*> decimal <* hspace
+    line = HandAndBid <$> some card <* hspace <*> decimal <* hspace
     card =  C2 <$ "2" <|> C3 <$ "3" <|> C4 <$ "4"
         <|> C5 <$ "5" <|> C6 <$ "6" <|> C7 <$ "7"
         <|> C8 <$ "8" <|> C9 <$ "9" <|>  T <$ "T"
@@ -39,9 +43,9 @@ cardFreqWithJokers cards = addJokers . cardFreq . filter (/=J) $ cards where
 
 solveWith :: Ord a => ([Card] -> a) -> Input -> Int
 solveWith order input = sum $ zipWith (*) [1..] bids where
-    bids = map snd . sortOn (order . fst) $ input
+    bids = map bid . sortOn (order . hand) $ input
 
-part1 :: Input -> Int
+part1 :: Input -> Int   
 part1 = solveWith \cards -> (cardFreq cards, cards)
 
 part2 :: Input -> Int

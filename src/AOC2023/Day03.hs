@@ -17,7 +17,7 @@ parser = some (anySingleBut '\n') `sepEndBy1` eol
 
 findNumberRanges :: [[Char]] -> [NumberRange]
 findNumberRanges grid = concatMap rangesInRow (zip [0..] grid) where
-    rangesInRow (i, row) = [ ((i, fst (head w), fst (last w)), read @Int (map snd w))
+    rangesInRow (idx, row) = [ ((idx, fst (head w), fst (last w)), read @Int (map snd w))
                            | w <- wordsBy (not . isDigit . snd) (zip [0..] row)
                            ]
 
@@ -33,13 +33,13 @@ part1 grid = sum [n | (range, n) <- findNumberRanges grid, checkBorders range]  
 
 part2 :: [[Char]] -> Int
 part2 grid = sum . map gearOf $ starPositions where
-    gearOf (r, c) = case adjacentRanges r c of
+    gearOf (row, column) = case adjacentRanges row column of
         [(_, x), (_, y)] -> x * y
         _ -> 0
     adjacentRanges r c = filter (isAdjacentTo r c) ranges 
     isAdjacentTo r c ((row, start, end), _) = row-1 <= r && r <= row+1 && start-1 <= c && c <= end+1
     ranges = findNumberRanges grid
-    starPositions = [ (r, c) 
+    starPositions = [ (r, c)
                     | (r, row) <- zip [0..] grid
                     , (c, ch) <- zip [0..] row
                     , ch == '*'

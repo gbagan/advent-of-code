@@ -7,19 +7,21 @@ import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (alphaNumChar, eol)
 import           Util (Parser, aoc)
 
+type Token = (Int, String)
+
 parser :: Parser [String]
 parser = some alphaNumChar `sepEndBy1` eol
 
-solveWith :: [(Int, String)] -> [String] -> Int
+solveWith :: [Token] -> [String] -> Int
 solveWith tokens = sum . map lineToInt where
     lineToInt s = let x = toDigits s in head x * 10 + last x
     toDigits = concatMap matchToken . tails
     matchToken xs = [digit | (digit, token) <- tokens, token `isPrefixOf` xs]
 
-tokens1 :: [(Int, String)]
+tokens1 :: [Token]
 tokens1 = [(i, show i) | i <- [1..9]]
 
-tokens2 :: [(Int, String)]
+tokens2 :: [Token]
 tokens2 = tokens1 ++ zip [1..9] ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
 
 solve :: MonadIO m => Text -> m ()
