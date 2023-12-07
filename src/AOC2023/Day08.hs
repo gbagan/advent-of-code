@@ -10,8 +10,9 @@ import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (eol, upperChar)
 import           Util (Parser, aoc)
 
+type Address = String
 data Instr = L | R
-data Node = Node String String String
+data Node = Node Address Address Address -- source, left, right
 data Input = Input [Instr] [Node]
 
 parser :: Parser Input
@@ -20,7 +21,7 @@ parser = Input <$> some instr <* eol <* eol <*> node `sepEndBy1` eol where
     node = Node <$> address <* " = (" <*> address <* ", " <*> address <* ")"
     address = some upperChar
 
-solveWith :: (String -> Bool) -> (String -> Bool) -> Input -> Int
+solveWith :: (Address -> Bool) -> (Address -> Bool) -> Input -> Int
 solveWith startPred endPred (Input instrs nodes) = foldl' lcm 1 steps where
     starts = filter startPred $ Map.keys nodeDict
     steps = [ fromJust $ findIndex endPred walk
@@ -36,7 +37,7 @@ solveWith startPred endPred (Input instrs nodes) = foldl' lcm 1 steps where
 part1 :: Input -> Int
 part1 = solveWith (=="AAA") (=="ZZZ")
 
--- only works because the length to go from 'A' to 'Z' is the same as the length of a loop
+-- only works because the input is nice
 part2 :: Input -> Int
 part2 = solveWith ((=='A') . last) ((=='Z') . last)
 
