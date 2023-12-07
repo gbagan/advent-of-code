@@ -1,3 +1,3 @@
-# Advent of Code 2021 and 2022 in Haskell
+# Advent of Code in Haskell
 
-cabal run
+cabal run aoc{year} {day}
