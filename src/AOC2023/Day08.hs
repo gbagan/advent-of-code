@@ -12,27 +12,28 @@ import           Util (Parser, aoc)
 
 type Address = String
 data Instr = L | R
-data Node = Node Address Address Address -- source, left, right
-data Input = Input [Instr] [Node]
+type Network = Map.HashMap Address (Address, Address)
+data Input = Input [Instr] Network
 
 parser :: Parser Input
-parser = Input <$> some instr <* eol <* eol <*> node `sepEndBy1` eol where
+parser = Input <$> some instr <* eol <* eol <*> network where
+    network = networkFromList <$> node `sepEndBy1` eol
     instr = L <$ "L" <|> R <$ "R"
-    node = Node <$> address <* " = (" <*> address <* ", " <*> address <* ")"
+    node = (,,) <$> address <* " = (" <*> address <* ", " <*> address <* ")"
     address = some upperChar
+    networkFromList nodes = Map.fromList [(source, (left, right)) | (source, left, right) <- nodes]
 
 solveWith :: (Address -> Bool) -> (Address -> Bool) -> Input -> Int
-solveWith startPred endPred (Input instrs nodes) = foldl' lcm 1 steps where
-    starts = filter startPred $ Map.keys nodeDict
-    steps = [ fromJust $ findIndex endPred walk
-            | start <- starts
-            , let walk = scanl' goNext start (cycle instrs)
-            ]
+solveWith startPred endPred (Input instrs nodeDict) = foldl' lcm 1 nbSteps where
+    starts = filter startPred (Map.keys nodeDict)
+    nbSteps = [ fromJust $ findIndex endPred walk
+              | start <- starts
+              , let walk = scanl' goNext start (cycle instrs)
+              ]
     goNext address = \case
         L -> left
         R -> right
-        where Node _ left right = nodeDict ! address
-    nodeDict = Map.fromList [(source, node) | node@(Node source _ _) <- nodes]
+        where (left, right) = nodeDict ! address
 
 part1 :: Input -> Int
 part1 = solveWith (=="AAA") (=="ZZZ")
