@@ -12,7 +12,7 @@ import           Util (Parser, aoc)
 
 type Address = String
 data Instr = L | R
-type Network = Map.HashMap Address (Address, Address)
+type Network = HashMap Address (Address, Address)
 data Input = Input [Instr] Network
 
 parser :: Parser Input
@@ -24,8 +24,8 @@ parser = Input <$> some instr <* eol <* eol <*> network where
     networkFromList nodes = Map.fromList [(source, (left, right)) | (source, left, right) <- nodes]
 
 solveWith :: (Address -> Bool) -> (Address -> Bool) -> Input -> Int
-solveWith startPred endPred (Input instrs nodeDict) = foldl' lcm 1 nbSteps where
-    starts = filter startPred (Map.keys nodeDict)
+solveWith startPred endPred (Input instrs network) = foldl' lcm 1 nbSteps where
+    starts = filter startPred (Map.keys network)
     nbSteps = [ fromJust $ findIndex endPred walk
               | start <- starts
               , let walk = scanl' goNext start (cycle instrs)
@@ -33,7 +33,7 @@ solveWith startPred endPred (Input instrs nodeDict) = foldl' lcm 1 nbSteps where
     goNext address = \case
         L -> left
         R -> right
-        where (left, right) = nodeDict ! address
+        where (left, right) = network ! address
 
 part1 :: Input -> Int
 part1 = solveWith (=="AAA") (=="ZZZ")
