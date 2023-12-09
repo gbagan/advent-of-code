@@ -1,10 +1,10 @@
 -- https://adventofcode.com/2023/day/3
 module AOC2023.Day03 (solve) where
-import           Relude hiding (some, head, last)
+import           AOC.Prelude hiding (head, last)
 import           Relude.Unsafe (head, last, read)
 import           Data.Char (isDigit)
-import           Util (aoc)
-import           Util.Parser (Parser, anySingleBut, eol, sepEndBy1, some)
+import           AOC (aoc)
+import           AOC.Parser (Parser, anySingleBut, eol, sepEndBy1, some)
 import           Data.List.Extra (wordsBy)
 import           Data.Massiv.Array ((!?), fromLists', U, Comp(Seq), Ix2(..))
 
@@ -43,5 +43,5 @@ part2 grid = sum . map gearOf $ starPositions where
                     , ch == '*'
                     ]
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

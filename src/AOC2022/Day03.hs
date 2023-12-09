@@ -1,12 +1,11 @@
 -- https://adventofcode.com/2022/day/3
 module AOC2022.Day03 (solve) where
-import           Relude hiding (head, some)
+import           AOC.Prelude hiding (head)
 import           Data.Char (isLower)
 import           Data.List (head, foldl1', intersect)
 import           Data.List.Split (chunksOf)
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (letterChar, eol)
-import           Util (Parser, aoc)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, some, eol, letterChar)
 
 parser :: Parser [String]
 parser = some letterChar `sepEndBy1` eol
@@ -23,5 +22,5 @@ part1 = sum . map findTheSame where
 part2 :: [String] -> Int
 part2 = sum . map (priority . head . foldl1' intersect) . chunksOf 3
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

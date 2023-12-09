@@ -1,12 +1,11 @@
 module AOC2021.Day19 (solve) where
-import           Relude hiding (some)
+import           AOC.Prelude
 import           Data.List (maximum)
 import qualified Data.HashMap.Strict as Map
 import           Linear.V3 (V3(..))
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (eol, numberChar)
-import           Util (Parser, aoc', freqs)
-import           Util.Parser (signedDecimal)
+import           AOC (aoc')
+import           AOC.Parser (Parser, eol, numberChar, sepEndBy1, some, signedDecimal)
+import           AOC.Util (freqs)
 
 type Scan = [V3 Int]
 
@@ -16,7 +15,7 @@ parser = scan `sepEndBy1` eol where
     coords = V3 <$> signedDecimal <* "," <*> signedDecimal <* "," <*> signedDecimal
 
 rotations :: V3 Int -> [V3 Int]
-rotations p = scanl (&) p [r,t,t,t,r,c,c,c,r,t,t,t,r,c,c,c,r,t,t,t,r,c,c,c]
+rotations p = scanl' (&) p [r,t,t,t,r,c,c,c,r,t,t,t,r,c,c,c,r,t,t,t,r,c,c,c]
     where r (V3 x y z) = V3 x z (-y)
           t (V3 x y z) = V3 (-y) x z
           c (V3 x y z) = V3 y (-x) z
@@ -46,5 +45,5 @@ part2 scans = maximum [dist x y | x <- positions, y <- positions] where
     positions = map snd scans
     dist v1 v2 = sum . abs $ v1 - v2
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc' parser alignAll part1 part2

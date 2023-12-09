@@ -1,4 +1,4 @@
-module Util.Parser 
+module AOC.Parser 
     ( module P
     , module C
     , module L
@@ -9,11 +9,12 @@ module Util.Parser
     , skipLine) where
 
 import           Relude
-import           Text.Megaparsec as P (Parsec, anySingleBut, choice, many, sepBy1, sepEndBy1, some, takeWhileP)
-import           Text.Megaparsec.Char as C (alphaNumChar, char, eol, space, hspace, upperChar)
+import           Text.Megaparsec as P (Parsec, anySingle, anySingleBut, between, choice, count, many, manyTill, 
+                                        sepBy, sepBy1, sepEndBy1, optional, some, takeP, takeRest, takeWhileP, try)
+import           Text.Megaparsec.Char as C (alphaNumChar, char, digitChar, eol, letterChar, space, hspace, hexDigitChar, lowerChar, numberChar, upperChar)
 import           Text.Megaparsec.Char.Lexer as L (decimal)
-import           Util (Parser)
 
+type Parser = Parsec Void Text
 type BinParser = P.Parsec Void [Bool]
 
 signedDecimal :: (Num a) => Parser a

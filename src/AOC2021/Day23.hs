@@ -1,13 +1,12 @@
 module AOC2021.Day23 (solve) where
-import           Relude hiding (head, last)
+import           AOC.Prelude hiding (head, last)
 import           Relude.Unsafe (head, last)
 import qualified Data.Vector as Vec
-import           Data.Vector (Vector, (!), (//))
+import           Data.Vector ((!), (//))
 import qualified Data.IntMap as IM
-import           Text.Megaparsec (anySingle)
-import           Text.Megaparsec.Char (char)
-import           Util (Parser, aoc)
-import           Util.Search (dijkstra)
+import           AOC (aoc)
+import           AOC.Parser (Parser, anySingle, some)
+import           AOC.Search (dijkstra)
 
 data Amphipod = Amber | Bronze | Copper | Desert deriving (Eq, Ord, Enum)
 type Rooms = Vector [Amphipod]
@@ -25,10 +24,10 @@ parser = do
     maybe (fail "Invalid board") pure board
     where
     amphipod :: Parser Amphipod
-    amphipod = char 'A' $> Amber 
-           <|> char 'B' $> Bronze
-           <|> char 'C' $> Copper
-           <|> char 'D' $> Desert
+    amphipod = "A" $> Amber 
+           <|> "B" $> Bronze
+           <|> "C" $> Copper
+           <|> "D" $> Desert
     amphipod' = Just <$> amphipod <|> anySingle $> Nothing
     amphipods = catMaybes <$> some amphipod'
 
@@ -97,5 +96,5 @@ extendBoard (rooms, hall) = (Vec.imap (\i room -> head room : middle i ++ [last 
 part2 :: Board -> Maybe Int
 part2 board = dijkstra (neighbors 4) (== finalBoard 4) (extendBoard board) 
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

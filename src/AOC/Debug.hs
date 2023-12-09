@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -Wno-deprecations #-}
-module Util.Debug where
+module AOC.Debug where
 
 import Relude
 

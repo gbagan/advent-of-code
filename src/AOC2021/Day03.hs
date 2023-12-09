@@ -1,11 +1,9 @@
 module AOC2021.Day03 (solve) where
-import           Relude hiding (some)
-import           Data.List (partition)
+import           AOC.Prelude
 import           Relude.Unsafe ((!!))
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (eol)
-import           Util (Parser, aoc, binToInt, majority)
-import           Util.Parser (bitP)
+import           AOC (aoc)
+import           AOC.Util (binToInt, majority)
+import           AOC.Parser (Parser, bitP, eol, sepEndBy1, some)
 
 parser :: Parser [[Bool]]
 parser = some bitP `sepEndBy1` eol
@@ -33,5 +31,5 @@ part2 l = binToInt x * binToInt y where
     x = filterCode MostCommon l
     y = filterCode LeastCommon l
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

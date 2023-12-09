@@ -1,11 +1,10 @@
 -- https://adventofcode.com/2020/day/3
 module AOC2020.Day06 (solve) where
-import           RIO hiding (some)
-import           RIO.List.Partial (foldl1')
-import qualified RIO.HashSet as Set
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (lowerChar, eol)
-import           Util (Parser, aoc)
+import           Relude hiding (group, some)
+import           Data.List (foldl1')
+import qualified Data.HashSet as Set
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, some, eol, lowerChar)
 
 parser :: Parser [[[Char]]]
 parser = group `sepEndBy1` eol where
@@ -18,5 +17,5 @@ part1 = sum . map (Set.size . Set.fromList . concat)
 part2 :: [[[Char]]] -> Int
 part2 = sum . map (Set.size . foldl1' Set.intersection . map Set.fromList)
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

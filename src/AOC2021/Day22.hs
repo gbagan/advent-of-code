@@ -1,9 +1,7 @@
 module AOC2021.Day22 (solve) where
-import           Relude
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Util (Parser, aoc)
-import           Util.Parser (signedDecimal)
+import           AOC.Prelude
+import           AOC (aoc)
+import           AOC.Parser (Parser, eol, sepEndBy1, signedDecimal)
 
 data Cube = Cube !Bool !(Int, Int) !(Int, Int) !(Int, Int)
 
@@ -50,5 +48,5 @@ part1 = totalVolume . computeCubes . mapMaybe (intersect' cube)
 part2 :: [Cube] -> Int 
 part2 = totalVolume . computeCubes
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

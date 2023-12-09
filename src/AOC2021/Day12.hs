@@ -1,11 +1,10 @@
 module AOC2021.Day12 (solve) where
-import           Relude hiding (some)
+import           AOC.Prelude
 import           Data.Char (isUpper)
 import           Data.Map ((!))
 import qualified Data.Map as Map
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (char, eol, letterChar)
-import           Util (Parser, aoc)
+import           AOC (aoc)
+import           AOC.Parser (Parser, char, eol, letterChar, sepEndBy1, some)
 
 data Edge = Edge String String
 type Graph = Map String [String]
@@ -22,7 +21,6 @@ edgesToGraph edges = Map.fromList . map (\u -> (u, neighbor u)) $ vertices where
                              | u == w    -> Just v
                              | otherwise -> Nothing
                 ) edges
-
 
 part1 :: Graph -> Int
 part1 g = go ["start"] "start" where
@@ -47,5 +45,5 @@ part2 g = go ["start"] False "start" where
                 guard $ nbor /= "start"
                 pure $ go (if all isUpper nbor then visited else nbor : visited) (nbor `elem` visited) nbor
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

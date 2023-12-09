@@ -1,7 +1,7 @@
 module Main where
-import           RIO
-import qualified RIO.Map as Map
-import           Util (aocMain)
+import           AOC.Prelude
+import qualified Data.Map.Strict as Map
+import           AOC (aocMain)
 import qualified AOC2020.Day01 (solve)
 import qualified AOC2020.Day02 (solve)
 import qualified AOC2020.Day03 (solve)
@@ -15,7 +15,7 @@ import qualified AOC2020.Day10 (solve)
 import qualified AOC2020.Day11 (solve)
 import qualified AOC2020.Day12 (solve)
 
-solutions :: Map Text (Text -> RIO SimpleApp ())
+solutions :: Map String (Text -> IO ())
 solutions = Map.fromList
             [   ("01", AOC2020.Day01.solve)
             ,   ("02", AOC2020.Day02.solve)

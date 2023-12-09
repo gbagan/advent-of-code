@@ -1,20 +1,20 @@
 -- https://adventofcode.com/2022/day/23
 module AOC2022.Day23 (solve) where
-import           Relude hiding (some)
+import           AOC.Prelude
 import           Data.List (minimum, maximum, (!!))
 import qualified Data.HashMap.Strict as Map ((!))
 import qualified Data.HashSet as Set
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (char, eol)
 import           Linear.V2 (V2(..))
 import           Data.List.Split (divvy)
-import           Util (Parser, aoc, freqs, kingAdjacentPoints')
+import           AOC (aoc)
+import           AOC.Util (freqs, kingAdjacentPoints')
+import           AOC.Parser (Parser, sepEndBy1, eol, some)
 
 type Rule = ([V2 Int], V2 Int)
 
 parser :: Parser (HashSet (V2 Int))
 parser = listToV2Set <$> some tile `sepEndBy1` eol where
-    tile = False <$ char '.' <|> True <$ char '#'
+    tile = False <$ "." <|> True <$ "#"
 
 listToV2Set :: [[Bool]] -> HashSet (V2 Int)
 listToV2Set l =
@@ -67,5 +67,5 @@ findFixPointIndex xs = go (zip [0..] xs) where
 part2 :: HashSet (V2 Int) -> Int
 part2 =  findFixPointIndex . simulate
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

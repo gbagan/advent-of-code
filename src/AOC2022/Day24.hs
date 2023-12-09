@@ -1,19 +1,17 @@
 -- https://adventofcode.com/2022/day/1
 module AOC2022.Day24 (solve) where
 import           Relude hiding (some)
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (char, eol)
 import           Linear.V3 (V3(..))
-import           Util (Parser, aoc)
 import           Data.Massiv.Array (Matrix, (!), (!?), fromLists', size, B, Comp(Seq), Ix2(..), Sz(..))
-import           Util.Search (distance)
+import           AOC (aoc)
+import           AOC.Search (distance)
+import           AOC.Parser (Parser, choice, sepEndBy1, eol, some)
 
 data Tile = North | South | West | East | Wall | Empty deriving (Eq)
 
 parser :: Parser (Matrix B Tile)
 parser = fromLists' Seq <$> some tile `sepEndBy1` eol where
-    tile = North <$ char '^' <|> South <$ char 'v' <|> West <$ char '<'
-       <|> East <$ char '>' <|> Wall <$ char '#' <|> Empty <$ char '.' 
+    tile = choice [North <$ "^", South <$  "v", West <$ "<", East <$ ">", Wall <$ "#", Empty <$ "."]
 
 directions :: [V3 Int]
 directions = [V3 1 0 0, V3 1 1 0, V3 1 0 1, V3 1 0 (-1), V3 1 (-1) 0]
@@ -43,5 +41,5 @@ part2 grid = do
     time3 <- travelDuration grid (0, 1) (nrows-1, ncols-2) (time1+time2)
     pure $ time1 + time2 + time3
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

@@ -5,10 +5,8 @@ import           Relude.Unsafe ((!!))
 import           Data.Maybe (fromJust)
 import qualified Data.Sequence as Seq
 import           Data.Sequence (Seq(..), (><))
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Util (Parser, aoc)
-import           Util.Parser (signedDecimal)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, eol, signedDecimal)
 
 parser :: Parser [Int]
 parser = signedDecimal `sepEndBy1` eol
@@ -38,5 +36,5 @@ solve' key nbIters l = a + b + c where
     (_, b) = Seq.index s' (2000 `mod` n)
     (_, c) = Seq.index s' (3000 `mod` n)
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (solve' 1 1) (solve' 811589153 10)

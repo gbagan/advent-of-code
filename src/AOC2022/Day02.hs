@@ -1,9 +1,8 @@
 -- https://adventofcode.com/2022/day/2
 module AOC2022.Day02 (solve) where
-import           Relude
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (space, eol)
-import           Util (Parser, aoc)
+import           AOC.Prelude
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, eol, space)
 
 parser :: Parser [(Int, Int)]
 parser = ((,) <$> select1 <* space <*> select2) `sepEndBy1` eol where
@@ -22,5 +21,5 @@ part1 = sum . map score
 part2 :: [(Int, Int)] -> Int
 part2 = sum . map score'
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

@@ -1,10 +1,8 @@
 -- https://adventofcode.com/2021/day/2
 module AOC2021.Day02 (solve) where
-import           Relude
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc)
+import           AOC.Prelude
+import           AOC (aoc)
+import           AOC.Parser (Parser, decimal, eol, sepEndBy1)
 
 data Instr = Forward !Int | IDown !Int
 
@@ -30,5 +28,5 @@ part2 l = tx * ty where
                 IDown v   -> (x, y, aim + v)
             ) (0, 0, 0) l
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

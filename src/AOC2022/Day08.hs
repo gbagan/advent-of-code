@@ -4,11 +4,10 @@ import           Relude
 import           Data.Maybe (fromJust)
 import           Data.Char (digitToInt)
 import           Data.List (maximum)
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (numberChar, eol)
 import           Data.Massiv.Array (Matrix, (!?), fromLists', toLists2, U, Comp(Seq), Ix2(..))
-import           Util (Parser, aoc, count, flattenWithIndex)
-
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, eol, numberChar)
+import           AOC.Util (count, flattenWithIndex)
 
 parser :: Parser (Matrix U Int)
 parser = fromLists' Seq <$> some (digitToInt <$> numberChar) `sepEndBy1` eol
@@ -34,5 +33,5 @@ part2 vec = maximum [viewingDistance (x, y) h | (x, y, h) <- flattenWithIndex $ 
     viewingDistance xy h = product [distance xy h dxy | dxy <- directions]
     distance xy h dxy = length $ takeWhile' (<h) $ heightsInTheDirection vec xy dxy
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

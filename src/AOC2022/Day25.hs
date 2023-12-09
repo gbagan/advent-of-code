@@ -1,14 +1,12 @@
 -- https://adventofcode.com/2022/day/25
 module AOC2022.Day25 (solve) where
-import           Relude
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, eol)
-import           Util (Parser, aoc)
+import           AOC.Prelude
+import           AOC (aoc)
+import           AOC.Parser (Parser, choice, eol, sepEndBy1, some)
 
 parser :: Parser [[Int]]
 parser = some digit `sepEndBy1` eol where
-    digit = 0 <$ char '0' <|> 1 <$ char '1' <|> 2 <$ char '2'
-            <|> (-1) <$ char '-' <|> (-2) <$ char '='
+    digit = choice [0 <$ "0", 1 <$ "1", 2 <$ "2", (-1) <$ "-", (-2) <$ "="]
 
 part1 :: [[Int]] -> String
 part1 = reverse . encode . sum . map decode where
@@ -26,5 +24,5 @@ part1 = reverse . encode . sum . map decode where
 
 
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 (const (0::Int))

@@ -1,11 +1,9 @@
 -- https://adventofcode.com/2020/day/1
 module AOC2020.Day01 (solve) where
-import           RIO
+import           AOC.Prelude
 import qualified Data.IntSet as Set
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
 
 parser :: Parser [Int]
 parser = decimal `sepEndBy1` eol
@@ -18,5 +16,5 @@ part2 :: [Int] -> Maybe Int
 part2 xs = listToMaybe [x * y * z| x <- xs, y <- xs, let z = 2020 - x - y, z `Set.member` s]
     where s = Set.fromList xs
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

@@ -4,10 +4,9 @@ import           Relude hiding (fold, head, some)
 import           Relude.Unsafe (head)
 import           Data.List (maximum)
 import qualified Data.Set as Set
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, Point, aoc)
+import           AOC (aoc)
+import           AOC.Parser (Parser, decimal, eol, sepEndBy1, some)
+import           AOC.Util (Point)
 
 data Axis = X | Y
 data Fold = Fold Axis Int
@@ -38,5 +37,5 @@ part2 (Input paper folds) = trace str 0 where
     xMax = maximum (Set.map fst folded)
     yMax = maximum (Set.map snd folded)
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

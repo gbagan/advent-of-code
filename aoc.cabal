@@ -22,9 +22,11 @@ executable aoc2020
                 AOC2020.Day10
                 AOC2020.Day11
                 AOC2020.Day12
-                Util
-                Util.Parser
-                Util.Search
+                AOC
+                AOC.Prelude
+                AOC.Parser
+                AOC.Search
+                AOC.Util
 
     default-language: Haskell2010
     default-extensions:
@@ -48,10 +50,12 @@ executable aoc2020
                    , linear
                    , massiv
                    , megaparsec
+                   , microlens
                    , microlens-platform
-                   , rio
+                   , relude
                    , split
                    , text
+                   , vector
 
 executable aoc2021
     hs-source-dirs:      src
@@ -82,9 +86,11 @@ executable aoc2021
                 AOC2021.Day23
                 AOC2021.Day24
                 AOC2021.Day25
-                Util
-                Util.Parser
-                Util.Search
+                AOC
+                AOC.Prelude
+                AOC.Parser
+                AOC.Search
+                AOC.Util
 
     default-language: Haskell2010
     default-extensions:
@@ -143,9 +149,11 @@ executable aoc2022
                 AOC2022.Day23
                 AOC2022.Day24
                 AOC2022.Day25
-                Util
-                Util.Parser
-                Util.Search
+                AOC
+                AOC.Prelude
+                AOC.Parser
+                AOC.Search
+                AOC.Util
 
     default-language:    Haskell2010
     default-extensions:
@@ -196,10 +204,12 @@ executable aoc2023
                 AOC2023.Day07
                 AOC2023.Day08
                 AOC2023.Day09
-                Util
-                Util.Debug
-                Util.Parser
-                Util.Search
+                AOC
+                AOC.Prelude
+                AOC.Debug
+                AOC.Parser
+                AOC.Search
+                AOC.Util
 
     default-language:    Haskell2010
     default-extensions:
@@ -230,3 +240,4 @@ executable aoc2023
                      , relude
                      , split
                      , text
+                     , vector

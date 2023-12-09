@@ -1,10 +1,9 @@
 module AOC2021.Day05 (solve) where
-import           Relude
+import           AOC.Prelude
 import qualified Data.HashMap.Strict as Map
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc, freqs)
+import           AOC (aoc)
+import           AOC.Parser (Parser, decimal, eol, sepEndBy1)
+import           AOC.Util (freqs)
 
 data Line = Line (Int, Int) (Int, Int)
 data Diag = Diag | NoDiag deriving Eq
@@ -22,11 +21,11 @@ points diag (Line (x1, y1) (x2, y2))
                          dx = signum (x2 - x1)
                          dy = signum (y2 - y1)
                          move (x, y) = (x + dx, y + dy)
-                     in take (len+1) (iterate move (x1, y1))
+                     in take (len+1) (iterate' move (x1, y1))
     | otherwise    = []
 
 countIntersections :: Diag -> [Line] -> Int
 countIntersections diag = Map.size . Map.filter (>1) . freqs . concatMap (points diag)
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (countIntersections NoDiag) (countIntersections Diag)

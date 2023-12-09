@@ -1,11 +1,9 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 module AOC2021.Day24 (solve) where
-import           Relude
+import           AOC.Prelude
 import           Relude.Unsafe ((!!))
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, eol)
-import           Util (Parser, aoc')
-import           Util.Parser (signedDecimal)
+import           AOC (aoc')
+import           AOC.Parser (Parser, choice, sepEndBy1, eol, signedDecimal)
 
 data Var = W | X | Y | Z deriving (Eq, Ord)
 data Val = Var Var | Int Int
@@ -15,12 +13,14 @@ parser :: Parser [Instr]
 parser = instr `sepEndBy1` eol where
     instr = input <|> binop <*> var <* " " <*> val
     input = "inp " $> Input <*> var
-    binop = "add " $> Add
-        <|> "mul " $> Mul
-        <|> "div " $> Div
-        <|> "mod " $> Mod
-        <|> "eql " $> Eql 
-    var = char 'w' $> W <|> char 'x' $> X <|> char 'y' $> Y <|> char 'z' $> Z
+    binop = choice 
+                [ "add " $> Add
+                , "mul " $> Mul
+                , "div " $> Div
+                , "mod " $> Mod
+                , "eql " $> Eql
+                ] 
+    var = choice ["w" $> W, "x" $> X, "y" $> Y, "z" $> Z]
     val = Var <$> var <|> Int <$> signedDecimal
 
 precomp :: [Instr] -> (Int, Int)
@@ -38,5 +38,5 @@ precomp instrs = fst $ foldl' go ((p, q), []) [0..13] where
     p = 99999999999999
     q = 11111111111111
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc' parser (pure . precomp) fst snd

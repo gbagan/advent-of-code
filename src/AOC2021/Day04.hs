@@ -1,10 +1,8 @@
 module AOC2021.Day04 (solve) where
-import           Relude hiding (head)
+import           AOC.Prelude hiding (head)
 import           Relude.Unsafe (head)
-import           Text.Megaparsec (sepEndBy1, sepBy1)
-import           Text.Megaparsec.Char (char, eol, hspace, hspace1)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc)
+import           AOC (aoc)
+import           AOC.Parser (Parser, char, decimal, eol, hspace, sepEndBy1, sepBy1)
 
 type Board = [[(Int, Bool)]]
 data Input = Input [Int] [Board]
@@ -14,7 +12,7 @@ parser = Input <$> draw <* eol <* eol <*> boards where
     draw =  decimal `sepBy1` char ','
     boards = board `sepEndBy1` eol
     board = line `sepEndBy1` eol
-    line =  hspace *> ((,False) <$> decimal) `sepEndBy1` hspace1
+    line =  hspace *> ((,False) <$> decimal) `sepEndBy1` hspace
 
 hasWon :: Board -> Bool
 hasWon board = f board || f (transpose board) where
@@ -44,5 +42,5 @@ part2 (Input draw boards) = go draw boards where
             [] -> x * score (head bs')
             bs'' -> go xs bs''
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

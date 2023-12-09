@@ -2,8 +2,8 @@
 module AOC2023.Day06 (solve) where
 import           Relude
 import           Relude.Unsafe (read)
-import           Util (aoc)
-import           Util.Parser (Parser, sepEndBy1, eol, hspace, decimal)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, eol, hspace, decimal)
 
 type Input = ([Int], [Int]) -- time limits, distances
 
@@ -24,5 +24,5 @@ toOneRace :: Input -> [(Int, Int)]
 toOneRace (l1, l2) = [(f l1, f l2)] where
     f = read . concatMap show
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (solveWith $ uncurry zip) (solveWith toOneRace)

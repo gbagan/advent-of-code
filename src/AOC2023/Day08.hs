@@ -1,13 +1,12 @@
 -- https://adventofcode.com/2023/day/8
 module AOC2023.Day08 (solve) where
-import           Relude hiding (last, some)
+import           AOC.Prelude hiding (last)
 import           Relude.Unsafe (last)
-import           Data.List (findIndex)
 import           Data.Maybe (fromJust)
 import qualified Data.HashMap.Strict as Map
 import           Data.HashMap.Strict ((!))
-import           Util (aoc)
-import           Util.Parser (Parser, sepEndBy1, some, eol, upperChar)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, some, eol, upperChar)
 
 type Address = String
 data Instr = L | R
@@ -41,5 +40,5 @@ part1 = solveWith (=="AAA") (=="ZZZ")
 part2 :: Input -> Int
 part2 = solveWith ((=='A') . last) ((=='Z') . last)
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

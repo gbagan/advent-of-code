@@ -6,10 +6,9 @@ import qualified Data.IntSet as IS
 import qualified Data.Vector as V
 import           Data.Vector (Vector, (!))
 import qualified Data.HashMap.Strict as M
-import           Text.Megaparsec (sepEndBy1, sepBy1, some)
-import           Text.Megaparsec.Char (eol, upperChar)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc, maximumDef)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepBy1, sepEndBy1, some, eol, upperChar, decimal)
+import           AOC.Util (maximumDef)
 
 type Duration = Int
 data Input = Input !Graph !DistanceMat !Int
@@ -73,5 +72,5 @@ part2 input = maximum [ travel input 26 (IS.fromList valves1)
                       | (valves1, valves2) <- splits (usefulValves input)
                       ]
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

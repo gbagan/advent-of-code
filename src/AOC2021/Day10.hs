@@ -1,8 +1,8 @@
 module AOC2021.Day10 (solve) where
-import           Relude hiding (some)
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (char, eol)
-import           Util (Parser, aoc, median)
+import           AOC.Prelude
+import           AOC (aoc)
+import           AOC.Parser (Parser, char, eol, sepEndBy1, some)
+import           AOC.Util (median)
 
 parser :: Parser [String]
 parser = line `sepEndBy1` eol where
@@ -33,5 +33,5 @@ part2 = median . map stackWeight . rights . map parseLine where
      weight _ = 0
      stackWeight = foldl' (\acc x -> acc * 5 + weight x) 0
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

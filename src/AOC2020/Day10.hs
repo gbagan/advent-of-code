@@ -1,14 +1,11 @@
 module AOC2020.Day10 (solve) where
-import           RIO
-import           RIO.List (sort)
-import           RIO.List.Partial (maximum)
-import qualified RIO.Vector as V
-import qualified RIO.Vector.Partial as V ((!))
+import           AOC.Prelude
+import           Data.List (maximum)
+import qualified Data.Vector as V
 import qualified Data.IntSet as Set
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc, count)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
+import           AOC.Util (count)
 
 parser :: Parser [Int]
 parser = decimal `sepEndBy1` eol
@@ -29,5 +26,5 @@ part2 l = memo V.! n where
     s = Set.fromList (0 : n : l)
     n = maximum l + 3
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

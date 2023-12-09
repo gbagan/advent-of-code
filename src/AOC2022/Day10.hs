@@ -4,10 +4,8 @@ module AOC2022.Day10 (solve) where
 import           Relude hiding (unlines)
 import           Data.List (unlines)
 import           Data.List.Split (chunksOf, divvy)
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Util (Parser, aoc')
-import           Util.Parser (signedDecimal)
+import           AOC (aoc')
+import           AOC.Parser (Parser, sepEndBy1, eol, signedDecimal)
 
 data Instr = Noop | Addx Int
 
@@ -32,5 +30,5 @@ part2 = unlines . map (zipWith drawPixel [0..]) . chunksOf 40 where
 part2' :: [Int] -> Int
 part2' xs = trace (part2 xs) 0
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc' parser (pure . runInstrs 1) part1 part2'

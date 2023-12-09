@@ -1,23 +1,17 @@
 -- https://adventofcode.com/2020/day/12
 module AOC2020.Day12 (solve) where
-import           RIO
-import           Data.List (iterate')
-import           RIO.List.Partial ((!!))
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
+import           AOC.Prelude
+import           Relude.Unsafe ((!!))
 import           Linear.V2 (V2(..), perp)
-import           Util (Parser, aoc)
+import           AOC (aoc)
+import           AOC.Parser (Parser, choice, sepEndBy1, eol, decimal)
 
 data Instr = N !Int | S !Int | W !Int | E !Int | F !Int | L !Int | R !Int
 
 parser :: Parser [Instr]
 parser = instr `sepEndBy1` eol where
     instr = instr' <*> decimal
-    instr' = N <$ char 'N' <|> S <$ char 'S'
-         <|> W <$ char 'W' <|> E <$ char 'E'
-         <|> L <$ char 'L' <|> R <$ char 'R'
-         <|> F <$ char 'F'
+    instr' = choice [N <$ "N",  S <$ "S", W <$ "W", E <$ "E", L <$ "L", R <$ "R", F <$ "F"]
 
 part1 :: [Instr] -> Int
 part1 xs = abs a + abs b where
@@ -44,5 +38,5 @@ part2 xs = abs a + abs b where
         R n -> go (pos, wpos) (L $ 360-n)
 
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

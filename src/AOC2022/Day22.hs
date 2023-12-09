@@ -3,11 +3,10 @@ module AOC2022.Day22 (solve) where
 import           Relude hiding (head, some)
 import           Relude.Unsafe ((!!), head)
 import qualified Data.HashMap.Strict as Map
-import           Text.Megaparsec (some, sepEndBy1)
-import           Text.Megaparsec.Char (char, eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
 import           Linear.V2 (V2(..))
-import           Util (Parser, aoc, listTo2dMap')
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, some, eol, decimal)
+import           AOC.Util (listTo2dMap')
 
 type Grid = HashMap (V2 Int) Tile
 data Tile = Void | Empty | Wall deriving (Eq, Show)
@@ -16,10 +15,10 @@ data Input = Input !Grid ![Instr]
 
 parser :: Parser Input
 parser = Input <$> map_ <* eol <*> path where
-    tile = Void <$ char ' ' <|> Empty <$ char '.' <|> Wall <$ char '#'
+    tile = Void <$ " " <|> Empty <$ "." <|> Wall <$ "#"
     map_ = listTo2dMap' <$> some tile `sepEndBy1` eol
     path = some instr
-    instr = L <$ char 'L' <|> R <$ char 'R' <|> Move <$> decimal
+    instr = L <$ "L" <|> R <$ "R" <|> Move <$> decimal
 
 
 move1 :: Grid -> (V2 Int, V2 Int) -> (V2 Int, V2 Int)
@@ -72,5 +71,5 @@ solveWith move (Input grid instrs) = (r+1) * 1000 + (c+1) * 4 + dirScore finalDi
     dirScore (V2 0 (-1)) = 2
     dirScore _ = 3
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (solveWith move1) (solveWith move2)

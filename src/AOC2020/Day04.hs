@@ -1,13 +1,12 @@
 -- https://adventofcode.com/2020/day/4
 module AOC2020.Day04 (solve) where
-import           RIO hiding (some, try)
-import qualified RIO.HashMap as Map
-import           Text.Megaparsec (count, parseMaybe, sepEndBy1, some, try)
-import           Text.Megaparsec.Char (alphaNumChar, char, hexDigitChar, numberChar, eol, lowerChar)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import qualified RIO.Text as Text
-import           Util (Parser, aoc)
-import qualified Util as U
+import           AOC.Prelude
+import qualified Data.HashMap.Strict as Map
+import           Text.Megaparsec (parseMaybe)
+import qualified Data.Text as Text
+import           AOC (aoc)
+import qualified AOC.Util as U
+import           AOC.Parser (Parser, count, sepEndBy1, some, try, alphaNumChar, char, numberChar, eol, hexDigitChar, lowerChar, decimal)
 
 type Passport = HashMap Text Text
 data Height = Cm Int | In Int
@@ -46,5 +45,5 @@ checkers =
 checkPassport2 :: Passport -> Bool
 checkPassport2 pp = checkers & all \(key, checker) -> maybe False checker (Map.lookup key pp)
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (U.count checkPassport) (U.count checkPassport2)

@@ -1,15 +1,12 @@
 -- https://adventofcode.com/2020/day/7
 module AOC2020.Day08 (solve) where
-import           RIO
+import           AOC.Prelude
 import qualified Data.IntSet as Set
-import qualified RIO.Vector as V
-import qualified RIO.Vector.Partial as V ((!))
+import qualified Data.Vector as V
 import qualified Lens.Micro.Platform ()
-import           RIO.Lens (ix)
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc)
+import           Lens.Micro (ix, (.~))
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
 
 data Instr = Noop !Int | Acc !Int | Jmp !Int 
 
@@ -42,5 +39,5 @@ part2 instrs = case simulate instrs of
                 Jmp j -> simulate $ instrs & ix i .~ Noop j
                 Acc j -> Left (seen, j)
         
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

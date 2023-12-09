@@ -3,12 +3,10 @@ module AOC2022.Day07 (solve) where
 import           Relude hiding (some)
 import           Control.Monad (foldM)
 import           Data.List (minimum)
-import           Text.Megaparsec (some)
-import           Text.Megaparsec.Char (alphaNumChar, char, eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
 import qualified Data.Tree as T
 import qualified Data.Tree.Zipper as Z
-import           Util (Parser, aoc')
+import           AOC (aoc')
+import           AOC.Parser (Parser, some, alphaNumChar, char, eol, decimal)
 
 data FileType = RegularFile | Directory
 data File = File !FileType !String !Integer
@@ -57,5 +55,5 @@ part2 fs@(T.Node (File _ _ totalSize) _) = minimum [s | (File Directory _ s) <- 
                                                       , totalSize - s <= 40000000
                                                    ]
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc' parser precomp part1 part2

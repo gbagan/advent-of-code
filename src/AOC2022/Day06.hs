@@ -1,10 +1,10 @@
 -- https://adventofcode.com/2022/day/6
 module AOC2022.Day06 (solve) where
-import           Relude hiding (some)
-import           Data.List (findIndex)
-import           Text.Megaparsec (anySingle, some)
+import           AOC.Prelude
 import           Data.List.Split (divvy)
-import           Util (Parser, aoc, allUnique)
+import           AOC (aoc)
+import           AOC.Parser (Parser, anySingle, some)
+import           AOC.Util (allUnique)
 
 parser :: Parser String
 parser = some anySingle
@@ -12,5 +12,5 @@ parser = some anySingle
 solve' :: Int -> String -> Maybe Int
 solve' n = fmap (+n) . findIndex allUnique . divvy n 1
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (solve' 4) (solve' 14)

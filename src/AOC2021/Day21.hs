@@ -1,11 +1,11 @@
 module AOC2021.Day21 (solve) where
-import           Relude
+import           AOC.Prelude
 import qualified Data.HashMap.Strict as Map
 import           Data.Array (Array, listArray, range, (!))
 import           Linear.V2 (V2(..))
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc, freqs)
+import           AOC (aoc)
+import           AOC.Parser (Parser, decimal, eol)
+import           AOC.Util (freqs)
 
 parser :: Parser (Int, Int)
 parser = (,) <$ "Player 1 starting position: " <*> decimal <* eol
@@ -39,5 +39,5 @@ scores = listArray bds
 part2 :: (Int, Int) -> Int
 part2 (p1, p2) = max x y where V2 x y = scores ! (p1-1, p2-1, 0, 0)
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

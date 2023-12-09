@@ -1,10 +1,8 @@
 -- https://adventofcode.com/2022/day/15
 module AOC2022.Day15 (solve) where
 import           Relude
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Util (Parser, aoc)
-import           Util.Parser (signedDecimal)
+import           AOC (aoc)
+import           AOC.Parser (Parser, eol, sepEndBy1, signedDecimal)
 
 data Coords = Coords !Integer !Integer deriving (Eq)
 data Interval = Interval !Integer !Integer deriving (Eq)
@@ -103,5 +101,5 @@ part2 scans = do
                         & filter \(Coords x y) -> x >= 0 && x < 4000000 
                                                 && y >= 0 && y < 4000000
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

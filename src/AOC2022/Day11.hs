@@ -6,11 +6,8 @@ import           Relude.Unsafe ((!!))
 import           Lens.Micro ((^.), (.~), (%~), ix)
 import           Data.List.Extra (takeEnd)
 import           Lens.Micro.TH (makeLenses)
-import           Text.Megaparsec (sepBy1, sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc)
-import           Util.Parser (skipLine)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepBy1, sepEndBy1, eol, decimal, skipLine)
 
 data Monkey = Monkey {
         _items :: ![Integer]
@@ -57,5 +54,5 @@ solve' part nbRounds mks = monkeyBusiness $ iterate runRound mks !! nbRounds whe
 
     monkeyBusiness = product . takeEnd 2 . sort . map _inspected
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (solve' Part1 20) (solve' Part2 10000)

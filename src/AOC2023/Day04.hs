@@ -1,9 +1,9 @@
 -- https://adventofcode.com/2023/day/4
 module AOC2023.Day04 (solve) where
-import           Relude hiding (some, many)
+import           AOC.Prelude
 import qualified Data.IntSet as S
-import           Util (aoc')
-import           Util.Parser (Parser, takeWhileP, sepEndBy1, char, eol, hspace, decimal)
+import           AOC (aoc')
+import           AOC.Parser (Parser, takeWhileP, sepEndBy1, char, eol, hspace, decimal)
 
 type Card = ([Int], [Int]) -- owned numbers, winning numbers
 
@@ -30,5 +30,5 @@ part2 = go . map (,1) where
         (affected, nonAffected) = splitAt score xs
         affected' = map (second (+freq)) affected
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc' parser (Just . precomp) part1 part2

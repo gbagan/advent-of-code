@@ -1,20 +1,19 @@
 -- https://adventofcode.com/2022/day/18
 module AOC2022.Day18 (solve) where
-import           Relude
-import           Data.List (maximum, minimum, partition)
+import           AOC.Prelude
+import           Data.List (maximum, minimum)
 import qualified Data.HashSet as Set
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
 import           Linear.V3 (V3(..))
-import           Util (Parser, aoc, count)
-import           Util.Search (dfsM)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
+import           AOC.Search (dfsM)
+import           AOC.Util (count)
 
 type Point = V3 Int
 
 parser :: Parser [Point]
 parser = point `sepEndBy1` eol where
-    point = V3 <$> decimal <* char ',' <*> decimal <* char ',' <*> decimal
+    point = V3 <$> decimal <* "," <*> decimal <* "," <*> decimal
 
 directions :: [Point]
 directions = [V3 0 0 1, V3 0 1 0, V3 1 0 0] >>= \p -> [p, -p]
@@ -46,5 +45,5 @@ part2 points = execState (dfsM nborFunc (V3 minX minY minZ)) 0 where
                        && minY <= y && y <= maxY
                        && minZ <= z && z <= maxZ
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

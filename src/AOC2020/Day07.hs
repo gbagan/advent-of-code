@@ -1,13 +1,11 @@
 -- https://adventofcode.com/2020/day/7
 module AOC2020.Day07 (solve) where
-import           RIO hiding (optional, some)
-import qualified RIO.Text as Text
-import qualified RIO.HashSet as Set
-import qualified RIO.HashMap as Map
-import           Text.Megaparsec (optional, sepBy1, sepEndBy1, some)
-import           Text.Megaparsec.Char (char, lowerChar, eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc)
+import           AOC.Prelude
+import qualified Data.Text as Text
+import qualified Data.HashSet as Set
+import qualified Data.HashMap.Strict as Map
+import           AOC (aoc)
+import           AOC.Parser (Parser, optional, sepBy1, sepEndBy1, some, char, lowerChar, eol, decimal)
 
 type Input = (Text, [(Int, Text)])
 
@@ -28,5 +26,5 @@ part2 is = go "shinygold" - 1 where
     go bag = 1 + sum [i * go bag' | (i, bag') <- Map.lookupDefault [] bag m]
     m = Map.fromList is
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

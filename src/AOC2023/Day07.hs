@@ -1,8 +1,9 @@
 -- https://adventofcode.com/2023/day/7
 module AOC2023.Day07 (solve) where
 import           Relude hiding (some)
-import           Util (aoc, count)
-import           Util.Parser (Parser, choice, sepEndBy1, some, eol, hspace, decimal)
+import           AOC (aoc)
+import           AOC.Util (count)
+import           AOC.Parser (Parser, choice, sepEndBy1, some, eol, hspace, decimal)
 
 type Bid = Int
 data HandAndBid = HandAndBid
@@ -47,5 +48,5 @@ part1 = solveWith \cards -> (cardFreq cards, cards)
 part2 :: Input -> Int
 part2 = solveWith \cards -> (cardFreqWithJokers cards, map Card' cards)
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

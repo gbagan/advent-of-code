@@ -1,10 +1,9 @@
 -- https://adventofcode.com/2022/day/4
 module AOC2022.Day04 (solve) where
-import           Relude
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc, count)
+import           AOC.Prelude
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
+import           AOC.Util (count)
 
 data Interval = Interval !Int !Int
 
@@ -21,5 +20,5 @@ part2 :: [(Interval, Interval)] -> Int
 part2 = count overlaps where
     overlaps (Interval x1 y1, Interval x2 y2) = max x1 x2 <= min y1 y2
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

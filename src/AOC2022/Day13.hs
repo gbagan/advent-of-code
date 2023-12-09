@@ -1,10 +1,9 @@
 -- https://adventofcode.com/2022/day/13
 module AOC2022.Day13 (solve) where
 import           Relude
-import           Text.Megaparsec (between, sepEndBy1, sepBy)
-import           Text.Megaparsec.Char (char, eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc, count)
+import           AOC (aoc)
+import           AOC.Parser (Parser, between, sepEndBy1, sepBy, char, eol, decimal)
+import           AOC.Util (count)
 
 data Packet = PInt !Int | Packet ![Packet]
 
@@ -32,5 +31,5 @@ part2 pairs = index1 * index2 where
     index1 = 1 + count (< Packet [Packet [PInt 2]]) packets
     index2 = 2 + count (< Packet [Packet [PInt 6]]) packets
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

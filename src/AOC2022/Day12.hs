@@ -1,12 +1,11 @@
 -- https://adventofcode.com/2022/day/12
 module AOC2022.Day12 (solve) where
-import           Relude hiding (some)
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (letterChar, eol)
-
+import           AOC.Prelude
 import           Data.Massiv.Array (Matrix, (!?), fromLists', toLists2, U, Comp(Seq), Ix2(..))
-import           Util (Parser, aoc, adjacentPoints, flattenWithIndex)
-import           Util.Search (distance)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, some, eol, letterChar, eol)
+import           AOC.Search (distance)
+import           AOC.Util (adjacentPoints, flattenWithIndex)
 
 parser :: Parser (Matrix U Char)
 parser = fromLists' Seq <$> some letterChar `sepEndBy1` eol
@@ -22,5 +21,5 @@ solveWith target m = do
                                        || [v, v'] `elem` ["Ez", "Ey", "aS"] -> True
                                      _ -> False
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (solveWith 'S') (solveWith 'a')

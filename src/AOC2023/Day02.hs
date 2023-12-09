@@ -1,8 +1,8 @@
 -- https://adventofcode.com/2023/day/2
 module AOC2023.Day02 (solve) where
-import           Relude hiding (id)
-import           Util (aoc)
-import           Util.Parser (Parser, decimal, eol, sepEndBy1)
+import           AOC.Prelude hiding (id)
+import           AOC (aoc)
+import           AOC.Parser (Parser, decimal, eol, sepEndBy1)
 
 data RGB = RGB Int Int Int
 data Game = Game Int [RGB]
@@ -28,5 +28,5 @@ part2 = sum . map solveGame where
     maxSet (RGB r g b) (RGB r' g' b') = RGB (max r r') (max g g') (max b b')
     power (RGB r g b) = r * g * b
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

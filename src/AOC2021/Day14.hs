@@ -1,11 +1,10 @@
 module AOC2021.Day14 (solve) where
-import           Relude hiding (head, last, some)
+import           AOC.Prelude hiding (head, last)
 import           Relude.Unsafe (head, last, (!!))
 import           Data.List (minimum, maximum)
 import qualified Data.Map.Strict as Map
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (eol, upperChar)
-import           Util (Parser, aoc)
+import           AOC (aoc)
+import           AOC.Parser (Parser, eol, sepEndBy1, some, upperChar)
 
 type Rules = Map String Char
 type PairsMap = Map (Char, Char) Int
@@ -38,7 +37,7 @@ pairsMapToFreqs str =
 algo :: Int -> Input -> Int
 algo n (Input s rules) = maximum freqs - minimum freqs where
     pairs = stringToPairsMap s
-    freqs = Map.elems . pairsMapToFreqs s $ iterate (step rules) pairs !! n
+    freqs = Map.elems . pairsMapToFreqs s $ iterate' (step rules) pairs !! n
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (algo 10) (algo 40)

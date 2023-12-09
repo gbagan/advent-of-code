@@ -1,10 +1,8 @@
 module AOC2021.Day18 (solve) where
-import           Relude
+import           AOC.Prelude
 import           Data.List (foldl1', maximum)
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc)
+import           AOC (aoc)
+import           AOC.Parser (Parser, char, decimal, eol, sepEndBy1)
 
 data Snailfish = Leaf Int | Node Snailfish Snailfish deriving (Eq)
 
@@ -52,5 +50,5 @@ part1 = magnitude . foldl1' add
 part2 :: [Snailfish] -> Int
 part2 sfs = maximum [magnitude $ add a b | a <- sfs, b <- sfs, a /= b]
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

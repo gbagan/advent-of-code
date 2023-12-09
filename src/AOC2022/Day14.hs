@@ -4,11 +4,10 @@ import           Relude
 import           Control.Monad.ST (runST)
 import           Data.List (maximum)
 import qualified Data.HashSet as Set
-import           Text.Megaparsec (sepEndBy1, sepBy1)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc', cartesianProduct)
 import           Data.HashTable.ST.Basic as H
+import           AOC (aoc')
+import           AOC.Parser (Parser, sepEndBy1, sepBy1, eol, decimal)
+import           AOC.Util (cartesianProduct)
 
 type Scan = [(Int, Int)]
 type Rocks = HashSet (Int, Int)
@@ -71,5 +70,5 @@ part2 rocks = runST $ do
     H.size sand
     where bottom = 1 + maximum (map snd (Set.toList rocks))
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc' parser (pure . precomp) part1 part2

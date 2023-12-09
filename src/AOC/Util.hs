@@ -1,57 +1,11 @@
-module Util where
-import           Relude
+module AOC.Util where
+import           AOC.Prelude
 import           Relude.Unsafe ((!!))
 import           Data.List (maximum)
-import           Text.Megaparsec (Parsec, parse, errorBundlePretty)
 import qualified Data.HashMap.Strict as HMap
 import           Linear.V2 (V2(..))
-import           System.CPUTime (getCPUTime)
 
-type Parser = Parsec Void Text
 type Point = (Int, Int)
-
-aocMain :: String -> HashMap String (Text -> IO ()) -> IO ()
-aocMain year solutions = do
-    args <- getArgs
-    traverse_ solveProblem if null args then HMap.keys solutions else args
-    where
-    solveProblem name = case HMap.lookup name solutions of
-        Just solve -> do
-            liftIO $ putStrLn $ "Solve day " <> name
-            solve =<< readFileText ("./data/" ++ year ++ "/data" ++ name)
-        Nothing -> liftIO $ putStrLn $ "Day not implemented: " <> name
-
-
--- templates
-
-aoc :: (MonadIO m, Show b, Show c) => Parser a -> (a -> b) -> (a -> c) -> Text -> m ()
-aoc parser = aoc' parser pure
-
-duration :: MonadIO m => m a -> m (String, a)
-duration m = do
-    begin <- liftIO getCPUTime
-    !res <- m
-    end <- liftIO getCPUTime
-    let diff = (end - begin) `div` 1000000 -- in nano seconds 
-    let strDiff = if diff >= 10000 then
-                    show (diff `div` 1000) <> " milliseconds"
-                  else
-                    show diff <> " microseconds"
-    pure (strDiff, res)
-
-aoc' :: (MonadIO m, Show c, Show d) =>
-        Parser a -> (a -> Maybe b) -> (b -> c) -> (b -> d) -> Text -> m ()
-aoc' parser precomp part1 part2 input = do
-    case parse parser "" input of
-        Left err -> putStrLn $ errorBundlePretty err
-        Right parsed ->
-            case precomp parsed of
-                Nothing -> liftIO $ putStrLn "  precomputation has failed"
-                Just !p -> do
-                    (duration1, !res1) <- duration (pure $ part1 p)
-                    putStrLn $ "  part 1: " ++ show res1 <> " in " ++ duration1
-                    (duration2, !res2) <- duration (pure $ part2 p)
-                    putStrLn $ "  part 2: " ++ show res2  <> " in " ++ duration2
 
 -- functions on lists
 

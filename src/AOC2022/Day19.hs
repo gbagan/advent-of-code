@@ -4,11 +4,9 @@ import           Relude
 import           Data.List (maximum)
 import           Lens.Micro.Extras (view)
 import           Linear.V4 (V4(..), _x, _y, _z)
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc)
-import           Util.Search (dfsM)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
+import           AOC.Search (dfsM)
 
 type Resource = V4 Int -- ore clay obsidian geode
 data Blueprint = Blueprint !Resource !Resource !Resource !Resource
@@ -74,5 +72,5 @@ part1 = sum . zipWith (*) [1..] . map (solve' 24)
 part2 :: [Blueprint] -> Int
 part2 = product . map (solve' 32) . take 3
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

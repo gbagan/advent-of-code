@@ -1,10 +1,9 @@
 module AOC2021.Day07 (solve) where
-import           Relude
+import           AOC.Prelude
 import           Relude.Unsafe ((!!))
-import           Text.Megaparsec (sepBy1)
-import           Text.Megaparsec.Char (char)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import Util (Parser, aoc, average)
+import           AOC (aoc)
+import           AOC.Parser (Parser, char, decimal, sepBy1)
+import           AOC.Util (average)
 
 parser :: Parser [Int]
 parser = decimal `sepBy1` char ','
@@ -18,5 +17,5 @@ part2 xs = sum [bin . abs $ x - m | x <- xs] where
         m = floor (average xs)
         bin n = n * (n + 1) `div` 2
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

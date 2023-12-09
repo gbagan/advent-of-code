@@ -7,9 +7,8 @@ import qualified Data.List.NonEmpty as NE
 import           Linear.V2 (V2(..))
 import           Data.Stream.Infinite (Stream(..))
 import qualified Data.Stream.Infinite as Stream
-import           Text.Megaparsec (some)
-import           Text.Megaparsec.Char (char)
-import           Util (Parser, aoc)
+import           AOC (aoc)
+import           AOC.Parser (Parser, some)
 
 data Jet = L | R deriving (Eq)
 type Rock = HashSet (V2 Int)
@@ -17,7 +16,7 @@ data Rest = Rest !Rock !Int
 
 parser :: Parser [Jet]
 parser = some direction where
-    direction = L <$ char '<' <|> R <$ char '>'
+    direction = L <$ "<" <|> R <$ ">"
 
 makeIndexedStream :: [a] -> Stream (Int, a)
 makeIndexedStream  = Stream.cycle . NE.fromList . zip [0..]
@@ -94,5 +93,5 @@ part2 jets = height * cycles + height' where
                                         (Stream.drop rockIdx rockStream)
                                         (Stream.drop jetIdx jetStream)
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

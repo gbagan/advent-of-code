@@ -3,10 +3,8 @@ module AOC2022.Day21 (solve) where
 import           Relude hiding (Op, some)
 import qualified Data.HashMap.Strict as Map
 import qualified Data.Text as Text
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (eol, lowerChar)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, eol, lowerChar, some, decimal)
 
 data Job = JInt !Integer | Job !Text !Op !Text
 data Op = Add | Sub | Mul | Div
@@ -63,5 +61,5 @@ part2 m = solve' "root" 0 where
     interpret2 Div = (*)
 
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

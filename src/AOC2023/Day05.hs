@@ -1,10 +1,10 @@
 -- https://adventofcode.com/2023/day/5
 module AOC2023.Day05 (solve) where
-import           Relude hiding (some)
+import           AOC.Prelude
 import           Data.List (minimum)
 import           Data.Tuple.Extra (both, snd3, thd3)
-import           Util (Parser, aoc)
-import           Util.Parser (sepBy1, sepEndBy1, eol, decimal, skipLine)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepBy1, sepEndBy1, eol, decimal, skipLine)
 
 type Interval = (Int, Int) -- start, end
 type Range = (Int, Int, Int) -- destination, source, length
@@ -39,29 +39,5 @@ part1 (Almanac seeds maps) = solve' maps [(s, s) | s <- seeds]
 part2 :: Almanac -> Int
 part2 (Almanac seeds maps) = solve' maps [(start, start+len-1) | (start, len) <- chunksOf2 seeds]
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2
-
-
-
-
-{-
-travel :: [AMap] -> Int -> Int
-travel maps seed = foldl' destFromSource seed maps where
-    destFromSource x ranges =
-        case [dest - source + x | (dest, source, len) <- ranges, source <= x && x < source + len] of
-            [] -> x
-            (d:_) -> d
-
-part1 :: Almanac -> Int
-part1 (Almanac seeds maps) = minimum $ map (travel maps) seeds
-
-part2 :: Almanac -> Maybe Integer
-part2 (Almanac seeds maps) = find isValid [approx-1000..approx+1000] where
-    approx = fromJust $ find isValid [0,1000..]
-    isValid = isSeed . travel reverseMaps
-    seeds' = [(start, start+len-1) | (start, len) <- pairwise seeds]
-    isSeed x = seeds' & any \(start, end) -> start <= x && x <= end
-    reverseMaps = reverse . map (map reverseMap) $ maps
-    reverseMap (dest, source, len) = (source, dest, len)
--}

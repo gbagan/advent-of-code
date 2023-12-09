@@ -1,12 +1,13 @@
 module AOC2021.Day08 (solve) where
-import           Relude hiding (some)
+import           AOC.Prelude
 import           Relude.Unsafe ((!!))
 import qualified Data.Map.Strict as Map
 import qualified Data.IntSet as IS
 import qualified Data.Set as Set
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (eol, lowerChar, hspace1)
-import           Util (Parser, aoc)
+import           Text.Megaparsec ()
+import           Text.Megaparsec.Char ()
+import           AOC (aoc)
+import           AOC.Parser (Parser, eol, lowerChar, hspace, sepEndBy1, some)
 
 type Digit = IntSet
 data Line = Line !(Set Digit) ![Digit]
@@ -14,7 +15,7 @@ data Line = Line !(Set Digit) ![Digit]
 parser :: Parser [Line]
 parser = sepEndBy1 line eol where
     segment = (\c -> ord c - ord 'a') <$> lowerChar
-    digits = (IS.fromList <$> some segment) `sepEndBy1` hspace1
+    digits = (IS.fromList <$> some segment) `sepEndBy1` hspace
     line = Line <$> (Set.fromList <$> digits) <* "| " <*> digits
 
 part1 :: [Line] -> Int
@@ -53,5 +54,5 @@ decodeLine (Line l r) = do
 part2 :: [Line] -> Maybe Int
 part2 xs = sum <$> traverse decodeLine xs
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

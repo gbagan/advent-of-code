@@ -1,9 +1,9 @@
 -- https://adventofcode.com/2023/day/1
 module AOC2023.Day01 (solve) where
-import           Relude hiding (some, head, last)
+import           AOC.Prelude hiding (head, last)
 import           Relude.Unsafe (head, last)
-import           Util (aoc)
-import           Util.Parser (Parser, sepEndBy1, some, alphaNumChar, eol)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, some, alphaNumChar, eol)
 
 type Token = (Int, String)
 
@@ -22,5 +22,5 @@ tokens1 = [(i, show i) | i <- [1..9]]
 tokens2 :: [Token]
 tokens2 = tokens1 ++ zip [1..9] ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (solveWith tokens1) (solveWith tokens2)

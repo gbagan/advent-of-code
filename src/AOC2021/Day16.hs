@@ -1,10 +1,10 @@
 module AOC2021.Day16 (solve) where
-import           Relude hiding (Op, some)
+import           AOC.Prelude hiding (Op)
 import           Data.List (maximum, minimum)
-import           Text.Megaparsec (anySingle, count, some, takeP, parseMaybe, takeRest)
-import           Text.Megaparsec.Char (hexDigitChar)
-import           Util (Parser, aoc', binToInt)
-import           Util.Parser (BinParser)
+import           AOC (aoc')
+import           Text.Megaparsec (parseMaybe)
+import           AOC.Parser (BinParser, Parser, anySingle, count, some, takeP, takeRest, hexDigitChar)
+import           AOC.Util (binToInt)
 
 data Packet = Packet Int PacketData
 data PacketData = Lit Int | Op ([Int] -> Int) [Packet]
@@ -85,5 +85,5 @@ part2 :: Packet -> Int
 part2 (Packet _ (Lit n)) = n
 part2 (Packet _ (Op f packets)) = f (map part2 packets)
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc' parser precomp part1 part2

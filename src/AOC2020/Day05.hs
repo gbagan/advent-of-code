@@ -1,11 +1,10 @@
 -- https://adventofcode.com/2020/day/3
 module AOC2020.Day05 (solve) where
-import           RIO hiding (some)
-import           RIO.List (sort)
-import           RIO.List.Partial (maximum, tail)
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (char, eol)
-import           Util (Parser, aoc, binToInt)
+import           Relude hiding (some, tail)
+import           Data.List (maximum, tail)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, some, char, eol)
+import           AOC.Util (binToInt)
 
 parser :: Parser [[Bool]]
 parser = line `sepEndBy1` eol where
@@ -21,5 +20,5 @@ part2 seats = listToMaybe [ x+1
                           , y-x == 2] where
     seats' = sort $ map binToInt seats
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

@@ -1,11 +1,11 @@
 module AOC2021.Day15 (solve) where
-import           Relude hiding (some)
+import           AOC.Prelude
 import           Data.Char (digitToInt)
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (digitChar, eol)
-import           Util (Parser, Point, aoc, adjacentPoints)
 import           Data.Massiv.Array (Matrix, (!), (!?), fromLists', makeArray, U, Comp(Seq), Ix2(..), Sz(..))
-import           Util.Search (dijkstra)
+import           AOC (aoc)
+import           AOC.Util (Point, adjacentPoints)
+import           AOC.Parser (Parser, sepEndBy1, some, digitChar, eol)
+import           AOC.Search (dijkstra)
 
 parser :: Parser (Matrix U Int)
 parser = fromLists' Seq <$> line `sepEndBy1` eol where
@@ -25,5 +25,5 @@ part2 :: Matrix U Int -> Maybe Int
 part2 mat = dijkstra (neighbors mat') (== (499, 499)) (0, 0)  where
         mat' = duplicateGrid mat
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

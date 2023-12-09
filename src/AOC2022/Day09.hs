@@ -3,10 +3,9 @@ module AOC2022.Day09 (solve) where
 import           Relude hiding (last)
 import           Relude.Unsafe (last)
 import qualified Data.Set as Set
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol, space)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc, clamp)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, eol, hspace, decimal)
+import           AOC.Util (clamp)
 
 data Direction = L | R | U | D
 data Knot = Knot !Int !Int deriving (Eq, Ord)
@@ -14,7 +13,7 @@ type Rope = [Knot]
 
 parser :: Parser [Direction]
 parser = concat <$> (line `sepEndBy1` eol) where
-    line = flip replicate <$> direction <* space <*> decimal
+    line = flip replicate <$> direction <* hspace <*> decimal
     direction = L <$ "L"
             <|> R <$ "R"
             <|> U <$ "U"
@@ -46,5 +45,5 @@ solve' n dirs = Set.size vis where
         rope' = moveRope rope dir
         visited' = Set.insert (last rope') visited
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (solve' 2) (solve' 10)

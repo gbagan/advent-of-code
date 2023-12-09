@@ -1,10 +1,10 @@
 module AOC2021.Day20 (solve) where
-import           Relude hiding (get, some)
+import           AOC.Prelude hiding (get)
 import           Relude.Unsafe ((!!))
 import qualified Data.Massiv.Array as A
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (char, eol)
-import           Util (Parser, aoc, binToInt, count)
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, char, eol, some)
+import           AOC.Util (binToInt, count)
 
 type Algo = A.Array A.U A.Ix1 Bool
 type Grid = A.Array A.U A.Ix2 Bool
@@ -33,5 +33,5 @@ iterateGrid algo = go (0 :: Int) where
 countLit :: Int -> Input -> Int
 countLit n (Input algo grid) = count id . A.toList $ iterateGrid algo grid !! n
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (countLit 2) (countLit 50)

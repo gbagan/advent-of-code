@@ -1,16 +1,16 @@
 -- https://adventofcode.com/2020/day/11
 module AOC2020.Day11 (solve) where
-import           RIO hiding (some, toList)
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (char, eol)
-import           Util (Parser, aoc, count, kingAdjacentPoints)
+import           AOC.Prelude hiding (toList)
 import           Data.Massiv.Array (Matrix, (!), (!?), fromLists', toList, makeArray, size, B, Comp(Seq), Ix2(..))
+import           AOC (aoc)
+import           AOC.Parser (Parser, sepEndBy1, some, eol)
+import           AOC.Util (count, kingAdjacentPoints)
 
 data Seat = Floor | Empty | Occupied deriving (Eq)
 
 parser :: Parser (Matrix B Seat)
 parser = fromLists' Seq <$> some seat `sepEndBy1` eol where
-    seat = Floor <$ char '.' <|> Empty <$ char 'L'
+    seat = Floor <$ "." <|> Empty <$ "L"
 
 step1 :: Matrix B Seat -> Matrix B Seat
 step1 m = makeArray Seq (size m) \(Ix2 i j) ->
@@ -46,5 +46,5 @@ solveWith :: (Matrix B Seat -> Matrix B Seat) -> Matrix B Seat -> Int
 solveWith step m = let m' = step m in
     if m == m' then count (==Occupied) (toList m') else solveWith step m'
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (solveWith step1) (solveWith step2)

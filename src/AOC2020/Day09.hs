@@ -1,14 +1,12 @@
 -- https://adventofcode.com/2020/day/9
 module AOC2020.Day09 (solve) where
-import           RIO
-import           RIO.List (scanl, find)
-import           RIO.List.Partial (minimum, maximum)
+import           AOC.Prelude
+import           Data.List (minimum, maximum)
 import qualified Data.IntSet as Set
 import           Data.List.Split (divvy)
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc, slice)
+import           AOC (aoc)
+import           AOC.Util (slice)
+import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
 
 parser :: Parser [Int]
 parser = decimal `sepEndBy1` eol
@@ -22,7 +20,7 @@ part1 = listToMaybe <=< (find test . divvy 26 1 . reverse) where
 part2 :: [Int] -> Maybe Int
 part2 l = do
     val <- part1 l 
-    let sums = zip [0..] $ scanl (+) 0 l
+    let sums = zip [0..] $ scanl' (+) 0 l
     (a, b) <- listToMaybe [ (i1, i2) 
                           | (i1, v1) <- sums
                           , (i2, v2) <- sums
@@ -32,5 +30,5 @@ part2 l = do
     let range = slice a (b-1) l
     pure $ minimum range + maximum range
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 part2

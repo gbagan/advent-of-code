@@ -5,10 +5,8 @@ module AOC2022.Day05 (solve) where
 import           Relude hiding (head, some)
 import           Relude.Unsafe (head, (!!))
 import           Lens.Micro ((%~), (.~), ix)
-import           Text.Megaparsec (anySingle, between, manyTill, sepEndBy1, sepBy1)
-import           Text.Megaparsec.Char (eol, upperChar)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc)
+import           AOC (aoc)
+import           AOC.Parser (Parser, anySingle, between, manyTill, sepEndBy1, sepBy1, eol, upperChar, decimal)
 
 type Crate = Char
 type Ship = [[Crate]]
@@ -41,5 +39,5 @@ move needReverse (Instr nb fromIdx toIdx) ship = ship' where
 solveWith :: Bool -> Input -> String
 solveWith multi (Input ship instrs) = map head $ foldl' (flip $ move multi) ship instrs
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser (solveWith True) (solveWith False)

@@ -1,4 +1,4 @@
-module Util.Search where
+module AOC.Search where
 
 import           Relude
 import           Data.Sequence (Seq(..), (><))

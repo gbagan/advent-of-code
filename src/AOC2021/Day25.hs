@@ -2,9 +2,10 @@ module AOC2021.Day25  where
 import           Relude
 import           Data.List (findIndex, maximum)
 import qualified Data.HashMap.Strict as Map
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (char, eol)
-import           Util (Parser, Point, aoc, listTo2dMap)
+import           AOC (aoc)
+import           AOC.Parser (Parser, choice, sepEndBy1, eol)
+import           AOC.Util (Point, listTo2dMap)
+
 
 data Cell = Empty | East | South deriving (Eq, Ord)
 type Board = HashMap Point Cell
@@ -13,7 +14,7 @@ data Input = Input !Int !Int !Board
 parser :: Parser Input
 parser = withDimensions . listTo2dMap <$> line `sepEndBy1` eol where
     line = some cell
-    cell = char '.' $> Empty <|> char '>' $> East <|> char 'v' $> South
+    cell = choice [Empty <$ ".", East <$ ">", South <$ "v"]
     withDimensions mp = Input (nbCols+1) (nbRows+1) (Map.filter (/=Empty) mp) where
         ((nbCols, nbRows), _) = maximum (Map.toList mp)
 
@@ -40,5 +41,5 @@ step' nbCols nbRows (board, _) = (board2, modif1 || modif2) where
 part1 :: Input -> Maybe Int
 part1 (Input nbCols nbRows board) = findIndex (not . snd) $ iterate (step' nbCols nbRows) (board, True)
 
-solve :: MonadIO m => Text -> m ()
+solve :: Text -> IO ()
 solve = aoc parser part1 (const (0 :: Int))
