@@ -1,5 +1,5 @@
 module AOC2021.Day10 (solve) where
-import           RIO hiding (some)
+import           Relude hiding (some)
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (char, eol)
 import           Util (Parser, aoc, median)

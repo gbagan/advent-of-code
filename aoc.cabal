@@ -110,7 +110,8 @@ executable aoc2021
                    , linear
                    , massiv
                    , megaparsec
-                   , rio
+                   , relude
+                   , vector
                    , text
 
 executable aoc2022
@@ -173,11 +174,13 @@ executable aoc2022
                      , linear
                      , megaparsec
                      , massiv
+                     , microlens
                      , microlens-th
-                     , rio
+                     , relude
                      , rosezipper
                      , split
                      , streams
+                     , vector
                      , text
 
 executable aoc2023
@@ -194,6 +197,7 @@ executable aoc2023
                 AOC2023.Day08
                 AOC2023.Day09
                 Util
+                Util.Debug
                 Util.Parser
                 Util.Search
 
@@ -223,6 +227,6 @@ executable aoc2023
                      , linear
                      , massiv
                      , megaparsec
-                     , rio
+                     , relude
                      , split
                      , text

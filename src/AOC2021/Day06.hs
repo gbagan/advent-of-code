@@ -1,7 +1,6 @@
 module AOC2021.Day06 (solve) where
-import           RIO
-import           RIO.List (iterate)
-import           RIO.List.Partial ((!!))
+import           Relude
+import           Relude.Unsafe ((!!))
 import           Text.Megaparsec (sepBy1)
 import           Text.Megaparsec.Char (char)
 import           Text.Megaparsec.Char.Lexer (decimal)

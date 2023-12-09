@@ -1,11 +1,8 @@
 -- https://adventofcode.com/2023/day/7
 module AOC2023.Day07 (solve) where
-import           RIO hiding (some)
-import           RIO.List (group, sort, sortOn)
-import           Text.Megaparsec (choice, sepEndBy1, some)
-import           Text.Megaparsec.Char (eol, hspace)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc, count)
+import           Relude hiding (some)
+import           Util (aoc, count)
+import           Util.Parser (Parser, choice, sepEndBy1, some, eol, hspace, decimal)
 
 type Bid = Int
 data HandAndBid = HandAndBid

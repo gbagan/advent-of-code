@@ -1,14 +1,13 @@
 -- https://adventofcode.com/2023/day/8
 module AOC2023.Day08 (solve) where
-import           RIO hiding (some)
-import           RIO.Partial (fromJust)
-import           RIO.List (cycle, findIndex, scanl')
-import           RIO.List.Partial (last)
-import qualified RIO.HashMap as Map
-import           RIO.HashMap.Partial ((!))
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (eol, upperChar)
-import           Util (Parser, aoc)
+import           Relude hiding (last, some)
+import           Relude.Unsafe (last)
+import           Data.List (findIndex)
+import           Data.Maybe (fromJust)
+import qualified Data.HashMap.Strict as Map
+import           Data.HashMap.Strict ((!))
+import           Util (aoc)
+import           Util.Parser (Parser, sepEndBy1, some, eol, upperChar)
 
 type Address = String
 data Instr = L | R

@@ -1,9 +1,7 @@
 module AOC2021.Day19 (solve) where
-import           RIO hiding (some)
-import           RIO.List (scanl, transpose)
-import           RIO.List.Partial (maximum)
-import qualified RIO.HashMap as Map
-import           Data.Either.Combinators (maybeToRight)
+import           Relude hiding (some)
+import           Data.List (maximum)
+import qualified Data.HashMap.Strict as Map
 import           Linear.V3 (V3(..))
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (eol, numberChar)
@@ -41,7 +39,7 @@ overlap :: Scan -> Scan -> [V3 Int]
 overlap scan scan' = Map.keys . Map.filter (>= 12) . freqs $ (-) <$> scan <*> scan'
 
 part1 :: [(Scan, V3 Int)] -> Int
-part1 = length . nubOrd . concatMap fst
+part1 = length . ordNub . concatMap fst
 
 part2 :: [(Scan, V3 Int)] -> Int
 part2 scans = maximum [dist x y | x <- positions, y <- positions] where

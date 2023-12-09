@@ -1,6 +1,6 @@
 module AOC2021.Day20 (solve) where
-import           RIO hiding (some)
-import           RIO.List.Partial ((!!))
+import           Relude hiding (get, some)
+import           Relude.Unsafe ((!!))
 import qualified Data.Massiv.Array as A
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (char, eol)

@@ -1,11 +1,9 @@
 -- https://adventofcode.com/2023/day/1
 module AOC2023.Day01 (solve) where
-import           RIO hiding (some)
-import           RIO.List (tails, isPrefixOf)
-import           RIO.List.Partial (head, last)
-import           Text.Megaparsec (sepEndBy1, some)
-import           Text.Megaparsec.Char (alphaNumChar, eol)
-import           Util (Parser, aoc)
+import           Relude hiding (some, head, last)
+import           Relude.Unsafe (head, last)
+import           Util (aoc)
+import           Util.Parser (Parser, sepEndBy1, some, alphaNumChar, eol)
 
 type Token = (Int, String)
 

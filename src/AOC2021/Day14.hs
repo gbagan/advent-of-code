@@ -1,8 +1,8 @@
 module AOC2021.Day14 (solve) where
-import           RIO hiding (some)
-import           RIO.List (iterate)
-import           RIO.List.Partial (head, last, minimum, maximum, (!!))
-import qualified RIO.Map as Map
+import           Relude hiding (head, last, some)
+import           Relude.Unsafe (head, last, (!!))
+import           Data.List (minimum, maximum)
+import qualified Data.Map.Strict as Map
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (eol, upperChar)
 import           Util (Parser, aoc)

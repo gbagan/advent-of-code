@@ -1,12 +1,11 @@
 -- https://adventofcode.com/2022/day/16
 module AOC2022.Day16 (solve) where
-import           RIO hiding (some)
-import           RIO.List.Partial (maximum)
+import           Relude hiding (get, init, some)
+import           Data.List (maximum)
 import qualified Data.IntSet as IS
-import qualified RIO.Vector as V
-import           RIO.Vector.Partial ((!))
-import qualified RIO.HashMap as M
-import qualified RIO.HashMap.Partial as M ((!))
+import qualified Data.Vector as V
+import           Data.Vector (Vector, (!))
+import qualified Data.HashMap.Strict as M
 import           Text.Megaparsec (sepEndBy1, sepBy1, some)
 import           Text.Megaparsec.Char (eol, upperChar)
 import           Text.Megaparsec.Char.Lexer (decimal)

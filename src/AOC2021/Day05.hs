@@ -1,7 +1,6 @@
 module AOC2021.Day05 (solve) where
-import           RIO
-import           RIO.List (iterate)
-import qualified RIO.HashMap as Map
+import           Relude
+import qualified Data.HashMap.Strict as Map
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)

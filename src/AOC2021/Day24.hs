@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 module AOC2021.Day24 (solve) where
-import           RIO
-import           RIO.List.Partial ((!!))
+import           Relude
+import           Relude.Unsafe ((!!))
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (char, eol)
 import           Util (Parser, aoc')

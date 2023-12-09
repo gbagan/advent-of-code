@@ -1,6 +1,6 @@
 module AOC2021.Day21 (solve) where
-import           RIO
-import qualified RIO.HashMap as Map
+import           Relude
+import qualified Data.HashMap.Strict as Map
 import           Data.Array (Array, listArray, range, (!))
 import           Linear.V2 (V2(..))
 import           Text.Megaparsec.Char (eol)

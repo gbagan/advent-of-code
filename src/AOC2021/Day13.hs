@@ -1,11 +1,9 @@
 {-# OPTIONS_GHC -Wno-deprecations #-}
 module AOC2021.Day13 (solve) where
-import           RIO hiding (fold, some)
+import           Relude hiding (fold, head, some)
+import           Relude.Unsafe (head)
 import           Data.List (maximum)
-import           RIO.List (intercalate)
-import           RIO.List.Partial (head)
-import qualified RIO.Set as Set
-import qualified RIO.Text as Text
+import qualified Data.Set as Set
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)
@@ -30,7 +28,7 @@ part1 :: Input -> Int
 part1 (Input paper folds) = Set.size $ foldPaper (head folds) paper
 
 part2 :: Input -> Int
-part2 (Input paper folds) = trace (Text.pack str) 0 where
+part2 (Input paper folds) = trace str 0 where
     str = intercalate "\n"
         [
             [if Set.member (x, y) folded then '#' else ' ' | x <- [0..xMax]]

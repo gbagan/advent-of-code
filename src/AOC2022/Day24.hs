@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2022/day/1
 module AOC2022.Day24 (solve) where
-import           RIO hiding (some)
+import           Relude hiding (some)
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (char, eol)
 import           Linear.V3 (V3(..))

@@ -1,9 +1,9 @@
 -- https://adventofcode.com/2022/day/17
 module AOC2022.Day17 (solve) where
-import           RIO hiding (some)
-import           RIO.List.Partial (maximum)
-import qualified RIO.HashSet as Set
-import qualified RIO.NonEmpty.Partial as NE (fromList)
+import           Relude hiding (some)
+import           Data.List (maximum)
+import qualified Data.HashSet as Set
+import qualified Data.List.NonEmpty as NE
 import           Linear.V2 (V2(..))
 import           Data.Stream.Infinite (Stream(..))
 import qualified Data.Stream.Infinite as Stream

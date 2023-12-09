@@ -1,10 +1,10 @@
 module AOC2021.Day11 (solve) where
-import           RIO hiding (some)
-import           RIO.Char.Partial (digitToInt)
-import           RIO.List (findIndex, iterate)
-import           RIO.List.Partial (tail)
-import qualified RIO.HashMap as Map
-import qualified RIO.Set as Set
+import           Relude hiding (some, tail)
+import           Relude.Unsafe (tail)
+import           Data.Char (digitToInt)
+import           Data.List (findIndex)
+import qualified Data.HashMap.Strict as Map
+import qualified Data.Set as Set
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (digitChar, eol)
 import           Util (Parser, Point, aoc', count, kingAdjacentPoints, listTo2dMap)

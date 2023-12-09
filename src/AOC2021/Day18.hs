@@ -1,6 +1,6 @@
 module AOC2021.Day18 (solve) where
-import           RIO
-import           RIO.List.Partial (foldl1', maximum)
+import           Relude
+import           Data.List (foldl1', maximum)
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (char, eol)
 import           Text.Megaparsec.Char.Lexer (decimal)

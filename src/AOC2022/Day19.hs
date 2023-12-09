@@ -1,8 +1,8 @@
 -- https://adventofcode.com/2022/day/1
 module AOC2022.Day19 (solve) where
-import           RIO
-import           RIO.List.Partial (maximum)
-import           RIO.State (execState, modify')
+import           Relude
+import           Data.List (maximum)
+import           Lens.Micro.Extras (view)
 import           Linear.V4 (V4(..), _x, _y, _z)
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol)

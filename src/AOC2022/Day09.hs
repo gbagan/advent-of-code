@@ -1,9 +1,8 @@
 -- https://adventofcode.com/2022/day/9
 module AOC2022.Day09 (solve) where
-import           RIO
-import           RIO.List (scanl')
-import           RIO.List.Partial (last)
-import qualified RIO.Set as Set
+import           Relude hiding (last)
+import           Relude.Unsafe (last)
+import qualified Data.Set as Set
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol, space)
 import           Text.Megaparsec.Char.Lexer (decimal)

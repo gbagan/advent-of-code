@@ -1,7 +1,6 @@
 -- https://adventofcode.com/2022/day/15
 module AOC2022.Day15 (solve) where
-import           RIO
-import           RIO.List (find, genericLength)
+import           Relude
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol)
 import           Util (Parser, aoc)
@@ -64,7 +63,7 @@ intervalsWithoutBeacons y =
 part1 :: [Scan] -> Integer
 part1 pairs = nbBeacons - nbDetectedBeacons where
     nbBeacons = sum . map itvLength $ intervalsWithoutBeacons yTarget pairs
-    nbDetectedBeacons = genericLength $ nubOrd [x | Scan _ (Coords x y) _ <- pairs, y == yTarget]
+    nbDetectedBeacons = genericLength $ ordNub [x | Scan _ (Coords x y) _ <- pairs, y == yTarget]
     yTarget = 2000000
 
 corners :: Scan -> [Coords]

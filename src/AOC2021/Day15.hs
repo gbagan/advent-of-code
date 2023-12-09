@@ -1,6 +1,6 @@
 module AOC2021.Day15 (solve) where
-import           RIO hiding (some)
-import           RIO.Char.Partial (digitToInt)
+import           Relude hiding (some)
+import           Data.Char (digitToInt)
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (digitChar, eol)
 import           Util (Parser, Point, aoc, adjacentPoints)

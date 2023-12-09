@@ -1,9 +1,9 @@
 -- https://adventofcode.com/2022/day/8
 module AOC2022.Day08 (solve) where
-import           RIO
-import           RIO.Partial (fromJust)
-import           RIO.Char.Partial (digitToInt)
-import           RIO.List.Partial (maximum)
+import           Relude
+import           Data.Maybe (fromJust)
+import           Data.Char (digitToInt)
+import           Data.List (maximum)
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (numberChar, eol)
 import           Data.Massiv.Array (Matrix, (!?), fromLists', toLists2, U, Comp(Seq), Ix2(..))

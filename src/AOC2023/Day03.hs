@@ -1,12 +1,10 @@
 -- https://adventofcode.com/2023/day/3
 module AOC2023.Day03 (solve) where
-import           RIO hiding (some)
-import           RIO.Partial (read)
-import           RIO.List.Partial (head, last)
-import           RIO.Char (isDigit)
-import           Text.Megaparsec (anySingleBut, sepEndBy1, some)
-import           Text.Megaparsec.Char (eol)
-import           Util (Parser, aoc)
+import           Relude hiding (some, head, last)
+import           Relude.Unsafe (head, last, read)
+import           Data.Char (isDigit)
+import           Util (aoc)
+import           Util.Parser (Parser, anySingleBut, eol, sepEndBy1, some)
 import           Data.List.Extra (wordsBy)
 import           Data.Massiv.Array ((!?), fromLists', U, Comp(Seq), Ix2(..))
 

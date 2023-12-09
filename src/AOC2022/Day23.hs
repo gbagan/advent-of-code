@@ -1,10 +1,9 @@
 -- https://adventofcode.com/2022/day/23
 module AOC2022.Day23 (solve) where
-import           RIO hiding (some)
-import           RIO.List (cycle, scanl')
-import           RIO.List.Partial (minimum, maximum, (!!))
-import qualified RIO.HashMap.Partial as Map ((!))
-import qualified RIO.HashSet as Set
+import           Relude hiding (some)
+import           Data.List (minimum, maximum, (!!))
+import qualified Data.HashMap.Strict as Map ((!))
+import qualified Data.HashSet as Set
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (char, eol)
 import           Linear.V2 (V2(..))

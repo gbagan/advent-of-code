@@ -1,7 +1,8 @@
 -- https://adventofcode.com/2022/day/7
 module AOC2022.Day07 (solve) where
-import           RIO hiding (some)
-import           RIO.List.Partial (minimum)
+import           Relude hiding (some)
+import           Control.Monad (foldM)
+import           Data.List (minimum)
 import           Text.Megaparsec (some)
 import           Text.Megaparsec.Char (alphaNumChar, char, eol)
 import           Text.Megaparsec.Char.Lexer (decimal)

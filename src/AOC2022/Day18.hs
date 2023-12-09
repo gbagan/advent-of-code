@@ -1,10 +1,8 @@
 -- https://adventofcode.com/2022/day/18
 module AOC2022.Day18 (solve) where
-import           RIO
-import           RIO.List (partition)
-import           RIO.List.Partial (maximum, minimum)
-import qualified RIO.HashSet as Set
-import           RIO.State (execState, modify')
+import           Relude
+import           Data.List (maximum, minimum, partition)
+import qualified Data.HashSet as Set
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (char, eol)
 import           Text.Megaparsec.Char.Lexer (decimal)

@@ -1,8 +1,7 @@
 module AOC2021.Day25  where
-import           RIO
-import           RIO.List (findIndex, iterate)
-import qualified RIO.HashMap as Map
-import           RIO.List.Partial (maximum)
+import           Relude
+import           Data.List (findIndex, maximum)
+import qualified Data.HashMap.Strict as Map
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (char, eol)
 import           Util (Parser, Point, aoc, listTo2dMap)

@@ -1,11 +1,9 @@
 -- https://adventofcode.com/2023/day/6
 module AOC2023.Day06 (solve) where
-import           RIO
-import           RIO.Partial (read)
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol, hspace)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc)
+import           Relude
+import           Relude.Unsafe (read)
+import           Util (aoc)
+import           Util.Parser (Parser, sepEndBy1, eol, hspace, decimal)
 
 type Input = ([Int], [Int]) -- time limits, distances
 

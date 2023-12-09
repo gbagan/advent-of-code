@@ -1,8 +1,8 @@
 module AOC2021.Day23 (solve) where
-import           RIO
-import           RIO.List.Partial (head, last)
-import qualified RIO.Vector as Vec
-import           RIO.Vector.Partial ((!), (//))
+import           Relude hiding (head, last)
+import           Relude.Unsafe (head, last)
+import qualified Data.Vector as Vec
+import           Data.Vector (Vector, (!), (//))
 import qualified Data.IntMap as IM
 import           Text.Megaparsec (anySingle)
 import           Text.Megaparsec.Char (char)

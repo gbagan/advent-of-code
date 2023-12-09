@@ -1,7 +1,6 @@
 module AOC2021.Day04 (solve) where
-import           RIO
-import           RIO.List (transpose)
-import           RIO.List.Partial (head)
+import           Relude hiding (head)
+import           Relude.Unsafe (head)
 import           Text.Megaparsec (sepEndBy1, sepBy1)
 import           Text.Megaparsec.Char (char, eol, hspace, hspace1)
 import           Text.Megaparsec.Char.Lexer (decimal)

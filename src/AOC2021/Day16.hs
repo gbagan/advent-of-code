@@ -1,7 +1,6 @@
 module AOC2021.Day16 (solve) where
-import           RIO hiding (some)
-import           RIO.List (unzip)
-import           RIO.List.Partial (maximum, minimum)
+import           Relude hiding (Op, some)
+import           Data.List (maximum, minimum)
 import           Text.Megaparsec (anySingle, count, some, takeP, parseMaybe, takeRest)
 import           Text.Megaparsec.Char (hexDigitChar)
 import           Util (Parser, aoc', binToInt)

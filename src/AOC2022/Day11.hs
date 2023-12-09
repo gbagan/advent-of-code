@@ -1,10 +1,9 @@
 -- https://adventofcode.com/2022/day/11
 {-# OPTIONS_GHC -Wno-unused-top-binds #-}
 module AOC2022.Day11 (solve) where
-import           RIO
-import           RIO.Lens (ix)
-import           RIO.List (genericLength, iterate, sort)
-import           RIO.List.Partial ((!!))
+import           Relude
+import           Relude.Unsafe ((!!))
+import           Lens.Micro ((^.), (.~), (%~), ix)
 import           Data.List.Extra (takeEnd)
 import           Lens.Micro.TH (makeLenses)
 import           Text.Megaparsec (sepBy1, sepEndBy1)

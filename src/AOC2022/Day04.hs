@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2022/day/4
 module AOC2022.Day04 (solve) where
-import           RIO
+import           Relude
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)

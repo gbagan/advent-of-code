@@ -1,7 +1,6 @@
 -- https://adventofcode.com/2022/day/1
 module AOC2022.Day01 (solve) where
-import           RIO
-import           RIO.List (sort)
+import           Relude
 import           Data.List.Extra (takeEnd)
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol)

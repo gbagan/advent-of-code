@@ -1,12 +1,9 @@
 -- https://adventofcode.com/2023/day/4
 module AOC2023.Day04 (solve) where
-import           RIO hiding (some, many)
-import           RIO.List (splitAt)
+import           Relude hiding (some, many)
 import qualified Data.IntSet as S
-import           Text.Megaparsec (takeWhileP, sepEndBy1)
-import           Text.Megaparsec.Char (char, eol, hspace)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc')
+import           Util (aoc')
+import           Util.Parser (Parser, takeWhileP, sepEndBy1, char, eol, hspace, decimal)
 
 type Card = ([Int], [Int]) -- owned numbers, winning numbers
 

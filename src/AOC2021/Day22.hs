@@ -1,5 +1,5 @@
 module AOC2021.Day22 (solve) where
-import           RIO
+import           Relude
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol)
 import           Util (Parser, aoc)

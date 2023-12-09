@@ -1,7 +1,7 @@
 -- https://adventofcode.com/2022/day/6
 module AOC2022.Day06 (solve) where
-import           RIO hiding (some)
-import           RIO.List (findIndex)
+import           Relude hiding (some)
+import           Data.List (findIndex)
 import           Text.Megaparsec (anySingle, some)
 import           Data.List.Split (divvy)
 import           Util (Parser, aoc, allUnique)

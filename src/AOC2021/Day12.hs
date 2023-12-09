@@ -1,7 +1,6 @@
 module AOC2021.Day12 (solve) where
-import           RIO hiding (some)
+import           Relude hiding (some)
 import           Data.Char (isUpper)
-import           Data.List (nub)
 import           Data.Map ((!))
 import qualified Data.Map as Map
 import           Text.Megaparsec (sepEndBy1, some)
@@ -17,7 +16,7 @@ parser = edgesToGraph <$> sepEndBy1 edge eol where
 
 edgesToGraph :: [Edge] -> Graph
 edgesToGraph edges = Map.fromList . map (\u -> (u, neighbor u)) $ vertices where
-    vertices = nub $ edges >>= \(Edge u v) -> [u, v]
+    vertices = ordNub $ edges >>= \(Edge u v) -> [u, v]
     neighbor u = mapMaybe (\case
                     Edge v w | u == v    -> Just w
                              | u == w    -> Just v

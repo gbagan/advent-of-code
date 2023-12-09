@@ -1,8 +1,7 @@
 module AOC2021.Day09 (solve) where
-import           RIO hiding (some)
-import           RIO.Char.Partial (digitToInt)
-import           RIO.List (find, sortOn)
-import qualified RIO.HashMap as HMap
+import           Relude hiding (some)
+import           Data.Char (digitToInt)
+import qualified Data.HashMap.Strict as HMap
 import           Data.Map.Lazy ((!))
 import qualified Data.Map.Lazy as LMap
 import           Text.Megaparsec (sepEndBy1, some)

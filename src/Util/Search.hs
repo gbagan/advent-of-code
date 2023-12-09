@@ -1,11 +1,10 @@
 module Util.Search where
 
-import           RIO
-import           RIO.List (find)
-import           RIO.Seq (Seq(..), (><))
-import qualified RIO.Seq as Seq
-import qualified RIO.Set as Set
-import qualified RIO.HashSet as HSet
+import           Relude
+import           Data.Sequence (Seq(..), (><))
+import qualified Data.Sequence as Seq
+import qualified Data.Set as Set
+import qualified Data.HashSet as HSet
 
 bfs :: Hashable a => (a -> [a]) -> a -> [(Int, a)]
 bfs nborFunc start = go HSet.empty (Seq.singleton (0, start)) where

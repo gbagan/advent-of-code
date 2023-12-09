@@ -1,9 +1,8 @@
 -- https://adventofcode.com/2022/day/3
 module AOC2022.Day03 (solve) where
-import           RIO hiding (some)
-import           RIO.Char (isLower, ord)
-import           RIO.List (intersect, splitAt)
-import           RIO.List.Partial (head, foldl1')
+import           Relude hiding (head, some)
+import           Data.Char (isLower)
+import           Data.List (head, foldl1', intersect)
 import           Data.List.Split (chunksOf)
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (letterChar, eol)

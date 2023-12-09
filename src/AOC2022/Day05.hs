@@ -2,10 +2,9 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use <$>" #-}
 module AOC2022.Day05 (solve) where
-import           RIO hiding (some)
-import           RIO.Lens (ix)
-import           RIO.List (splitAt, transpose)
-import           RIO.List.Partial (head, (!!))
+import           Relude hiding (head, some)
+import           Relude.Unsafe (head, (!!))
+import           Lens.Micro ((%~), (.~), ix)
 import           Text.Megaparsec (anySingle, between, manyTill, sepEndBy1, sepBy1)
 import           Text.Megaparsec.Char (eol, upperChar)
 import           Text.Megaparsec.Char.Lexer (decimal)

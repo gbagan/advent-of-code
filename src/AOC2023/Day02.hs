@@ -1,10 +1,8 @@
 -- https://adventofcode.com/2023/day/2
 module AOC2023.Day02 (solve) where
-import           RIO hiding (id, sets)
-import           Text.Megaparsec (sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
-import           Util (Parser, aoc)
+import           Relude hiding (id)
+import           Util (aoc)
+import           Util.Parser (Parser, decimal, eol, sepEndBy1)
 
 data RGB = RGB Int Int Int
 data Game = Game Int [RGB]

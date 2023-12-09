@@ -1,11 +1,10 @@
 -- https://adventofcode.com/2022/day/20
 module AOC2022.Day20 (solve) where
-import           RIO
-import           RIO.List (find, iterate)
-import           RIO.Partial (fromJust)
-import           RIO.List.Partial ((!!))
-import qualified RIO.Seq as Seq
-import           RIO.Seq (Seq(..), (><))
+import           Relude
+import           Relude.Unsafe ((!!))
+import           Data.Maybe (fromJust)
+import qualified Data.Sequence as Seq
+import           Data.Sequence (Seq(..), (><))
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol)
 import           Util (Parser, aoc)

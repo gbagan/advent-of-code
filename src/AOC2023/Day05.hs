@@ -1,14 +1,10 @@
 -- https://adventofcode.com/2023/day/5
 module AOC2023.Day05 (solve) where
-import           RIO hiding (some)
-import           RIO.List (sortOn)
-import           RIO.List.Partial (minimum)
+import           Relude hiding (some)
+import           Data.List (minimum)
 import           Data.Tuple.Extra (both, snd3, thd3)
-import           Text.Megaparsec (sepBy1, sepEndBy1)
-import           Text.Megaparsec.Char (eol)
-import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
-import           Util.Parser (skipLine)
+import           Util.Parser (sepBy1, sepEndBy1, eol, decimal, skipLine)
 
 type Interval = (Int, Int) -- start, end
 type Range = (Int, Int, Int) -- destination, source, length

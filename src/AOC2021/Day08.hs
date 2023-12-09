@@ -1,12 +1,9 @@
 module AOC2021.Day08 (solve) where
-import           RIO hiding (some)
-import           RIO.Char (ord)
-import           RIO.Char.Partial (chr)
-import           RIO.List (find, permutations)
-import           RIO.List.Partial ((!!))
-import qualified RIO.Map as Map
+import           Relude hiding (some)
+import           Relude.Unsafe ((!!))
+import qualified Data.Map.Strict as Map
 import qualified Data.IntSet as IS
-import qualified RIO.Set as Set
+import qualified Data.Set as Set
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (eol, lowerChar, hspace1)
 import           Util (Parser, aoc)

@@ -1,8 +1,8 @@
 -- https://adventofcode.com/2022/day/21
 module AOC2022.Day21 (solve) where
-import           RIO hiding (some)
-import qualified RIO.HashMap as Map
-import qualified RIO.Text as Text
+import           Relude hiding (Op, some)
+import qualified Data.HashMap.Strict as Map
+import qualified Data.Text as Text
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (eol, lowerChar)
 import           Text.Megaparsec.Char.Lexer (decimal)

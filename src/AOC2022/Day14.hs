@@ -1,8 +1,9 @@
 -- https://adventofcode.com/2022/day/14
 module AOC2022.Day14 (solve) where
-import           RIO
-import           RIO.List.Partial (maximum)
-import qualified RIO.HashSet as Set
+import           Relude
+import           Control.Monad.ST (runST)
+import           Data.List (maximum)
+import qualified Data.HashSet as Set
 import           Text.Megaparsec (sepEndBy1, sepBy1)
 import           Text.Megaparsec.Char (eol)
 import           Text.Megaparsec.Char.Lexer (decimal)

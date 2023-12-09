@@ -1,9 +1,8 @@
 -- https://adventofcode.com/2022/day/22
 module AOC2022.Day22 (solve) where
-import           RIO hiding (some)
-import           RIO.List (iterate)
-import           RIO.List.Partial ((!!), head)
-import qualified RIO.HashMap as Map
+import           Relude hiding (head, some)
+import           Relude.Unsafe ((!!), head)
+import qualified Data.HashMap.Strict as Map
 import           Text.Megaparsec (some, sepEndBy1)
 import           Text.Megaparsec.Char (char, eol)
 import           Text.Megaparsec.Char.Lexer (decimal)

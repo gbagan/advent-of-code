@@ -1,9 +1,8 @@
 -- https://adventofcode.com/2022/day/10
 {-# OPTIONS_GHC -Wno-deprecations #-}
 module AOC2022.Day10 (solve) where
-import           RIO
-import           RIO.List (scanl')
-import qualified RIO.Text as Text
+import           Relude hiding (unlines)
+import           Data.List (unlines)
 import           Data.List.Split (chunksOf, divvy)
 import           Text.Megaparsec (sepEndBy1)
 import           Text.Megaparsec.Char (eol)
@@ -31,7 +30,7 @@ part2 = unlines . map (zipWith drawPixel [0..]) . chunksOf 40 where
                   | otherwise = '.'
 
 part2' :: [Int] -> Int
-part2' xs = trace (Text.pack $ part2 xs) 0
+part2' xs = trace (part2 xs) 0
 
 solve :: MonadIO m => Text -> m ()
 solve = aoc' parser (pure . runInstrs 1) part1 part2'

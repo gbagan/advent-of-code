@@ -1,6 +1,5 @@
 module AOC2021.Day17 (solve) where
-import           RIO
-import           RIO.List (iterate)
+import           Relude
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, cartesianProduct, count)
 

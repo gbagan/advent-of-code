@@ -1,7 +1,7 @@
 module AOC2021.Day03 (solve) where
-import           RIO hiding (some)
-import           RIO.List (partition, transpose)
-import           RIO.List.Partial ((!!))
+import           Relude hiding (some)
+import           Data.List (partition)
+import           Relude.Unsafe ((!!))
 import           Text.Megaparsec (sepEndBy1, some)
 import           Text.Megaparsec.Char (eol)
 import           Util (Parser, aoc, binToInt, majority)
