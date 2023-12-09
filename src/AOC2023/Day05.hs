@@ -2,9 +2,9 @@
 module AOC2023.Day05 (solve) where
 import           AOC.Prelude
 import           Data.List (minimum)
-import           Data.Tuple.Extra (both, snd3, thd3)
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepBy1, sepEndBy1, eol, decimal, skipLine)
+import           AOC.Tuple (both, snd3, thd3)
 
 type Interval = (Int, Int) -- start, end
 type Range = (Int, Int, Int) -- destination, source, length

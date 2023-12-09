@@ -1,7 +1,7 @@
 -- https://adventofcode.com/2022/day/1
 module AOC2022.Day24 (solve) where
 import           Relude hiding (some)
-import           Linear.V3 (V3(..))
+import           AOC.V3 (V3(..))
 import           Data.Massiv.Array (Matrix, (!), (!?), fromLists', size, B, Comp(Seq), Ix2(..), Sz(..))
 import           AOC (aoc)
 import           AOC.Search (distance)

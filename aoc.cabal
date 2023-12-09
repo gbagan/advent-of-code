@@ -27,6 +27,8 @@ executable aoc2020
                 AOC.Parser
                 AOC.Search
                 AOC.Util
+                AOC.V2
+                AOC.V3
 
     default-language: Haskell2010
     default-extensions:
@@ -91,6 +93,8 @@ executable aoc2021
                 AOC.Parser
                 AOC.Search
                 AOC.Util
+                AOC.V2
+                AOC.V3
 
     default-language: Haskell2010
     default-extensions:
@@ -112,8 +116,6 @@ executable aoc2021
     build-depends: base >= 4.15 && < 5
                    , array
                    , containers
-                   , either
-                   , linear
                    , massiv
                    , megaparsec
                    , relude
@@ -154,6 +156,8 @@ executable aoc2022
                 AOC.Parser
                 AOC.Search
                 AOC.Util
+                AOC.V2
+                AOC.V3
 
     default-language:    Haskell2010
     default-extensions:
@@ -177,7 +181,6 @@ executable aoc2022
               -Wredundant-constraints
     build-depends:   base >= 4.15 && < 5
                      , containers
-                     , extra
                      , hashtables
                      , linear
                      , megaparsec
@@ -204,12 +207,16 @@ executable aoc2023
                 AOC2023.Day07
                 AOC2023.Day08
                 AOC2023.Day09
+                AOC2023.Day10
                 AOC
                 AOC.Prelude
                 AOC.Debug
                 AOC.Parser
                 AOC.Search
+                AOC.Tuple
                 AOC.Util
+                AOC.V2
+                AOC.V3
 
     default-language:    Haskell2010
     default-extensions:
@@ -233,8 +240,6 @@ executable aoc2023
               -Wredundant-constraints
     build-depends:   base >= 4.15 && < 5
                      , containers
-                     , extra
-                     , linear
                      , massiv
                      , megaparsec
                      , relude

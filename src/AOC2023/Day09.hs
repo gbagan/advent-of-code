@@ -10,8 +10,8 @@ parser = (signedDecimal `sepEndBy1` hspace) `sepEndBy1` eol
 
 solveWith :: ([Int] -> [Int]) -> [[Int]] -> Int
 solveWith f = sum . map (extrapolate . f) where
-    extrapolate = sum . map last . takeWhile (any (/=0)) . iterate' diff
-    diff l = zipWith (-) (tail l) l
+    extrapolate = sum . map last . takeWhile (any (/=0)) . iterate' differentiate
+    differentiate l = zipWith (-) (tail l) l
 
 solve :: Text -> IO ()
 solve = aoc parser (solveWith id) (solveWith reverse)

@@ -4,11 +4,11 @@ import           AOC.Prelude
 import           Data.List (minimum, maximum, (!!))
 import qualified Data.HashMap.Strict as Map ((!))
 import qualified Data.HashSet as Set
-import           Linear.V2 (V2(..))
 import           Data.List.Split (divvy)
 import           AOC (aoc)
-import           AOC.Util (freqs, kingAdjacentPoints')
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
+import           AOC.Util (freqs, kingAdjacentPoints')
+import           AOC.V2 (V2(..))
 
 type Rule = ([V2 Int], V2 Int)
 

@@ -3,7 +3,7 @@ module AOC2022.Day18 (solve) where
 import           AOC.Prelude
 import           Data.List (maximum, minimum)
 import qualified Data.HashSet as Set
-import           Linear.V3 (V3(..))
+import           AOC.V3 (V3(..))
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
 import           AOC.Search (dfsM)

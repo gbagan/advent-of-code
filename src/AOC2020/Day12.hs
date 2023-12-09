@@ -2,7 +2,7 @@
 module AOC2020.Day12 (solve) where
 import           AOC.Prelude
 import           Relude.Unsafe ((!!))
-import           Linear.V2 (V2(..), perp)
+import           AOC.V2 (V2(..), perp)
 import           AOC (aoc)
 import           AOC.Parser (Parser, choice, sepEndBy1, eol, decimal)
 

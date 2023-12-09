@@ -1,13 +1,13 @@
 -- https://adventofcode.com/2022/day/11
 {-# OPTIONS_GHC -Wno-unused-top-binds #-}
 module AOC2022.Day11 (solve) where
-import           Relude
+import           AOC.Prelude
 import           Relude.Unsafe ((!!))
 import           Lens.Micro ((^.), (.~), (%~), ix)
-import           Data.List.Extra (takeEnd)
 import           Lens.Micro.TH (makeLenses)
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepBy1, sepEndBy1, eol, decimal, skipLine)
+import           AOC.Util (takeEnd)
 
 data Monkey = Monkey {
         _items :: ![Integer]
@@ -38,7 +38,7 @@ parser = monkey `sepEndBy1` eol where
     binop = (+) <$ "+ " <|> (*) <$ "* "
 
 solve' :: Part -> Int -> [Monkey] -> Integer
-solve' part nbRounds mks = monkeyBusiness $ iterate runRound mks !! nbRounds where
+solve' part nbRounds mks = monkeyBusiness $ iterate' runRound mks !! nbRounds where
     runRound monkeys = foldl' runMonkey monkeys [0 .. length monkeys - 1]
 
     runMonkey monkeys i = let ithMonkey = monkeys !! i in

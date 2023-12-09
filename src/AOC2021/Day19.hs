@@ -2,7 +2,7 @@ module AOC2021.Day19 (solve) where
 import           AOC.Prelude
 import           Data.List (maximum)
 import qualified Data.HashMap.Strict as Map
-import           Linear.V3 (V3(..))
+import           AOC.V3 (V3(..))
 import           AOC (aoc')
 import           AOC.Parser (Parser, eol, numberChar, sepEndBy1, some, signedDecimal)
 import           AOC.Util (freqs)

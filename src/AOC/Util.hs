@@ -3,7 +3,7 @@ import           AOC.Prelude
 import           Relude.Unsafe ((!!))
 import           Data.List (maximum)
 import qualified Data.HashMap.Strict as HMap
-import           Linear.V2 (V2(..))
+import           AOC.V2 (V2(..))
 
 type Point = (Int, Int)
 
@@ -28,6 +28,23 @@ allUnique xs = length (ordNub xs) == length xs
 maximumDef :: Ord a => a -> [a] -> a
 maximumDef def [] = def
 maximumDef _ l = maximum l
+
+drop1 :: [a] -> [a]
+drop1 [] = []
+drop1 (_:xs) = xs
+
+takeEnd :: Int -> [a] -> [a]
+takeEnd i l
+    | i <= 0 = []
+    | otherwise = f l (drop i l)
+    where f (_:xs) (_:ys) = f xs ys
+          f xs _ = xs
+
+wordsBy :: (a -> Bool) -> [a] -> [[a]]
+wordsBy f s = case dropWhile f s of
+    [] -> []
+    x:xs -> (x:w) : wordsBy f (drop1 z)
+        where (w,z) = break f xs
 
 average :: [Int] -> Double
 average xs = realToFrac (sum xs) / genericLength xs

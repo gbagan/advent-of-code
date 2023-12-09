@@ -4,11 +4,11 @@ import           Relude hiding (some)
 import           Data.List (maximum)
 import qualified Data.HashSet as Set
 import qualified Data.List.NonEmpty as NE
-import           Linear.V2 (V2(..))
 import           Data.Stream.Infinite (Stream(..))
 import qualified Data.Stream.Infinite as Stream
 import           AOC (aoc)
 import           AOC.Parser (Parser, some)
+import           AOC.V2 (V2(..))
 
 data Jet = L | R deriving (Eq)
 type Rock = HashSet (V2 Int)

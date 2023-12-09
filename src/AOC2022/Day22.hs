@@ -3,7 +3,7 @@ module AOC2022.Day22 (solve) where
 import           Relude hiding (head, some)
 import           Relude.Unsafe ((!!), head)
 import qualified Data.HashMap.Strict as Map
-import           Linear.V2 (V2(..))
+import           AOC.V2 (V2(..))
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, some, eol, decimal)
 import           AOC.Util (listTo2dMap')

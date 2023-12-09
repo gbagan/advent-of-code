@@ -3,8 +3,6 @@ module AOC2020.Day08 (solve) where
 import           AOC.Prelude
 import qualified Data.IntSet as Set
 import qualified Data.Vector as V
-import qualified Lens.Micro.Platform ()
-import           Lens.Micro (ix, (.~))
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
 
@@ -35,8 +33,8 @@ part2 instrs = case simulate instrs of
     Left (seen, _) ->
         listToMaybe . rights $ Set.toList seen <&> \i ->
             case instrs V.! i of
-                Noop j -> simulate $ instrs & ix i .~ Jmp j
-                Jmp j -> simulate $ instrs & ix i .~ Noop j
+                Noop j -> simulate $ instrs V.// [(i, Jmp j)]
+                Jmp j -> simulate $ instrs V.// [(i, Noop j)]
                 Acc j -> Left (seen, j)
         
 solve :: Text -> IO ()
