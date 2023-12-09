@@ -7,7 +7,7 @@ import           Text.Megaparsec.Char (eol, hspace)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc)
 
-type Input = ([Int], [Int])
+type Input = ([Int], [Int]) -- time limits, distances
 
 parser :: Parser Input
 parser = (,) <$> ("Time:" *> list) <*> (eol *> "Distance:" *> list) where

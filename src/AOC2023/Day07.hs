@@ -2,14 +2,15 @@
 module AOC2023.Day07 (solve) where
 import           RIO hiding (some)
 import           RIO.List (group, sort, sortOn)
-import           Text.Megaparsec (sepEndBy1, some)
+import           Text.Megaparsec (choice, sepEndBy1, some)
 import           Text.Megaparsec.Char (eol, hspace)
 import           Text.Megaparsec.Char.Lexer (decimal)
 import           Util (Parser, aoc, count)
 
+type Bid = Int
 data HandAndBid = HandAndBid
     { hand :: [Card]
-    , bid :: Int
+    , bid :: Bid
     }
 
 type Input = [HandAndBid]
@@ -26,11 +27,9 @@ instance Ord Card' where
 parser :: Parser Input
 parser = line `sepEndBy1` eol where
     line = HandAndBid <$> some card <* hspace <*> decimal <* hspace
-    card =  C2 <$ "2" <|> C3 <$ "3" <|> C4 <$ "4"
-        <|> C5 <$ "5" <|> C6 <$ "6" <|> C7 <$ "7"
-        <|> C8 <$ "8" <|> C9 <$ "9" <|>  T <$ "T"
-        <|>  J <$ "J" <|>  Q <$ "Q" <|>  K <$ "K"
-        <|>  A <$ "A"
+    card = choice [ C2 <$ "2", C3 <$ "3", C4 <$ "4", C5 <$ "5" <|> C6 <$ "6" <|> C7 <$ "7", C8 <$ "8" , C9 <$ "9"
+                  , T <$ "T", J <$ "J",  Q <$ "Q",  K <$ "K", A <$ "A"
+                  ]
 
 cardFreq :: [Card] -> CardFreq
 cardFreq = sortOn Down . map length . group . sort

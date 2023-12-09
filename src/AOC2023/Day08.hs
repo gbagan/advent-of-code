@@ -24,13 +24,13 @@ parser = Input <$> some instr <* eol <* eol <*> network where
     networkFromList nodes = Map.fromList [(source, (left, right)) | (source, left, right) <- nodes]
 
 solveWith :: (Address -> Bool) -> (Address -> Bool) -> Input -> Int
-solveWith startPred endPred (Input instrs network) = foldl' lcm 1 nbSteps where
+solveWith startPred endPred (Input instrs network) = foldl' lcm 1 periods where
     starts = filter startPred (Map.keys network)
-    nbSteps = [ fromJust $ findIndex endPred walk
+    periods = [ fromJust $ findIndex endPred walk
               | start <- starts
-              , let walk = scanl' goNext start (cycle instrs)
+              , let walk = scanl' move start (cycle instrs)
               ]
-    goNext address = \case
+    move address = \case
         L -> left
         R -> right
         where (left, right) = network ! address
