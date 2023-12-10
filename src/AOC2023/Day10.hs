@@ -11,8 +11,9 @@ import           AOC.Search (bfs)
 import           AOC.Util (adjacentPoints, listTo2dMap)
 
 data Tile = NS | EW | NE | NW | SW | SE | NoPipe | Start deriving (Eq)
+type Index2 = (Int, Int)
 type Input = [[Tile]]
-type Matrix = HashMap (Int, Int) Tile
+type Matrix = HashMap Index2 Tile
 
 parser :: Parser Input
 parser =  some tile `sepEndBy1` eol where
@@ -36,7 +37,7 @@ cleanInput tiles = (cleanedTiles, cleanedMat, start) where
                    | row <- tiles
                    ]
 
-neighbors :: Matrix -> (Int, Int) -> [(Int, Int)]
+neighbors :: Matrix -> Index2 -> [Index2]
 neighbors mat (i, j) = case mat Map.!? (i, j) of
     Just NS -> [(i-1, j), (i+1, j)]
     Just EW -> [(i, j-1), (i, j+1)]
@@ -47,12 +48,8 @@ neighbors mat (i, j) = case mat Map.!? (i, j) of
     Just Start -> adjacentPoints (i, j)
     _ -> []
 
-
-loopBfs :: Matrix -> (Int, Int) -> [(Int, (Int, Int))]
-loopBfs mat = bfs (neighbors mat)
-
 part1 :: Input -> Int
-part1 tiles = maximum . map fst $ loopBfs mat start where 
+part1 tiles = maximum . map fst $ bfs (neighbors mat) start where 
     (_, mat, start) = cleanInput tiles
 
 keepOdds :: [a] -> [a]
@@ -62,7 +59,7 @@ keepOdds _ = []
 part2 :: Input -> Int
 part2 tiles = sum . map countRow $ cleanedTiles where
     (tiles', mat, start) = cleanInput tiles
-    loopSet = Set.fromList . map snd $ loopBfs mat start
+    loopSet = Set.fromList . map snd $ bfs (neighbors mat) start
     -- replace each tile not in the loop with "."
     cleanedTiles = [ [ if (i, j) `Set.member` loopSet then tile else NoPipe
                      | (j, tile) <- zip [0..] row
@@ -74,12 +71,12 @@ part2 tiles = sum . map countRow $ cleanedTiles where
             . keepOdds
             . splitWhen (`elem` [NS, NE, SE])
             . filter (`notElem` [NW, SW])
-            . filter1
+            . prefilter
             . filter (/= EW)
-    filter1 (NE :  NW : xs) = filter1 xs
-    filter1 (SE : SW : xs) = filter1 xs
-    filter1 (x:xs) = x : filter1 xs
-    filter1 [] = []
+    prefilter [] = []
+    prefilter (NE :  NW : xs) = prefilter xs
+    prefilter (SE : SW : xs) = prefilter xs
+    prefilter (x:xs) = x : prefilter xs
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
