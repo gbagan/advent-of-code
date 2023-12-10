@@ -8,13 +8,13 @@ import           AOC (aoc')
 import           AOC.Parser (Parser, digitChar, eol, sepEndBy1, some)
 import           AOC.Util (count, kingAdjacentPoints, listTo2dMap)
 
-type Index2 = (Int, Int)
+type Coord = (Int, Int)
 
-parser :: Parser (HashMap Index2 Int)
+parser :: Parser (HashMap Coord Int)
 parser = listTo2dMap <$> line `sepEndBy1` eol where
         line = some (digitToInt <$> digitChar)
 
-step :: HashMap Index2 Int -> HashMap Index2 Int
+step :: HashMap Coord Int -> HashMap Coord Int
 step mp = mp3 where
     mp1 = Map.map (+1)  mp
     stack = map fst . filter ((>9) . snd) . Map.toList $ mp1
@@ -30,13 +30,13 @@ step mp = mp3 where
                             else
                                 go xs flashed mp''
 
-precomp :: HashMap Index2 Int -> [HashMap Index2 Int]
+precomp :: HashMap Coord Int -> [HashMap Coord Int]
 precomp = iterate' step
 
-part1 :: [HashMap Index2 Int] -> Int
+part1 :: [HashMap Coord Int] -> Int
 part1 = sum . map (count (==0) . Map.elems) . take 100 . tail
 
-part2 :: [HashMap Index2 Int] -> Maybe Int
+part2 :: [HashMap Coord Int] -> Maybe Int
 part2 = findIndex (all (==0) . Map.elems)
 
 solve :: Text -> IO ()

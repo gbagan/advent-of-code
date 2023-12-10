@@ -11,15 +11,15 @@ import           AOC.Search (bfs)
 import           AOC.Util (adjacentPoints, listTo2dMap)
 
 data Tile = NS | EW | NE | NW | SW | SE | NoPipe | Start deriving (Eq)
-type Index2 = (Int, Int)
+type Coord = (Int, Int)
 type Input = [[Tile]]
-type Matrix = HashMap Index2 Tile
+type Matrix = HashMap Coord Tile
 
 parser :: Parser Input
 parser =  some tile `sepEndBy1` eol where
     tile = choice [NS <$ "|", EW <$ "-", NE <$"L", NW <$ "J", SW <$ "7", SE <$ "F", NoPipe <$ ".", Start <$ "S"]
 
-cleanInput :: Input -> (Input, Matrix, Index2)
+cleanInput :: Input -> (Input, Matrix, Coord)
 cleanInput tiles = (cleanedTiles, cleanedMat, start) where
     start = head [pos | (pos, Start) <- Map.toList mat]
     mat = listTo2dMap tiles
@@ -37,7 +37,7 @@ cleanInput tiles = (cleanedTiles, cleanedMat, start) where
                    | row <- tiles
                    ]
 
-neighbors :: Matrix -> Index2 -> [Index2]
+neighbors :: Matrix -> Coord -> [Coord]
 neighbors mat (i, j) = case mat Map.!? (i, j) of
     Just NS -> [(i-1, j), (i+1, j)]
     Just EW -> [(i, j-1), (i, j+1)]

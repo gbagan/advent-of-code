@@ -26,10 +26,10 @@ part1 :: [(Packet, Packet)] -> Int
 part1 = sum . zipWith (\i (p1, p2) -> if p1 <= p2 then i else 0) [1..]
 
 part2 :: [(Packet, Packet)] -> Int
-part2 pairs = index1 * index2 where
+part2 pairs = index1 * Coord where
     packets = pairs >>= \(p1, p2) -> [p1, p2]
     index1 = 1 + count (< Packet [Packet [PInt 2]]) packets
-    index2 = 2 + count (< Packet [Packet [PInt 6]]) packets
+    Coord = 2 + count (< Packet [Packet [PInt 6]]) packets
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2

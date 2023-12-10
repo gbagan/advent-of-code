@@ -6,9 +6,9 @@ import           AOC (aoc)
 import           AOC.Parser (Parser, choice, sepEndBy1, eol)
 import           AOC.Util (listTo2dMap)
 
-type Index2 = (Int, Int)
+type Coord = (Int, Int)
 data Cell = Empty | East | South deriving (Eq, Ord)
-type Board = HashMap Index2 Cell
+type Board = HashMap Coord Cell
 data Input = Input !Int !Int !Board
 
 parser :: Parser Input
