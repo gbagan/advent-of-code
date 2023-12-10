@@ -75,8 +75,8 @@ listTo2dMap :: [[a]] -> HashMap (Int, Int) a
 listTo2dMap l =
     HMap.fromList
         [((i, j), v)
-        | (j, row) <- zip [0..] l
-        , (i, v) <- zip [0..] row
+        | (i, row) <- zip [0..] l
+        , (j, v) <- zip [0..] row
         ]
 
 listTo2dMap' :: [[a]] -> HashMap (V2 Int) a

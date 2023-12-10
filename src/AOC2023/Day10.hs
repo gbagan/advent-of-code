@@ -8,20 +8,12 @@ import qualified Data.HashSet as Set
 import           AOC (aoc)
 import           AOC.Parser (Parser, choice, eol, sepEndBy1, some)
 import           AOC.Search (bfs)
-import           AOC.Util (adjacentPoints)
+import           AOC.Util (adjacentPoints, listTo2dMap)
 
 data Tile = NS | EW | NE | NW | SW | SE | NoPipe | Start deriving (Eq, Show)
 type Input = [[Tile]]
 
 type Matrix = HashMap (Int, Int) Tile
-
-listTo2dMap :: [[a]] -> HashMap (Int, Int) a
-listTo2dMap l =
-    Map.fromList
-        [((i, j), v)
-        | (i, row) <- zip [0..] l
-        , (j, v) <- zip [0..] row
-        ]
 
 parser :: Parser Input
 parser =  some tile `sepEndBy1` eol where
@@ -85,11 +77,11 @@ part2 tiles = sum . map countRow $ cleanedTiles where
             . splitWhen (`elem` [NS, NE, SE])
             . filter (`notElem` [NW, SW])
             . filter1
-            . filter (/= EW)   
+            . filter (/= EW)
     filter1 (NE :  NW : xs) = filter1 xs
     filter1 (SE : SW : xs) = filter1 xs
     filter1 (x:xs) = x: filter1 xs
-    filter1 [] = []           
+    filter1 [] = []
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
