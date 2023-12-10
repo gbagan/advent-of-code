@@ -10,30 +10,31 @@ import           AOC.Parser (Parser, choice, eol, sepEndBy1, some)
 import           AOC.Search (bfs)
 import           AOC.Util (adjacentPoints, listTo2dMap)
 
-data Tile = NS | EW | NE | NW | SW | SE | NoPipe | Start deriving (Eq)
+data Tile = NS | EW | NE | NW | SW | SE | Empty | Start deriving (Eq)
 type Coord = (Int, Int)
 type Input = [[Tile]]
 type Matrix = HashMap Coord Tile
 
 parser :: Parser Input
 parser =  some tile `sepEndBy1` eol where
-    tile = choice [NS <$ "|", EW <$ "-", NE <$"L", NW <$ "J", SW <$ "7", SE <$ "F", NoPipe <$ ".", Start <$ "S"]
+    tile = choice [NS <$ "|", EW <$ "-", NE <$"L", NW <$ "J", SW <$ "7", SE <$ "F", Empty <$ ".", Start <$ "S"]
 
+-- returns the start coordinate and the input where the start tile is replaced with the adequate tile 
 cleanInput :: Input -> (Input, Matrix, Coord)
 cleanInput tiles = (cleanedTiles, cleanedMat, start) where
     start = head [pos | (pos, Start) <- Map.toList mat]
     mat = listTo2dMap tiles
-    goodTile = case [start `elem` neighbors mat nbor | nbor <- neighbors mat start] of
-        -- [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
+    adequateTile = case [start `elem` neighbors mat nbor | nbor <- neighbors mat start] of
+        -- (x-1, y), (x+1, y), (x, y-1), (x, y+1)
         [True, True, False, False] -> NS
         [False, False, True, True] -> EW
         [True, False, False, True] -> NE
         [True, False, True, False] -> NW
         [False, True, False, True] -> SE
         [False, True, True, False] -> SW
-        _ -> NoPipe  -- not possible
-    cleanedMat = Map.insert start goodTile mat
-    cleanedTiles = [ [ if tile == Start then goodTile else tile | tile <- row] 
+        _ -> Empty  -- cannot happen if the input is nice
+    cleanedMat = Map.insert start adequateTile mat
+    cleanedTiles = [ [ if tile == Start then adequateTile else tile | tile <- row] 
                    | row <- tiles
                    ]
 
@@ -60,8 +61,8 @@ part2 :: Input -> Int
 part2 tiles = sum . map countRow $ cleanedTiles where
     (tiles', mat, start) = cleanInput tiles
     loopSet = Set.fromList . map snd $ bfs (neighbors mat) start
-    -- replace each tile not in the loop with "."
-    cleanedTiles = [ [ if (i, j) `Set.member` loopSet then tile else NoPipe
+    -- replace each tile not in the loop with an empty tile
+    cleanedTiles = [ [ if (i, j) `Set.member` loopSet then tile else Empty
                      | (j, tile) <- zip [0..] row
                      ] 
                    | (i, row) <- zip [0..] tiles'
