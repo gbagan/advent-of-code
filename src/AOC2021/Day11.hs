@@ -6,13 +6,15 @@ import qualified Data.HashMap.Strict as Map
 import qualified Data.Set as Set
 import           AOC (aoc')
 import           AOC.Parser (Parser, digitChar, eol, sepEndBy1, some)
-import           AOC.Util (Point, count, kingAdjacentPoints, listTo2dMap)
+import           AOC.Util (count, kingAdjacentPoints, listTo2dMap)
 
-parser :: Parser (HashMap Point Int)
+type Index2 = (Int, Int)
+
+parser :: Parser (HashMap Index2 Int)
 parser = listTo2dMap <$> line `sepEndBy1` eol where
         line = some (digitToInt <$> digitChar)
 
-step :: HashMap Point Int -> HashMap Point Int
+step :: HashMap Index2 Int -> HashMap Index2 Int
 step mp = mp3 where
     mp1 = Map.map (+1)  mp
     stack = map fst . filter ((>9) . snd) . Map.toList $ mp1
@@ -28,13 +30,13 @@ step mp = mp3 where
                             else
                                 go xs flashed mp''
 
-precomp :: HashMap Point Int -> [HashMap Point Int]
+precomp :: HashMap Index2 Int -> [HashMap Index2 Int]
 precomp = iterate' step
 
-part1 :: [HashMap Point Int] -> Int
+part1 :: [HashMap Index2 Int] -> Int
 part1 = sum . map (count (==0) . Map.elems) . take 100 . tail
 
-part2 :: [HashMap Point Int] -> Maybe Int
+part2 :: [HashMap Index2 Int] -> Maybe Int
 part2 = findIndex (all (==0) . Map.elems)
 
 solve :: Text -> IO ()

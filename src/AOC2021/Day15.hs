@@ -3,15 +3,17 @@ import           AOC.Prelude
 import           Data.Char (digitToInt)
 import           Data.Massiv.Array (Matrix, (!), (!?), fromLists', makeArray, U, Comp(Seq), Ix2(..), Sz(..))
 import           AOC (aoc)
-import           AOC.Util (Point, adjacentPoints)
+import           AOC.Util (adjacentPoints)
 import           AOC.Parser (Parser, sepEndBy1, some, digitChar, eol)
 import           AOC.Search (dijkstra)
+
+type Index2 = (Int, Int)
 
 parser :: Parser (Matrix U Int)
 parser = fromLists' Seq <$> line `sepEndBy1` eol where
     line = some (digitToInt <$> digitChar)
 
-neighbors :: Matrix U Int -> Point -> [(Point, Int)]
+neighbors :: Matrix U Int -> Index2 -> [(Index2, Int)]
 neighbors mat v = mapMaybe (\(i, j) -> ((i,j),) <$> (mat !? Ix2 i j)) (adjacentPoints v)
 
 part1 :: Matrix U Int -> Maybe Int

@@ -5,8 +5,6 @@ import           Data.List (maximum)
 import qualified Data.HashMap.Strict as HMap
 import           AOC.V2 (V2(..))
 
-type Point = (Int, Int)
-
 -- functions on lists
 
 count :: (a -> Bool) -> [a] -> Int
@@ -87,10 +85,10 @@ listTo2dMap' l =
         , (j, v) <- zip [0..] row
         ]
 
-adjacentPoints :: Point -> [Point]
+adjacentPoints :: (Int, Int) -> [(Int, Int)]
 adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
 
-kingAdjacentPoints :: Point -> [Point]
+kingAdjacentPoints :: (Int, Int) -> [(Int, Int)]
 kingAdjacentPoints (x, y) = adjacentPoints (x, y) ++ [(x-1, y-1), (x+1, y-1), (x-1, y+1), (x+1, y+1)]
 
 kingAdjacentPoints' :: V2 Int -> [V2 Int]

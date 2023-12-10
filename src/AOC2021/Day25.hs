@@ -4,11 +4,11 @@ import           Data.List (findIndex, maximum)
 import qualified Data.HashMap.Strict as Map
 import           AOC (aoc)
 import           AOC.Parser (Parser, choice, sepEndBy1, eol)
-import           AOC.Util (Point, listTo2dMap)
+import           AOC.Util (listTo2dMap)
 
-
+type Index2 = (Int, Int)
 data Cell = Empty | East | South deriving (Eq, Ord)
-type Board = HashMap Point Cell
+type Board = HashMap Index2 Cell
 data Input = Input !Int !Int !Board
 
 parser :: Parser Input

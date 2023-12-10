@@ -19,7 +19,7 @@ parser :: Parser Input
 parser =  some tile `sepEndBy1` eol where
     tile = choice [NS <$ "|", EW <$ "-", NE <$"L", NW <$ "J", SW <$ "7", SE <$ "F", NoPipe <$ ".", Start <$ "S"]
 
-cleanInput :: Input -> (Input, Matrix, (Int, Int))
+cleanInput :: Input -> (Input, Matrix, Index2)
 cleanInput tiles = (cleanedTiles, cleanedMat, start) where
     start = head [pos | (pos, Start) <- Map.toList mat]
     mat = listTo2dMap tiles

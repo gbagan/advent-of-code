@@ -6,8 +6,8 @@ import           Data.List (maximum)
 import qualified Data.Set as Set
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, eol, sepEndBy1, some)
-import           AOC.Util (Point)
 
+type Point = (Int, Int)
 data Axis = X | Y
 data Fold = Fold Axis Int
 data Input = Input (Set Point) [Fold]
