@@ -10,17 +10,16 @@ import           AOC.Parser (Parser, choice, eol, sepEndBy1, some)
 import           AOC.Search (bfs)
 import           AOC.Util (adjacentPoints, listTo2dMap)
 
-data Tile = NS | EW | NE | NW | SW | SE | NoPipe | Start deriving (Eq, Show)
+data Tile = NS | EW | NE | NW | SW | SE | NoPipe | Start deriving (Eq)
 type Input = [[Tile]]
-
 type Matrix = HashMap (Int, Int) Tile
 
 parser :: Parser Input
 parser =  some tile `sepEndBy1` eol where
     tile = choice [NS <$ "|", EW <$ "-", NE <$"L", NW <$ "J", SW <$ "7", SE <$ "F", NoPipe <$ ".", Start <$ "S"]
 
-cleanedInput :: Input -> (Input, Matrix, (Int, Int))
-cleanedInput tiles = (cleanedTiles, cleanedMat, start) where
+cleanInput :: Input -> (Input, Matrix, (Int, Int))
+cleanInput tiles = (cleanedTiles, cleanedMat, start) where
     start = head [pos | (pos, Start) <- Map.toList mat]
     mat = listTo2dMap tiles
     goodTile = case [start `elem` neighbors mat nbor | nbor <- neighbors mat start] of
@@ -36,7 +35,6 @@ cleanedInput tiles = (cleanedTiles, cleanedMat, start) where
     cleanedTiles = [ [ if tile == Start then goodTile else tile | tile <- row] 
                    | row <- tiles
                    ]
-
 
 neighbors :: Matrix -> (Int, Int) -> [(Int, Int)]
 neighbors mat (i, j) = case mat Map.!? (i, j) of
@@ -55,7 +53,7 @@ loopBfs mat = bfs (neighbors mat)
 
 part1 :: Input -> Int
 part1 tiles = maximum . map fst $ loopBfs mat start where 
-    (_, mat, start) = cleanedInput tiles
+    (_, mat, start) = cleanInput tiles
 
 keepOdds :: [a] -> [a]
 keepOdds (_:y:xs) = y : keepOdds xs
@@ -63,7 +61,7 @@ keepOdds _ = []
 
 part2 :: Input -> Int
 part2 tiles = sum . map countRow $ cleanedTiles where
-    (tiles', mat, start) = cleanedInput tiles
+    (tiles', mat, start) = cleanInput tiles
     loopSet = Set.fromList . map snd $ loopBfs mat start
     -- replace each tile not in the loop with "."
     cleanedTiles = [ [ if (i, j) `Set.member` loopSet then tile else NoPipe
@@ -71,7 +69,7 @@ part2 tiles = sum . map countRow $ cleanedTiles where
                      ] 
                    | (i, row) <- zip [0..] tiles'
                    ]
-    countRow = sum 
+    countRow = sum
             . map length
             . keepOdds
             . splitWhen (`elem` [NS, NE, SE])
@@ -80,7 +78,7 @@ part2 tiles = sum . map countRow $ cleanedTiles where
             . filter (/= EW)
     filter1 (NE :  NW : xs) = filter1 xs
     filter1 (SE : SW : xs) = filter1 xs
-    filter1 (x:xs) = x: filter1 xs
+    filter1 (x:xs) = x : filter1 xs
     filter1 [] = []
 
 solve :: Text -> IO ()
