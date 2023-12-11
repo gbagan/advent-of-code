@@ -2,13 +2,13 @@
 module AOC2023.Day10 (solve) where
 import           AOC.Prelude hiding (head)
 import           Data.List (head, maximum)
-import           Data.List.Split (splitWhen)
 import qualified Data.HashMap.Strict as Map
 import qualified Data.HashSet as Set
 import           AOC (aoc)
 import           AOC.Parser (Parser, choice, eol, sepEndBy1, some)
 import           AOC.Search (bfs)
 import           AOC.Util (adjacentPoints, listTo2dMap)
+import           AOC.Tuple (thd3)
 
 data Tile = NS | EW | NE | NW | SW | SE | Empty | Start deriving (Eq)
 type Coord = (Int, Int)
@@ -53,10 +53,6 @@ part1 :: Input -> Int
 part1 tiles = maximum . map fst $ bfs (neighbors mat) start where 
     (_, mat, start) = cleanInput tiles
 
-keepOdds :: [a] -> [a]
-keepOdds (_:y:xs) = y : keepOdds xs
-keepOdds _ = []
-
 -- For part 2, we proceed as follows:
 -- First, we replace each tile that belongs to the loop with an empty tile.
 -- For each row of the input, we count the number of tiles that are inside the loop (countRow function)
@@ -65,7 +61,6 @@ keepOdds _ = []
 -- If we encounter a pattern "F---7" or "L---J", tiles on the left and tiles on the right 
 --    of the pattern are all inside or all outside the loop.
 -- If we encounter a pattern "|"  or "F---J" or "L---7", then only left tiles or only right tiles are inside the loop.
--- Thus, we can remove tiles -, J, 7, split the row on {F, L, |} and keeps only parts of odd index (starting from 0)
 part2 :: Input -> Int
 part2 tiles = sum . map countRow $ cleanedTiles where
     (tiles', mat, start) = cleanInput tiles
@@ -76,17 +71,15 @@ part2 tiles = sum . map countRow $ cleanedTiles where
                      ] 
                    | (i, row) <- zip [0..] tiles'
                    ]
-    countRow = sum
-            . map length
-            . keepOdds
-            . splitWhen (`elem` [NS, NE, SE])
-            . filter (`notElem` [NW, SW])
-            . prefilter
-            . filter (/= EW)
-    prefilter [] = []
-    prefilter (NE :  NW : xs) = prefilter xs
-    prefilter (SE : SW : xs) = prefilter xs
-    prefilter (x:xs) = x : prefilter xs
+    countRow = thd3 . foldl' go (False, False, 0)
+    go (isInside, fromNorth, counter) = \case
+        NS -> (not isInside, fromNorth, counter)
+        NE -> (isInside, True, counter)
+        SE -> (isInside, False, counter)
+        NW -> (isInside == fromNorth, fromNorth, counter)
+        SW -> (isInside /= fromNorth, fromNorth, counter)
+        Empty -> (isInside, fromNorth, if isInside then counter+1 else counter)
+        _ -> (isInside, fromNorth, counter)
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
