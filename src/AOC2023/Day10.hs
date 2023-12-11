@@ -20,8 +20,8 @@ parser =  some tile `sepEndBy1` eol where
     tile = choice [NS <$ "|", EW <$ "-", NE <$"L", NW <$ "J", SW <$ "7", SE <$ "F", Empty <$ ".", Start <$ "S"]
 
 -- returns the start coordinate and the input where the start tile is replaced with the adequate tile 
-cleanInput :: Input -> (Input, Matrix, Coord)
-cleanInput tiles = (cleanedTiles, cleanedMat, start) where
+getNiceInput :: Input -> (Input, Matrix, Coord)
+getNiceInput tiles = (cleanedTiles, cleanedMat, start) where
     start = head [pos | (pos, Start) <- Map.toList mat]
     mat = listTo2dMap tiles
     adequateTile = case [start `elem` neighbors mat nbor | nbor <- neighbors mat start] of
@@ -51,7 +51,7 @@ neighbors mat (i, j) = case mat Map.!? (i, j) of
 
 part1 :: Input -> Int
 part1 tiles = maximum . map fst $ bfs (neighbors mat) start where 
-    (_, mat, start) = cleanInput tiles
+    (_, mat, start) = getNiceInput tiles
 
 -- For part 2, we proceed as follows:
 -- First, we replace each tile that belongs to the loop with an empty tile.
@@ -63,7 +63,7 @@ part1 tiles = maximum . map fst $ bfs (neighbors mat) start where
 -- If we encounter a pattern "|"  or "F---J" or "L---7", then only left tiles or only right tiles are inside the loop.
 part2 :: Input -> Int
 part2 tiles = sum . map countRow $ cleanedTiles where
-    (tiles', mat, start) = cleanInput tiles
+    (tiles', mat, start) = getNiceInput tiles
     loopSet = Set.fromList . map snd $ bfs (neighbors mat) start
     -- replace each tile not in the loop with an empty tile
     cleanedTiles = [ [ if (i, j) `Set.member` loopSet then tile else Empty
