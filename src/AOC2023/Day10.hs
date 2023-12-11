@@ -15,7 +15,7 @@ type Coord = (Int, Int)
 type Input = [[Tile]]
 type Matrix = HashMap Coord Tile
 
-parser :: Parser Input
+parser :: Parser Input  
 parser =  some tile `sepEndBy1` eol where
     tile = choice [NS <$ "|", EW <$ "-", NE <$"L", NW <$ "J", SW <$ "7", SE <$ "F", Empty <$ ".", Start <$ "S"]
 
@@ -53,14 +53,6 @@ part1 :: Input -> Int
 part1 tiles = maximum . map fst $ bfs (neighbors mat) start where 
     (_, mat, start) = getNiceInput tiles
 
--- For part 2, we proceed as follows:
--- First, we replace each tile that belongs to the loop with an empty tile.
--- For each row of the input, we count the number of tiles that are inside the loop (countRow function)
--- There are five possible patterns we can encounter in a row : "|" , "F---7" , "L---J",  "F---J" and "L---7"
---    where "---" is an arbitrary number (possibly 0) of tiles "-" 
--- If we encounter a pattern "F---7" or "L---J", tiles on the left and tiles on the right 
---    of the pattern are all inside or all outside the loop.
--- If we encounter a pattern "|"  or "F---J" or "L---7", then only left tiles or only right tiles are inside the loop.
 part2 :: Input -> Int
 part2 tiles = sum . map countRow $ cleanedTiles where
     (tiles', mat, start) = getNiceInput tiles
