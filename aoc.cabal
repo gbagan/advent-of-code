@@ -209,6 +209,7 @@ executable aoc2023
                 AOC2023.Day09
                 AOC2023.Day10
                 AOC2023.Day11
+                AOC2023.Day12
                 AOC
                 AOC.Prelude
                 AOC.Debug

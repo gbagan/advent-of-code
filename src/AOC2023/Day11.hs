@@ -23,7 +23,9 @@ solveWith expand grid = sum (manhattan <$> expGalaxies <*> expGalaxies) `div` 2 
     galaxies = [(i, j) | (i, row) <- zip [0..] grid, (j, True) <- zip [0..] row]
     emptyRows = countEmptyRows grid
     emptyCols = countEmptyRows (transpose grid)
-    expGalaxies = [(x + (expand - 1) * emptyRows V.! x, y + (expand - 1) * emptyCols V.! y) | (x, y) <- galaxies]
+    expGalaxies = [ ( x + (expand - 1) * emptyRows V.! x
+                    , y + (expand - 1) * emptyCols V.! y)
+                  | (x, y) <- galaxies]
 
 solve :: Text -> IO ()
 solve = aoc parser (solveWith 2) (solveWith 1000000)
