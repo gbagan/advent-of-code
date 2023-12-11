@@ -92,10 +92,9 @@ kingAdjacentPoints :: (Int, Int) -> [(Int, Int)]
 kingAdjacentPoints (x, y) = adjacentPoints (x, y) ++ [(x-1, y-1), (x+1, y-1), (x-1, y+1), (x+1, y+1)]
 
 kingAdjacentPoints' :: V2 Int -> [V2 Int]
-kingAdjacentPoints' (V2 x y) = kingAdjacentPoints (x, y) <&> uncurry V2
+kingAdjacentPoints' (V2 x y) = uncurry V2 <$> kingAdjacentPoints (x, y)
 
 
 binToInt :: [Bool] -> Int
 binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
-{-# INLINE binToInt #-}
 
