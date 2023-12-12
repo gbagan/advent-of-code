@@ -26,8 +26,8 @@ step x@(_, v) s = x :<| (rotate v . Seq.drop 1 . rotateOn x $ s)
 iteration :: Seq (Int, Int) -> Seq (Int, Int) -> Seq (Int, Int)
 iteration s s' = foldl' (flip step) s' s
 
-solveWith :: Int -> Int -> [Int] -> Int
-solveWith key nbIters l = a + b + c where
+solveFor :: Int -> Int -> [Int] -> Int
+solveFor key nbIters l = a + b + c where
     s = Seq.fromList $ zip [0..] $ map (*key) l
     x0 = fromJust $ find ((==0) . snd) s
     s' = rotateOn x0 $ iterate (iteration s) s !! nbIters
@@ -37,4 +37,4 @@ solveWith key nbIters l = a + b + c where
     (_, c) = Seq.index s' (3000 `mod` n)
 
 solve :: Text -> IO ()
-solve = aoc parser (solveWith 1 1) (solveWith 811589153 10)
+solve = aoc parser (solveFor 1 1) (solveFor 811589153 10)

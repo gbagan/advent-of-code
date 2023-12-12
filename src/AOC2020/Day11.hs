@@ -42,9 +42,9 @@ step2 m = makeArray Seq (size m) \(Ix2 i j) ->
         Occupied | count (==Occupied) nbors >= 5 -> Empty
                  | otherwise -> Occupied
 
-solveWith :: (Matrix B Seat -> Matrix B Seat) -> Matrix B Seat -> Int
-solveWith step m = let m' = step m in
-    if m == m' then count (==Occupied) (toList m') else solveWith step m'
+solveFor :: (Matrix B Seat -> Matrix B Seat) -> Matrix B Seat -> Int
+solveFor step m = let m' = step m in
+    if m == m' then count (==Occupied) (toList m') else solveFor step m'
 
 solve :: Text -> IO ()
-solve = aoc parser (solveWith step1) (solveWith step2)
+solve = aoc parser (solveFor step1) (solveFor step2)

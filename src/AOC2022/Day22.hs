@@ -55,8 +55,8 @@ move2 grid (pos, dir)
                                | otherwise -> (V2 (-1) 0, V2 199 (c-100))
         x -> x
 
-solveWith :: (Grid -> (V2 Int, V2 Int) -> (V2 Int, V2 Int)) -> Input -> Int
-solveWith move (Input grid instrs) = (r+1) * 1000 + (c+1) * 4 + dirScore finalDir where
+solveFor :: (Grid -> (V2 Int, V2 Int) -> (V2 Int, V2 Int)) -> Input -> Int
+solveFor move (Input grid instrs) = (r+1) * 1000 + (c+1) * 4 + dirScore finalDir where
     (V2 r c, finalDir) = foldl' go (initPosition, V2 0 1) instrs
     go (pos, dir) = \case
         L -> (pos, goLeft dir)
@@ -72,4 +72,4 @@ solveWith move (Input grid instrs) = (r+1) * 1000 + (c+1) * 4 + dirScore finalDi
     dirScore _ = 3
 
 solve :: Text -> IO ()
-solve = aoc parser (solveWith move1) (solveWith move2)
+solve = aoc parser (solveFor move1) (solveFor move2)

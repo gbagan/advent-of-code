@@ -37,14 +37,14 @@ countArrangements (springs, groups) = arr ! (0, 0) where
         ]
     bounds = ((0, 0), (springsLength, groupsLength))
 
-solveWith :: (Row -> Row) -> [Row] -> Integer
-solveWith f = sum . map (countArrangements . f)
+solveFor :: (Row -> Row) -> [Row] -> Integer
+solveFor f = sum . map (countArrangements . f)
 
 unfold :: Row -> Row
 unfold = bimap (intercalate [Unknown] . replicate 5) (concat . replicate 5)
 
 solve :: Text -> IO ()
-solve = aoc parser (solveWith id) (solveWith unfold)
+solve = aoc parser (solveFor id) (solveFor unfold)
 
 
 

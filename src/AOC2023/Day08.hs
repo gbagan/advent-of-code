@@ -21,8 +21,8 @@ parser = Input <$> some instr <* eol <* eol <*> network where
     address = some upperChar
     networkFromList nodes = Map.fromList [(source, (left, right)) | (source, left, right) <- nodes]
 
-solveWith :: (Address -> Bool) -> (Address -> Bool) -> Input -> Int
-solveWith startPred endPred (Input instrs network) = foldl' lcm 1 periods where
+solveFor :: (Address -> Bool) -> (Address -> Bool) -> Input -> Int
+solveFor startPred endPred (Input instrs network) = foldl' lcm 1 periods where
     starts = filter startPred (Map.keys network)
     periods = [ fromJust $ findIndex endPred walk
               | start <- starts
@@ -34,11 +34,11 @@ solveWith startPred endPred (Input instrs network) = foldl' lcm 1 periods where
         where (left, right) = network ! address
 
 part1 :: Input -> Int
-part1 = solveWith (=="AAA") (=="ZZZ")
+part1 = solveFor (=="AAA") (=="ZZZ")
 
 -- only works because the input is nice
 part2 :: Input -> Int
-part2 = solveWith ((=='A') . last) ((=='Z') . last)
+part2 = solveFor ((=='A') . last) ((=='Z') . last)
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2

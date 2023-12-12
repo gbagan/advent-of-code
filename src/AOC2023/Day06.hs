@@ -11,8 +11,8 @@ parser :: Parser Input
 parser = (,) <$> ("Time:" *> list) <*> (eol *> "Distance:" *> list) where
     list = hspace *> decimal `sepEndBy1` hspace
 
-solveWith :: (Input -> [(Int, Int)]) -> Input -> Int
-solveWith toRaces = product . map solveForRace . toRaces where
+solveFor :: (Input -> [(Int, Int)]) -> Input -> Int
+solveFor toRaces = product . map solveForRace . toRaces where
     solveForRace (time, distance) = max 0 (ceiling root2 - floor root1 - 1) where
         t = fromIntegral time :: Double
         d = fromIntegral distance :: Double
@@ -25,4 +25,4 @@ toOneRace (l1, l2) = [(f l1, f l2)] where
     f = read . concatMap show
 
 solve :: Text -> IO ()
-solve = aoc parser (solveWith $ uncurry zip) (solveWith toOneRace)
+solve = aoc parser (solveFor $ uncurry zip) (solveFor toOneRace)

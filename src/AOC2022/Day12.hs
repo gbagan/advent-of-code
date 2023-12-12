@@ -10,8 +10,8 @@ import           AOC.Util (adjacentPoints, flattenWithIndex)
 parser :: Parser (Matrix U Char)
 parser = fromLists' Seq <$> some letterChar `sepEndBy1` eol
 
-solveWith :: Char -> Matrix U Char -> Maybe Int
-solveWith target m = do
+solveFor :: Char -> Matrix U Char -> Maybe Int
+solveFor target m = do
     (sourcex, sourcey, _) <- find (\(_, _, c) -> c == 'E') (flattenWithIndex $ toLists2 m)
     distance nbors (\(x, y) -> (m !? Ix2 x y) == Just target) (sourcex, sourcey)
     where
@@ -22,4 +22,4 @@ solveWith target m = do
                                      _ -> False
 
 solve :: Text -> IO ()
-solve = aoc parser (solveWith 'S') (solveWith 'a')
+solve = aoc parser (solveFor 'S') (solveFor 'a')

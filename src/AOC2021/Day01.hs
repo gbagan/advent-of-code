@@ -8,9 +8,9 @@ import           AOC.Util (count)
 parser :: Parser [Int]
 parser = decimal `sepEndBy1` eol
 
-solveWith :: Int -> [Int] -> Int
-solveWith n l = count id $ zipWith (<) l (drop n l)
+solveFor :: Int -> [Int] -> Int
+solveFor n l = count id $ zipWith (<) l (drop n l)
 
 solve :: Text -> IO ()
-solve = aoc parser (solveWith 1) (solveWith 3)
+solve = aoc parser (solveFor 1) (solveFor 3)
 

@@ -23,8 +23,8 @@ parser = blueprint `sepEndBy1` eol where
         obs4 <- " ore and " *> decimal <* " obsidian."
         pure $ Blueprint (V4 ore1 0 0 0) (V4 ore2 0 0 0) (V4 ore3 clay3 0 0) (V4 ore4 0 obs4 0)
 
-solveWith :: Int -> Blueprint -> Int
-solveWith totalTime (Blueprint oreRobotCost clayRobotCost obsidianRobotCost geodeRobotCost) =
+solveFor :: Int -> Blueprint -> Int
+solveFor totalTime (Blueprint oreRobotCost clayRobotCost obsidianRobotCost geodeRobotCost) =
     execState (dfsM nborFunc initState) 0
     where
     costs = [oreRobotCost, clayRobotCost, obsidianRobotCost, geodeRobotCost]
@@ -67,10 +67,10 @@ solveWith totalTime (Blueprint oreRobotCost clayRobotCost obsidianRobotCost geod
                 )
 
 part1 :: [Blueprint] -> Int
-part1 = sum . zipWith (*) [1..] . map (solveWith 24)
+part1 = sum . zipWith (*) [1..] . map (solveFor 24)
 
 part2 :: [Blueprint] -> Int
-part2 = product . map (solveWith 32) . take 3
+part2 = product . map (solveFor 32) . take 3
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2

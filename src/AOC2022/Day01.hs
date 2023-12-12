@@ -8,8 +8,8 @@ import           AOC.Util (takeEnd)
 parser :: Parser [[Int]]
 parser = (decimal `sepEndBy1` eol) `sepEndBy1` eol
 
-solveWith :: Int -> [[Int]] -> Int
-solveWith n = sum . takeEnd n . sort . map sum
+solveFor :: Int -> [[Int]] -> Int
+solveFor n = sum . takeEnd n . sort . map sum
 
 solve :: Text -> IO ()
-solve = aoc parser (solveWith 1) (solveWith 3)
+solve = aoc parser (solveFor 1) (solveFor 3)

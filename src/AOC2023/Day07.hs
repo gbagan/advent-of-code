@@ -38,15 +38,15 @@ cardFreqWithJokers cards = addJokers . cardFreq . filter (/=J) $ cards where
     addJokers [] = [nbJokers]
     addJokers (c:cs) = c+nbJokers : cs
 
-solveWith :: Ord a => ([Card] -> a) -> Input -> Int
-solveWith order input = sum $ zipWith (*) [1..] bids where
+solveFor :: Ord a => ([Card] -> a) -> Input -> Int
+solveFor order input = sum $ zipWith (*) [1..] bids where
     bids = map bid . sortOn (order . hand) $ input
 
 part1 :: Input -> Int   
-part1 = solveWith \cards -> (cardFreq cards, cards)
+part1 = solveFor \cards -> (cardFreq cards, cards)
 
 part2 :: Input -> Int
-part2 = solveWith \cards -> (cardFreqWithJokers cards, map Card' cards)
+part2 = solveFor \cards -> (cardFreqWithJokers cards, map Card' cards)
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
