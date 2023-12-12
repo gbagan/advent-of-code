@@ -23,15 +23,12 @@ countArrangements (springs, groups) = arr ! (0, 0) where
     nextOperational = V.generate springsLength \i ->
         if vsprings V.! i == Operational then i else nextOperational V.! (i+1)
     arr = listArray bounds [
-        let currentSpring = vsprings V.! pos
-            currentGroupSize = vGroups V.! groupPos
-        in
         if pos == springsLength then
             if groupPos == groupsLength then 1 else 0
         else
             let nextOp = nextOperational V.! pos
-                pos' =  pos + currentGroupSize
-                x = if currentSpring /= Damaged then arr ! (pos + 1, groupPos) else 0
+                pos' =  pos + vGroups V.! groupPos
+                x = if vsprings V.! pos /= Damaged then arr ! (pos + 1, groupPos) else 0
                 y = if groupPos < groupsLength && nextOp >= pos' && vsprings V.! pos' /= Damaged
                     then arr ! (pos' + 1, groupPos + 1)
                     else 0
