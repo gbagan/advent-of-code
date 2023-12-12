@@ -5,7 +5,6 @@ import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, some, eol, decimal, hspace)
 import qualified Data.Vector as V
 import           Data.Array (listArray, range, (!))
-import           AOC.Debug (spy)
 
 data Spring = Operational | Damaged | Unknown deriving (Eq)
 data Row = Row [Spring] [Int]
@@ -27,25 +26,22 @@ compute (Row springs lengths) = arr ! (0, 0, 0) where
             if lenPos == lenLen then 1 else 0
         else 
             let currentSpring = vsprings V.! pos in
-            if | lenPos == lenLen -> if currentSpring == Damaged then 0 else arr ! (pos + 1, lenPos, 0)
-               | currentSpring == Damaged -> arr ! (pos + 1, lenPos, currentLengthPos + 1)
-               | currentSpring == Operational ->
-                    if | currentLengthPos == vLengths V.! lenPos -> arr ! (pos + 1, lenPos + 1, 0)
-                       | currentLengthPos == 0 -> arr ! (pos + 1, lenPos, 0)
-                       | otherwise -> 0
-               | otherwise ->
-                    let nbDamaged = arr ! (pos + 1, lenPos, currentLengthPos + 1)
-                        nbOperational
-                            | currentLengthPos == vLengths V.! lenPos = arr ! (pos + 1, lenPos + 1, 0)
-                            | currentLengthPos == 0 = arr ! (pos + 1, lenPos, 0)
-                            | otherwise = 0
-                    in nbDamaged + nbOperational
+            if lenPos == lenLen then
+                if currentSpring == Damaged then 0 else arr ! (pos + 1, lenPos, 0)
+            else
+                sum $ [Operational, Damaged] <&> \s ->
+                    if | currentSpring `notElem` [s, Unknown] -> 0
+                       | s == Damaged -> arr ! (pos + 1, lenPos, currentLengthPos + 1)
+                       | otherwise -> -- s == Operational
+                            if | currentLengthPos == vLengths V.! lenPos -> arr ! (pos + 1, lenPos + 1, 0)
+                               | currentLengthPos == 0 -> arr ! (pos + 1, lenPos, 0)
+                               |  otherwise -> 0
         | (pos, lenPos, currentLengthPos) <- range bds
         ]
     bds = ((0, 0, 0), (springLen, lenLen, springLen))
 
 part1 :: [Row] -> Integer
-part1 = sum . spy . map compute
+part1 = sum . map compute
 
 part2 :: [Row] -> Integer
 part2 = sum . map (compute . unfold) where
