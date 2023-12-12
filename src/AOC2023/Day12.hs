@@ -10,7 +10,7 @@ data Spring = Operational | Damaged | Unknown deriving (Eq, Show)
 type Row = ([Spring], [Int])
 
 parser :: Parser [Row]
-parser = row `sepEndBy1` eol where
+parser = row `sepEndBy1` eol where  
     row = (,) <$> some spring <* hspace <*> decimal `sepEndBy1` ","
     spring = Operational <$ "." <|> Damaged <$ "#" <|> Unknown <$ "?"
 
@@ -22,7 +22,7 @@ countArrangements (springs, groups) = arr ! (0, 0) where
     groupsLength = V.length vGroups
     nextOperational = V.generate springsLength \i ->
         if vsprings V.! i == Operational then i else nextOperational V.! (i+1)
-    arr = listArray bds [
+    arr = listArray bounds [
         let currentSpring = vsprings V.! pos
             currentGroupSize = vGroups V.! groupPos
         in
@@ -35,10 +35,10 @@ countArrangements (springs, groups) = arr ! (0, 0) where
                 y = if groupPos < groupsLength && nextOp >= pos' && vsprings V.! pos' /= Damaged
                     then arr ! (pos' + 1, groupPos + 1)
                     else 0
-                in x + y
-        | (pos, groupPos) <- range bds
+            in x + y
+        | (pos, groupPos) <- range bounds
         ]
-    bds = ((0, 0), (springsLength, groupsLength))
+    bounds = ((0, 0), (springsLength, groupsLength))
 
 part1 :: [Row] -> Integer
 part1 = sum . map countArrangements
