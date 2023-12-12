@@ -16,30 +16,25 @@ parser = row `sepEndBy1` eol where
 
 countArrangements :: Row -> Integer
 countArrangements (springs, groups) = arr ! (0, 0) where
-    springs' = springs ++ [Operational]
-    vsprings = V.fromList springs'
+    vsprings = V.fromList (springs ++ [Operational])
     springsLength = V.length vsprings
     vGroups = V.fromList groups
     groupsLength = V.length vGroups
     nextOperational = V.generate springsLength \i ->
-        if | i == springsLength - 1 -> springsLength - 1
-           | vsprings V.! i == Operational -> i
-           | otherwise -> nextOperational V.! (i+1)
+        if vsprings V.! i == Operational then i else nextOperational V.! (i+1)
     arr = listArray bds [
         let currentSpring = vsprings V.! pos
             currentGroupSize = vGroups V.! groupPos
         in
-        if | pos == springsLength ->
-                if groupPos == groupsLength then 1 else 0
-           | groupPos == groupsLength ->
-                if currentSpring /= Damaged then arr ! (pos + 1, groupPos) else 0
-           | otherwise ->
-                let nextOp = nextOperational V.! pos
-                    pos' =  pos + currentGroupSize
-                    x = if currentSpring /= Damaged then arr ! (pos + 1, groupPos) else 0
-                    y = if nextOp >= pos' && vsprings V.! pos' /= Damaged
-                        then arr ! (pos' + 1, groupPos + 1)
-                        else 0
+        if pos == springsLength then
+            if groupPos == groupsLength then 1 else 0
+        else
+            let nextOp = nextOperational V.! pos
+                pos' =  pos + currentGroupSize
+                x = if currentSpring /= Damaged then arr ! (pos + 1, groupPos) else 0
+                y = if groupPos < groupsLength && nextOp >= pos' && vsprings V.! pos' /= Damaged
+                    then arr ! (pos' + 1, groupPos + 1)
+                    else 0
                 in x + y
         | (pos, groupPos) <- range bds
         ]
