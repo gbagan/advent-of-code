@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2022/day/17
 module AOC2022.Day17 (solve) where
-import           Relude hiding (some)
+import           AOC.Prelude
 import           Data.List (maximum)
 import qualified Data.HashSet as Set
 import qualified Data.List.NonEmpty as NE

@@ -1,4 +1,4 @@
--- https://adventofcode.com/2022/day/1
+-- https://adventofcode.com/2022/day/24
 module AOC2022.Day24 (solve) where
 import           Relude hiding (some)
 import           AOC.V3 (V3(..))
