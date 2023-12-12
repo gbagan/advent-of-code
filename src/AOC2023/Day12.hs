@@ -8,26 +8,28 @@ import qualified Data.Vector as V
 import           Data.Array (listArray, range, (!))
 
 data Spring = Operational | Damaged | Unknown deriving (Eq)
-data Row = Row [Spring] [Int]
+type Row = ([Spring], [Int])
 
 parser :: Parser [Row]
 parser = row `sepEndBy1` eol where
-    row = Row <$> some spring <* hspace <*> decimal `sepEndBy1` ","
+    row = (,) <$> some spring <* hspace <*> decimal `sepEndBy1` ","
     spring = Operational <$ "." <|> Damaged <$ "#" <|> Unknown <$ "?"
 
-compute :: Row -> Integer
-compute (Row springs lengths) = arr ! (0, 0, 0) where
+countArrangements :: Row -> Integer
+countArrangements (springs, lengths) = arr ! (0, 0, 0) where
     springs' = springs ++ [Operational]
     vsprings = V.fromList springs'
-    springLen = V.length vsprings
+    springsLength = V.length vsprings
     vLengths = V.fromList lengths
-    lenLen = V.length vLengths
+    lengthsLength = V.length vLengths
     arr = listArray bds [
-        if pos == springLen then
-            if lenPos == lenLen then 1 else 0
-        else
-            let currentSpring = vsprings V.! pos in
-            if lenPos == lenLen then
+        let currentSpring = vsprings V.! pos
+            currentLength = vLengths V.! lenPos
+        in
+        if pos == springsLength then
+            if lenPos == lengthsLength then 1 else 0
+        else    
+            if lenPos == lengthsLength then
                 if currentSpring == Damaged then 0 else arr ! (pos + 1, lenPos, 0)
             else
                 sum $ [Operational, Damaged] <&> \s ->
@@ -36,24 +38,22 @@ compute (Row springs lengths) = arr ! (0, 0, 0) where
                             if | currentLengthPos == vLengths V.! lenPos -> 0
                                | otherwise -> arr ! (pos + 1, lenPos, currentLengthPos + 1)
                        | otherwise -> -- s == Operational
-                            if | currentLengthPos == vLengths V.! lenPos -> arr ! (pos + 1, lenPos + 1, 0)
+                            if | currentLengthPos == currentLength -> arr ! (pos + 1, lenPos + 1, 0)
                                | currentLengthPos == 0 -> arr ! (pos + 1, lenPos, 0)
                                | otherwise -> 0
         | (pos, lenPos, currentLengthPos) <- range bds
         ]
-    bds = ((0, 0, 0), (springLen, lenLen, maximum lengths))
+    bds = ((0, 0, 0), (springsLength, lengthsLength, maximum lengths))
 
 part1 :: [Row] -> Integer
-part1 = sum . map compute
+part1 = sum . map countArrangements
 
 part2 :: [Row] -> Integer
-part2 = sum . map (compute . unfold) where
-    unfold (Row springs lengths)= Row (intercalate [Unknown] (replicate 5 springs)) (concat (replicate 5 lengths))
+part2 = sum . map (countArrangements . unfold) where
+    unfold = bimap (intercalate [Unknown] . replicate 5) (concat . replicate 5)
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
-
-
 
 
 
