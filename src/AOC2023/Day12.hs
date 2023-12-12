@@ -1,13 +1,12 @@
 -- https://adventofcode.com/2023/day/12
 module AOC2023.Day12 (solve) where
 import           AOC.Prelude
-import           Data.List (maximum)
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, some, eol, decimal, hspace)
 import qualified Data.Vector as V
 import           Data.Array (listArray, range, (!))
 
-data Spring = Operational | Damaged | Unknown deriving (Eq)
+data Spring = Operational | Damaged | Unknown deriving (Eq, Show)
 type Row = ([Spring], [Int])
 
 parser :: Parser [Row]
@@ -16,34 +15,35 @@ parser = row `sepEndBy1` eol where
     spring = Operational <$ "." <|> Damaged <$ "#" <|> Unknown <$ "?"
 
 countArrangements :: Row -> Integer
-countArrangements (springs, groups) = arr ! (0, 0, 0) where
+countArrangements (springs, groups) = arr ! (0, 0) where
     springs' = springs ++ [Operational]
     vsprings = V.fromList springs'
     springsLength = V.length vsprings
     vGroups = V.fromList groups
     groupsLength = V.length vGroups
+    nextOperational = V.generate springsLength \i ->
+        if | i == springsLength - 1 -> springsLength - 1
+           | vsprings V.! i == Operational -> i
+           | otherwise -> nextOperational V.! (i+1)
     arr = listArray bds [
         let currentSpring = vsprings V.! pos
-            currentGroupSize = vGroups V.! lenPos
+            currentGroupSize = vGroups V.! groupPos
         in
-        if pos == springsLength then
-            if lenPos == groupsLength then 1 else 0
-        else    
-            if lenPos == groupsLength then
-                if currentSpring == Damaged then 0 else arr ! (pos + 1, lenPos, 0)
-            else
-                sum $ [Operational, Damaged] <&> \s ->
-                    if | currentSpring `notElem` [s, Unknown] -> 0
-                       | s == Damaged -> 
-                            if | currentGroupPos == vGroups V.! lenPos -> 0
-                               | otherwise -> arr ! (pos + 1, lenPos, currentGroupPos + 1)
-                       | otherwise -> -- s == Operational
-                            if | currentGroupPos == currentGroupSize -> arr ! (pos + 1, lenPos + 1, 0)
-                               | currentGroupPos == 0 -> arr ! (pos + 1, lenPos, 0)
-                               | otherwise -> 0
-        | (pos, lenPos, currentGroupPos) <- range bds
+        if | pos == springsLength ->
+                if groupPos == groupsLength then 1 else 0
+           | groupPos == groupsLength ->
+                if currentSpring /= Damaged then arr ! (pos + 1, groupPos) else 0
+           | otherwise ->
+                let nextOp = nextOperational V.! pos
+                    pos' =  pos + currentGroupSize
+                    x = if currentSpring /= Damaged then arr ! (pos + 1, groupPos) else 0
+                    y = if nextOp >= pos' && vsprings V.! pos' /= Damaged
+                        then arr ! (pos' + 1, groupPos + 1)
+                        else 0
+                in x + y
+        | (pos, groupPos) <- range bds
         ]
-    bds = ((0, 0, 0), (springsLength, groupsLength, maximum groups))
+    bds = ((0, 0), (springsLength, groupsLength))
 
 part1 :: [Row] -> Integer
 part1 = sum . map countArrangements
