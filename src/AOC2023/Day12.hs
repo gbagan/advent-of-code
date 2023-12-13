@@ -6,7 +6,7 @@ import           AOC.Parser (Parser, sepEndBy1, some, eol, decimal, hspace)
 import qualified Data.Vector as V
 import           Data.Array (listArray, range, (!))
 
-data Spring = Operational | Damaged | Unknown deriving (Eq, Show)
+data Spring = Operational | Damaged | Unknown deriving (Eq)
 type Row = ([Spring], [Int])
 
 parser :: Parser [Row]
