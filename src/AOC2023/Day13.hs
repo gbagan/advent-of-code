@@ -26,7 +26,7 @@ isSymetry diff v x = total == diff where
 solveFor :: Int -> [Grid] -> Int
 solveFor diff = sum . map score where
     score grid = 100 * symetries grid + symetries (transpose grid)
-    symetries grid = sum $ filter (isSymetry diff vgrid) [1..n-1] where
+    symetries grid = find (isSymetry diff vgrid) [1..n-1] ?: 0 where
         vgrid = V.fromList grid
         n = V.length vgrid
 
