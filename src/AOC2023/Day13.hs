@@ -19,8 +19,9 @@ lengthEq n [] = n == 0
 lengthEq 0 _ = False
 lengthEq n (_:xs) = lengthEq (n-1) xs
 
-isSymetryAt :: Int -> Vector [Tile] -> Int -> Bool
-isSymetryAt nbDiffs vec x = lengthEq nbDiffs difference where
+-- is there a reflection between row x and row x+1 with exactly nbDiff differences
+reflect :: Int -> Vector [Tile] -> Int -> Bool
+reflect nbDiffs vec x = lengthEq nbDiffs difference where
     difference = filter id $ zipWith (/=) list1 list2
     list1 = concatMap (vec!) range
     list2 = concatMap (\i -> vec ! (2 * x - i - 1)) range
@@ -29,8 +30,8 @@ isSymetryAt nbDiffs vec x = lengthEq nbDiffs difference where
 
 solveFor :: Int -> [Grid] -> Int
 solveFor nbDiffs = sum . map score where
-    score grid = (100*) <$> symetry grid <|> symetry (transpose grid) ?: 0  
-    symetry grid = find (isSymetryAt nbDiffs vgrid) [1..n-1] where
+    score grid = (100*) <$> mirror grid <|> mirror (transpose grid) ?: 0  
+    mirror grid = find (reflect nbDiffs vgrid) [1..n-1] where
         vgrid = V.fromList grid
         n = V.length vgrid
 
