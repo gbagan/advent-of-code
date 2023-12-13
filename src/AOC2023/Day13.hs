@@ -13,25 +13,26 @@ parser :: Parser [Grid]
 parser = (some tile `sepEndBy1` eol) `sepEndBy1` eol where
     tile = Ash <$ "." <|> Rock <$ "#"
  
-isSymetry :: Int -> Vector [Tile] -> Int -> Bool
-isSymetry nbDiffs v x = lengthEq nbDiffs difference where
+-- lazy version of length xs == n
+lengthEq :: Int -> [a] -> Bool
+lengthEq n [] = n == 0
+lengthEq 0 _ = False
+lengthEq n (_:xs) = lengthEq (n-1) xs
+
+isSymetryAt :: Int -> Vector [Tile] -> Int -> Bool
+isSymetryAt nbDiffs vec x = lengthEq nbDiffs difference where
     difference = filter id $ zipWith (/=) list1 list2
-    list1 = concatMap (v!) range
-    list2 = concatMap (\i -> v ! (2 * x - i - 1)) range
-    n = V.length v
+    list1 = concatMap (vec!) range
+    list2 = concatMap (\i -> vec ! (2 * x - i - 1)) range
+    n = V.length vec
     range = if 2 * x < n then [0..x-1] else [x..n-1]
 
 solveFor :: Int -> [Grid] -> Int
 solveFor nbDiffs = sum . map score where
     score grid = (100*) <$> symetry grid <|> symetry (transpose grid) ?: 0  
-    symetry grid = find (isSymetry nbDiffs vgrid) [1..n-1] where
+    symetry grid = find (isSymetryAt nbDiffs vgrid) [1..n-1] where
         vgrid = V.fromList grid
         n = V.length vgrid
-
-lengthEq :: Int -> [a] -> Bool
-lengthEq n [] = n == 0
-lengthEq 0 _ = False
-lengthEq n (_:xs) = lengthEq (n-1) xs
 
 solve :: Text -> IO ()
 solve = aoc parser (solveFor 0) (solveFor 1)
