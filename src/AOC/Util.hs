@@ -38,6 +38,12 @@ takeEnd i l
     where f (_:xs) (_:ys) = f xs ys
           f xs _ = xs
 
+splitWhen :: (a -> Bool) -> [a] -> [[a]]
+splitWhen f xs  =case zs of
+    [] -> [ys]
+    (_:zs') -> ys : splitWhen f zs'
+    where (ys,zs) = break f xs
+
 wordsBy :: (a -> Bool) -> [a] -> [[a]]
 wordsBy f s = case dropWhile f s of
     [] -> []
