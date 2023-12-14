@@ -5,7 +5,7 @@ import           Data.List (minimum, maximum)
 import qualified Data.IntSet as Set
 import           Data.List.Split (divvy)
 import           AOC (aoc)
-import           AOC.Util (slice)
+import           AOC.List (slice)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
 
 parser :: Parser [Int]

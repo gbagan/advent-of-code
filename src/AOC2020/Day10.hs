@@ -5,7 +5,7 @@ import qualified Data.Vector as V
 import qualified Data.IntSet as Set
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
-import           AOC.Util (count)
+import           AOC.List (count)
 
 parser :: Parser [Int]
 parser = decimal `sepEndBy1` eol

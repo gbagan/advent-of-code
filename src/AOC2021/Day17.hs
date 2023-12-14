@@ -2,7 +2,8 @@ module AOC2021.Day17 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal)
-import           AOC.Util (cartesianProduct, count)
+import           AOC.List (count)
+import           AOC.Util (cartesianProduct)
 
 data Area = Area !Int !Int !Int !Int
 

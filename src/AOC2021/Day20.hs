@@ -4,7 +4,8 @@ import           Relude.Unsafe ((!!))
 import qualified Data.Massiv.Array as A
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, char, eol, some)
-import           AOC.Util (binToInt, count)
+import           AOC.List (count)
+import           AOC.Util (binToInt)
 
 type Algo = A.Array A.U A.Ix1 Bool
 type Grid = A.Array A.U A.Ix2 Bool

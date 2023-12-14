@@ -7,7 +7,6 @@ import           Lens.Micro ((^.), (.~), (%~), ix)
 import           Lens.Micro.TH (makeLenses)
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepBy1, sepEndBy1, eol, decimal, skipLine)
-import           AOC.Util (takeEnd)
 
 data Monkey = Monkey {
         _items :: ![Integer]
@@ -52,7 +51,7 @@ solve' part nbRounds mks = monkeyBusiness $ iterate' runRound mks !! nbRounds wh
     
     modulo = product $ map _divBy mks
 
-    monkeyBusiness = product . takeEnd 2 . sort . map _inspected
+    monkeyBusiness = product . take 2 . sortOn Down . map _inspected
 
 solve :: Text -> IO ()
 solve = aoc parser (solve' Part1 20) (solve' Part2 10000)

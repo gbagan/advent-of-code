@@ -6,7 +6,8 @@ import qualified Data.HashMap.Strict as Map
 import qualified Data.Set as Set
 import           AOC (aoc')
 import           AOC.Parser (Parser, digitChar, eol, sepEndBy1, some)
-import           AOC.Util (count, kingAdjacentPoints, listTo2dMap)
+import           AOC.List (count)
+import           AOC.Util (kingAdjacentPoints, listTo2dMap)
 
 type Coord = (Int, Int)
 

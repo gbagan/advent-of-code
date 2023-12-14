@@ -4,7 +4,8 @@ import           AOC.Prelude hiding (toList)
 import           Data.Massiv.Array (Matrix, (!), (!?), fromLists', toList, makeArray, size, B, Comp(Seq), Ix2(..))
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, some, eol)
-import           AOC.Util (count, kingAdjacentPoints)
+import           AOC.List (count)
+import           AOC.Util (kingAdjacentPoints)
 
 data Seat = Floor | Empty | Occupied deriving (Eq)
 

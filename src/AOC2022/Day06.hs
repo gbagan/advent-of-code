@@ -4,7 +4,7 @@ import           AOC.Prelude
 import           Data.List.Split (divvy)
 import           AOC (aoc)
 import           AOC.Parser (Parser, anySingle, some)
-import           AOC.Util (allUnique)
+import           AOC.List (allUnique)
 
 parser :: Parser String
 parser = some anySingle

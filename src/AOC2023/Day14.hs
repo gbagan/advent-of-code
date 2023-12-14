@@ -5,7 +5,7 @@ import           Data.List ((!!))
 import qualified Data.HashMap.Strict as Map
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
-import           AOC.Util (flattenWithIndex, splitWhen)
+import           AOC.List (flattenWithIndex, splitWhen)
 
 data Rock = Empty | Round | Cube deriving (Eq, Enum)
 type Grid = [[Rock]]
@@ -43,9 +43,9 @@ part1 :: Grid -> Int
 part1 = load . transpose . tilt . transpose
 
 part2 :: Grid -> Int
-part2 grid = load . transpose $ grids !! y' where 
+part2 grid = load . transpose $ grids !! z where 
     (x, y) = findRepetition grids
-    y' = x + (1000000000 - x) `mod` (y-x)
+    z = x + (1000000000 - x) `mod` (y-x)
     grids = iterate' cycle (transpose grid)
     step = reverse . transpose . tilt
     cycle = step . step . step . step

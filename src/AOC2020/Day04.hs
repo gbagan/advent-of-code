@@ -5,7 +5,7 @@ import qualified Data.HashMap.Strict as Map
 import           Text.Megaparsec (parseMaybe)
 import qualified Data.Text as Text
 import           AOC (aoc)
-import qualified AOC.Util as U
+import qualified AOC.List as L
 import           AOC.Parser (Parser, count, sepEndBy1, some, try, alphaNumChar, char, numberChar, eol, hexDigitChar, lowerChar, decimal)
 
 type Passport = HashMap Text Text
@@ -46,4 +46,4 @@ checkPassport2 :: Passport -> Bool
 checkPassport2 pp = checkers & all \(key, checker) -> maybe False checker (Map.lookup key pp)
 
 solve :: Text -> IO ()
-solve = aoc parser (U.count checkPassport) (U.count checkPassport2)
+solve = aoc parser (L.count checkPassport) (L.count checkPassport2)

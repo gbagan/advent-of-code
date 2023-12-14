@@ -23,6 +23,7 @@ executable aoc2020
                 AOC2020.Day11
                 AOC2020.Day12
                 AOC
+                AOC.List
                 AOC.Prelude
                 AOC.Parser
                 AOC.Search
@@ -89,6 +90,7 @@ executable aoc2021
                 AOC2021.Day24
                 AOC2021.Day25
                 AOC
+                AOC.List
                 AOC.Prelude
                 AOC.Parser
                 AOC.Search
@@ -152,6 +154,7 @@ executable aoc2022
                 AOC2022.Day24
                 AOC2022.Day25
                 AOC
+                AOC.List
                 AOC.Prelude
                 AOC.Parser
                 AOC.Search
@@ -216,6 +219,7 @@ executable aoc2023
                 AOC
                 AOC.Prelude
                 AOC.Debug
+                AOC.List
                 AOC.Parser
                 AOC.Search
                 AOC.Tuple

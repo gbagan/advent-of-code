@@ -3,7 +3,7 @@ module AOC2020.Day02 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, some, eol, lowerChar, decimal)
-import           AOC.Util (count)
+import           AOC.List (count)
 
 data Input = Input !Int !Int !Char !String
 

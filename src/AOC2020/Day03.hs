@@ -3,7 +3,7 @@ module AOC2020.Day03 (solve) where
 import           Relude hiding (some)
 import           Data.Massiv.Array (Matrix, (!), fromLists', size, U, Comp(Seq), Ix2(..), Sz(..))
 import           AOC (aoc)
-import           AOC.Util (count)
+import           AOC.List (count)
 import           AOC.Parser (Parser, sepEndBy1, some, eol)
 
 parser :: Parser (Matrix U Bool)

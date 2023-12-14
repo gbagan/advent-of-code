@@ -7,7 +7,7 @@ import           AOC.V3 (V3(..))
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
 import           AOC.Search (dfsM)
-import           AOC.Util (count)
+import           AOC.List (count)
 
 type Point = V3 Int
 

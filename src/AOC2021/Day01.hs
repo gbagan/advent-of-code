@@ -3,7 +3,7 @@ module AOC2021.Day01 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, eol, sepEndBy1)
-import           AOC.Util (count)
+import           AOC.List (count)
 
 parser :: Parser [Int]
 parser = decimal `sepEndBy1` eol

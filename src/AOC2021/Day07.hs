@@ -3,7 +3,7 @@ import           AOC.Prelude
 import           Relude.Unsafe ((!!))
 import           AOC (aoc)
 import           AOC.Parser (Parser, char, decimal, sepBy1)
-import           AOC.Util (average)
+import           AOC.List (average)
 
 parser :: Parser [Int]
 parser = decimal `sepBy1` char ','

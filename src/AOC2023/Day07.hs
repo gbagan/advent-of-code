@@ -1,8 +1,8 @@
 -- https://adventofcode.com/2023/day/7
 module AOC2023.Day07 (solve) where
-import           Relude hiding (some)
+import           AOC.Prelude
 import           AOC (aoc)
-import           AOC.Util (count)
+import           AOC.List (count)
 import           AOC.Parser (Parser, choice, sepEndBy1, some, eol, hspace, decimal)
 
 type Bid = Int

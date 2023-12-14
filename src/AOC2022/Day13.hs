@@ -3,7 +3,7 @@ module AOC2022.Day13 (solve) where
 import           Relude
 import           AOC (aoc)
 import           AOC.Parser (Parser, between, sepEndBy1, sepBy, char, eol, decimal)
-import           AOC.Util (count)
+import           AOC.List (count)
 
 data Packet = PInt !Int | Packet ![Packet]
 

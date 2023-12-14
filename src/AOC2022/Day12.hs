@@ -5,7 +5,8 @@ import           Data.Massiv.Array (Matrix, (!?), fromLists', toLists2, U, Comp(
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, some, eol, letterChar, eol)
 import           AOC.Search (distance)
-import           AOC.Util (adjacentPoints, flattenWithIndex)
+import           AOC.List (flattenWithIndex)
+import           AOC.Util (adjacentPoints)
 
 parser :: Parser (Matrix U Char)
 parser = fromLists' Seq <$> some letterChar `sepEndBy1` eol

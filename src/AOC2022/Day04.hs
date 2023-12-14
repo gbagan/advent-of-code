@@ -3,7 +3,7 @@ module AOC2022.Day04 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
-import           AOC.Util (count)
+import           AOC.List (count)
 
 data Interval = Interval !Int !Int
 

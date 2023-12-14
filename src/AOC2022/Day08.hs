@@ -7,7 +7,7 @@ import           Data.List (maximum)
 import           Data.Massiv.Array (Matrix, (!?), fromLists', toLists2, U, Comp(Seq), Ix2(..))
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, numberChar)
-import           AOC.Util (count, flattenWithIndex)
+import           AOC.List (count, flattenWithIndex)
 
 parser :: Parser (Matrix U Int)
 parser = fromLists' Seq <$> some (digitToInt <$> numberChar) `sepEndBy1` eol

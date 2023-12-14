@@ -8,7 +8,7 @@ import           Data.Vector (Vector, (!))
 import qualified Data.HashMap.Strict as M
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepBy1, sepEndBy1, some, eol, upperChar, decimal)
-import           AOC.Util (maximumDef)
+import           AOC.List (maximumDef)
 
 type Duration = Int
 data Input = Input !Graph !DistanceMat !Int
