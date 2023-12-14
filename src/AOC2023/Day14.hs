@@ -19,6 +19,7 @@ parser :: Parser Grid
 parser = some rock `sepEndBy1` eol where
     rock = Empty <$ "." <|> Round <$ "O" <|> Cube <$ "#"
 
+-- returns the position of the rounded rocks after a tilt to the west
 finalPositions :: [Rock] -> [Int]
 finalPositions = go 0 . zip [0..] where
     go lastIndex = \case
@@ -27,6 +28,7 @@ finalPositions = go 0 . zip [0..] where
         ((_, Round):xs) -> lastIndex : go (lastIndex + 1) xs
         (_:xs) -> go lastIndex xs
 
+-- tilt to the west
 tilt :: Grid -> Grid
 tilt = map perRow where
     perRow row = V.toList . (V.// map (,Round) positions) . V.map toEmpty $ vec where
@@ -42,14 +44,16 @@ tiltToDirection direction grid = case direction of
     North -> transpose . tilt $ transpose grid
     South -> reverse . transpose . tilt . transpose $ reverse grid
 
-findRepetition :: Hashable a => [(Int, a)] -> (Int, Int)
-findRepetition = go Map.empty where
+-- return the first two indices of the same element in a infinite list of elements
+findRepetition :: Hashable a => [a] -> (Int, Int)
+findRepetition = go Map.empty . zip [0..] where
     go m ((i, x) : xs) =
         case m Map.!? x of
             Just j -> (j, i)
             Nothing -> go (Map.insert x i m) xs
     go _ [] = error "cannot happen: infinite list"
 
+-- compute the laod of a grid
 load :: Grid -> Int
 load grid = sum . map score $ flattenWithIndex grid where
     score (i, _, Round) = len - i
@@ -60,10 +64,10 @@ part1 :: Grid -> Int
 part1 = load . tiltToDirection North
 
 part2 :: Grid -> Int
-part2 grid = load . snd $ grids !! y' where 
+part2 grid = load (grids !! y') where 
     (x, y) = findRepetition grids
     y' = x + (1000000000 - x) `mod` (y-x)
-    grids = zip [0..] (scanl' (flip tiltToDirection) grid directions)
+    grids = scanl' (flip tiltToDirection) grid directions
     directions = cycle [North, West, South, East]
 
 solve :: Text -> IO ()
