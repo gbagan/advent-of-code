@@ -2,8 +2,8 @@
 module AOC2023.Day14 (solve) where
 import           AOC.Prelude hiding (cycle, empty)
 import           Data.List ((!!))
-import           AOC (aoc)
 import qualified Data.HashMap.Strict as Map
+import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
 import           AOC.Util (flattenWithIndex, splitWhen)
 
