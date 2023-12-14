@@ -51,7 +51,7 @@ findRepetition = go Map.empty . zip [0..] where
         case m Map.!? x of
             Just j -> (j, i)
             Nothing -> go (Map.insert x i m) xs
-    go _ [] = error "cannot happen: infinite list"
+    go _ [] = error "findRepetition: not an infinite list"
 
 -- compute the laod of a grid
 load :: Grid -> Int
