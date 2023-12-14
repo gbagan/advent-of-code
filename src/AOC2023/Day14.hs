@@ -38,11 +38,11 @@ tilt = map perRow where
         toEmpty x = x
 
 tiltToDirection :: Direction -> Grid -> Grid
-tiltToDirection direction grid = case direction of
-    West -> tilt grid
-    East -> map reverse . tilt $ map reverse grid
-    North -> transpose . tilt $ transpose grid
-    South -> reverse . transpose . tilt . transpose $ reverse grid
+tiltToDirection = \case
+    West -> tilt
+    East -> map reverse . tilt . map reverse
+    North -> transpose . tilt . transpose
+    South -> reverse . transpose . tilt . transpose . reverse
 
 -- return the first two indices of the same element in a infinite list of elements
 findRepetition :: Hashable a => [a] -> (Int, Int)

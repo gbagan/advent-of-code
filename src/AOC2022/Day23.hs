@@ -62,7 +62,7 @@ findFixPointIndex :: Eq a => [a] -> Int
 findFixPointIndex xs = go (zip [0..] xs) where
     go ((_, x):(i, y):ys) | x == y = i
                           | otherwise = go $ (i, y):ys
-    go _ = undefined -- cannot happen
+    go _ = error "findFixPointIndex: not an infinite list"
 
 part2 :: HashSet (V2 Int) -> Int
 part2 =  findFixPointIndex . simulate

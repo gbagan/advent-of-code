@@ -32,7 +32,7 @@ quasiOverlap (Interval x1 y1) (Interval x2 y2) = max x1 x2 <= min y1 y2 + 1
 union :: Interval -> Interval -> Interval
 union itv1@(Interval x1 y1) itv2@(Interval x2 y2)
     | quasiOverlap itv1 itv2 = Interval (min x1 x2) (max y1 y2)
-    | otherwise = undefined
+    | otherwise = error "union: not an interval"
 
 -- | return a set of disjoint intervals that contains the same points as the input
 toDisjointUnion :: [Interval] -> [Interval]
