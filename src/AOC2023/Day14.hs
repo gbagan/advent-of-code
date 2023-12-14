@@ -1,12 +1,12 @@
 -- https://adventofcode.com/2023/day/14
 module AOC2023.Day14 (solve) where
-import           AOC.Prelude
+import           AOC.Prelude hiding (empty)
 import           Data.List ((!!))
 import           AOC (aoc)
-import qualified Data.Vector as V
 import qualified Data.HashMap.Strict as Map
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
 import           AOC.Util (flattenWithIndex)
+import           Data.List.Split (splitWhen)
 
 data Rock = Empty | Round | Cube deriving (Eq, Enum)
 data Direction = West | East | North | South
@@ -19,23 +19,11 @@ parser :: Parser Grid
 parser = some rock `sepEndBy1` eol where
     rock = Empty <$ "." <|> Round <$ "O" <|> Cube <$ "#"
 
--- returns the position of the rounded rocks after a tilt to the west
-finalPositions :: [Rock] -> [Int]
-finalPositions = go 0 . zip [0..] where
-    go lastIndex = \case
-        [] -> []
-        ((i, Cube):xs) -> go (i + 1) xs
-        ((_, Round):xs) -> lastIndex : go (lastIndex + 1) xs
-        (_:xs) -> go lastIndex xs
-
 -- tilt to the west
 tilt :: Grid -> Grid
 tilt = map perRow where
-    perRow row = V.toList . (V.// map (,Round) positions) . V.map toEmpty $ vec where
-        vec = V.fromList row
-        positions = finalPositions row
-        toEmpty Round = Empty
-        toEmpty x = x
+    perRow = intercalate [Cube] . map go . splitWhen (==Cube)
+    go xs = rounded ++ empty where (rounded, empty) = partition (==Round) xs
 
 tiltToDirection :: Direction -> Grid -> Grid
 tiltToDirection = \case
