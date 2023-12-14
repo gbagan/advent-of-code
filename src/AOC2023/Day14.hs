@@ -35,8 +35,8 @@ tilt = map perRow where
         toEmpty Round = Empty
         toEmpty x = x
 
-tiltToDirection :: Grid -> Direction -> Grid
-tiltToDirection grid = \case
+tiltToDirection :: Direction -> Grid -> Grid
+tiltToDirection direction grid = case direction of
     West -> tilt grid
     East -> map reverse . tilt $ map reverse grid
     North -> transpose . tilt $ transpose grid
@@ -57,13 +57,13 @@ load grid = sum . map score $ flattenWithIndex grid where
     len = length grid
 
 part1 :: Grid -> Int
-part1 grid = load (tiltToDirection grid North)
+part1 = load . tiltToDirection North
 
 part2 :: Grid -> Int
 part2 grid = load . snd $ grids !! y' where 
     (x, y) = findRepetition grids
     y' = x + (1000000000 - x) `mod` (y-x)
-    grids = zip [0..] (scanl' tiltToDirection grid directions)
+    grids = zip [0..] (scanl' (flip tiltToDirection) grid directions)
     directions = cycle [North, West, South, East]
 
 solve :: Text -> IO ()
