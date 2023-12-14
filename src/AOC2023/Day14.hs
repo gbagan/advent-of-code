@@ -5,7 +5,7 @@ import           Data.List ((!!))
 import qualified Data.HashMap.Strict as Map
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
-import           AOC.List (flattenWithIndex, splitWhen)
+import           AOC.List (splitWhen)
 
 data Rock = Empty | Round | Cube deriving (Eq, Enum)
 type Grid = [[Rock]]
@@ -17,7 +17,7 @@ parser :: Parser Grid
 parser = some rock `sepEndBy1` eol where
     rock = Empty <$ "." <|> Round <$ "O" <|> Cube <$ "#"
 
--- tilt to West
+-- tilt in West direction
 tilt :: Grid -> Grid
 tilt = map perRow where
     perRow = intercalate [Cube] . map go . splitWhen (==Cube)
@@ -34,9 +34,7 @@ findRepetition = go Map.empty . zip [0..] where
 
 -- compute the laod of a grid
 load :: Grid -> Int
-load grid = sum . map score $ flattenWithIndex grid where
-    score (i, _, Round) = len - i
-    score _ = 0
+load grid = sum [len - i | (i, row) <- zip [0..] grid, Round <- row] where
     len = length grid
 
 part1 :: Grid -> Int
