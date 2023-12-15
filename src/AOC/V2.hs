@@ -4,7 +4,7 @@ import Relude
 import Data.Foldable1 (Foldable1, foldMap1)
 import           Data.Massiv.Array (Ix2(..))
 
-data V2 a = V2 { _x :: !a, _y :: !a } deriving (Eq,Ord,Show)
+data V2 a = V2 { _x :: !a, _y :: !a } deriving (Eq, Ord, Show)
 
 instance Functor V2 where
     fmap f (V2 a b) = V2 (f a) (f b)

@@ -8,7 +8,7 @@ import           AOC (aoc)
 import           AOC.Parser (Parser, choice, eol, sepEndBy1, some)
 import           AOC.Search (bfs)
 import           AOC.V2 (V2(..), adjacent)
-import           AOC.Util (listTo2dMap')
+import           AOC.Util (listTo2dMap)
 import           AOC.Tuple (thd3)
 
 data Tile = NS | EW | NE | NW | SW | SE | Empty | Start deriving (Eq)
@@ -24,7 +24,7 @@ parser = some tile `sepEndBy1` eol where
 getNiceInput :: Input -> (Input, Matrix, Coord)
 getNiceInput tiles = (cleanedTiles, cleanedMat, start) where
     start = head [pos | (pos, Start) <- Map.toList mat]
-    mat = listTo2dMap' tiles
+    mat = listTo2dMap tiles
     adequateTile = case [start `elem` neighbors mat nbor | nbor <- adjacent start] of
         -- (x-1, y), (x+1, y), (x, y-1), (x, y+1)
         [True, True, False, False] -> NS
