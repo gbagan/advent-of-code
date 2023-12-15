@@ -2,8 +2,9 @@ module AOC.V2 where
 
 import Relude
 import Data.Foldable1 (Foldable1, foldMap1)
+import           Data.Massiv.Array (Ix2(..))
 
-data V2 a = V2 !a !a deriving (Eq,Ord,Show)
+data V2 a = V2 { _x :: !a, _y :: !a } deriving (Eq,Ord,Show)
 
 instance Functor V2 where
     fmap f (V2 a b) = V2 (f a) (f b)
@@ -59,3 +60,16 @@ perp (V2 a b) = V2 (negate b) a
 
 manhattan :: Num a => V2 a -> V2 a -> a
 manhattan (V2 x1 y1) (V2 x2 y2) = abs (x1 - x2) + abs (y1 - y2)
+
+adjacent :: Integral a => V2 a -> [V2 a]
+adjacent (V2 x y) = [V2 (x-1) y, V2 (x+1) y, V2 x (y-1), V2 x (y+1)]
+
+surrounding :: Integral a => V2 a -> [V2 a]
+surrounding (V2 x y) = adjacent (V2 x y) ++ [ V2 (x-1) (y-1)
+                                            , V2 (x+1) (y-1)
+                                            , V2 (x-1) (y+1)
+                                            , V2 (x+1) (y+1)
+                                            ]
+
+toIx2 :: V2 Int -> Ix2
+toIx2 (V2 x y) = Ix2 x y

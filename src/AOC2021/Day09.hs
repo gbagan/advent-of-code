@@ -6,9 +6,10 @@ import           Data.Map.Lazy ((!))
 import qualified Data.Map.Lazy as LMap
 import           AOC (aoc)
 import           AOC.Parser (Parser, digitChar, eol, sepEndBy1, some)
-import           AOC.Util (adjacentPoints, freqs)
+import           AOC.V2 (V2(..), adjacent)
+import           AOC.Util (freqs)
 
-type Coord = (Int, Int)
+type Coord = V2 Int
 
 parser :: Parser (Map Coord Int)
 parser = listTo2dMap <$> line `sepEndBy1` eol where
@@ -17,16 +18,16 @@ parser = listTo2dMap <$> line `sepEndBy1` eol where
 listTo2dMap :: [[a]] -> Map Coord a
 listTo2dMap l =
     LMap.fromList
-        [((i, j), v)
-        | (j, row) <- zip [0..] l
-        , (i, v) <- zip [0..] row
+        [( V2 i j, v)
+        | (i, row) <- zip [0..] l
+        , (j, v) <- zip [0..] row
         ]
 
 flow :: Map Coord Int -> Map Coord (Maybe Coord)
 flow m = LMap.mapWithKey go m where
     go p v = find
                 (\p2 -> LMap.findWithDefault 10 p2 m < v)
-                (adjacentPoints p)
+                (adjacent p)
 
 closure :: Map Coord (Maybe Coord) -> Map Coord Coord
 closure m = cl where
@@ -36,7 +37,7 @@ closure m = cl where
                   ) m
 
 part1 :: Map Coord Int -> Int
-part1 m = sum . map ((+1) . (m!) . fst) . filter (isNothing . snd) . LMap.toList . flow $ m 
+part1 m = sum [m ! p + 1 | (p, Nothing) <- LMap.toList (flow m)] 
 
 part2 :: Map Coord Int -> Int
 part2 = product . take 3 . sortOn Down . HMap.elems . freqs . LMap.elems . closure . flow . LMap.filter (<9)

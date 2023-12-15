@@ -6,7 +6,7 @@ import qualified Data.HashMap.Strict as Map
 import           AOC.V2 (V2(..))
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, some, eol, decimal)
-import           AOC.Util (listTo2dMap')
+import           AOC.Util (listTo2dMap)
 
 type Grid = HashMap (V2 Int) Tile
 data Tile = Void | Empty | Wall deriving (Eq, Show)
@@ -16,7 +16,7 @@ data Input = Input !Grid ![Instr]
 parser :: Parser Input
 parser = Input <$> map_ <* eol <*> path where
     tile = Void <$ " " <|> Empty <$ "." <|> Wall <$ "#"
-    map_ = listTo2dMap' <$> some tile `sepEndBy1` eol
+    map_ = listTo2dMap <$> some tile `sepEndBy1` eol
     path = some instr
     instr = L <$ "L" <|> R <$ "R" <|> Move <$> decimal
 

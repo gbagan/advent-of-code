@@ -7,8 +7,8 @@ import qualified Data.HashSet as Set
 import           AOC (aoc)
 import           AOC.List (sliding)
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
-import           AOC.Util (freqs, kingAdjacentPoints')
-import           AOC.V2 (V2(..))
+import           AOC.Util (freqs)
+import           AOC.V2 (V2(..), surrounding)
 
 type Rule = ([V2 Int], V2 Int)
 
@@ -35,7 +35,7 @@ rules = cycle
 runRound :: [Rule] -> HashSet (V2 Int) -> HashSet (V2 Int)
 runRound rules' elves = elves' where
     transitions = elves & Set.map \elf ->
-        if not $ any (`Set.member` elves) (kingAdjacentPoints' elf)
+        if not $ any (`Set.member` elves) (surrounding elf)
         then (elf, elf)
         else (elf, fromMaybe elf . listToMaybe $ mapMaybe (applyRule elf) rules')
     applyRule elf (checks, move) = if not $ any ((`Set.member` elves) . (+elf)) checks

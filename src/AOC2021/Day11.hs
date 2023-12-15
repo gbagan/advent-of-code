@@ -7,9 +7,10 @@ import qualified Data.Set as Set
 import           AOC (aoc')
 import           AOC.Parser (Parser, digitChar, eol, sepEndBy1, some)
 import           AOC.List (count)
-import           AOC.Util (kingAdjacentPoints, listTo2dMap)
+import           AOC.V2 (V2(..), surrounding)
+import           AOC.Util (listTo2dMap)
 
-type Coord = (Int, Int)
+type Coord = V2 Int
 
 parser :: Parser (HashMap Coord Int)
 parser = listTo2dMap <$> line `sepEndBy1` eol where
@@ -23,13 +24,13 @@ step mp = mp3 where
     mp3 = Map.map (\v -> if v > 9 then 0 else v) mp2
     go [] _ mp' = mp'
     go (x:xs) flashed mp' =
-            case Map.lookup x mp' of
-                Nothing -> go xs flashed mp'
-                Just v -> let mp'' = Map.insert x (v+1) mp' in
-                            if v >= 9 && not (Set.member x flashed) then 
-                                go (kingAdjacentPoints x ++ xs) (Set.insert x flashed) mp''
-                            else
-                                go xs flashed mp''
+        case Map.lookup x mp' of
+            Nothing -> go xs flashed mp'
+            Just v -> let mp'' = Map.insert x (v+1) mp' in
+                        if v >= 9 && not (Set.member x flashed) then 
+                            go (surrounding x ++ xs) (Set.insert x flashed) mp''
+                        else
+                            go xs flashed mp''
 
 precomp :: HashMap Coord Int -> [HashMap Coord Int]
 precomp = iterate' step

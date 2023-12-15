@@ -87,6 +87,7 @@ executable aoc2021
                 AOC2021.Day24
                 AOC2021.Day25
                 AOC
+                AOC.Area
                 AOC.List
                 AOC.Prelude
                 AOC.Parser
@@ -152,6 +153,7 @@ executable aoc2022
                 AOC2022.Day25
                 AOC
                 AOC.List
+                AOC.Interval
                 AOC.Prelude
                 AOC.Parser
                 AOC.Search
@@ -209,6 +211,7 @@ executable aoc2023
                 AOC2023.Day15
                 AOC
                 AOC.Prelude
+                AOC.Area
                 AOC.Debug
                 AOC.Interval
                 AOC.List

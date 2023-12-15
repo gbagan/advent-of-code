@@ -23,31 +23,13 @@ clamp :: Ord a => (a, a) -> a -> a
 clamp (l, u) = max l . min u
 {-# INLINE clamp #-}
 
-listTo2dMap :: [[a]] -> HashMap (Int, Int) a
+listTo2dMap :: [[a]] -> HashMap (V2 Int) a
 listTo2dMap l =
-    HMap.fromList
-        [((i, j), v)
-        | (i, row) <- zip [0..] l
-        , (j, v) <- zip [0..] row
-        ]
-
-listTo2dMap' :: [[a]] -> HashMap (V2 Int) a
-listTo2dMap' l =
     HMap.fromList
         [(V2 i j, v)
         | (i, row) <- zip [0..] l
         , (j, v) <- zip [0..] row
         ]
-
-adjacentPoints :: (Int, Int) -> [(Int, Int)]
-adjacentPoints (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
-
-kingAdjacentPoints :: (Int, Int) -> [(Int, Int)]
-kingAdjacentPoints (x, y) = adjacentPoints (x, y) ++ [(x-1, y-1), (x+1, y-1), (x-1, y+1), (x+1, y+1)]
-
-kingAdjacentPoints' :: V2 Int -> [V2 Int]
-kingAdjacentPoints' (V2 x y) = uncurry V2 <$> kingAdjacentPoints (x, y)
-
 
 binToInt :: [Bool] -> Int
 binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
