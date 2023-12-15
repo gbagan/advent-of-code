@@ -2,10 +2,11 @@
 module AOC2022.Day15 (solve) where
 import           Relude
 import           AOC (aoc)
+import           AOC.V2 (V2(..), manhattan)
 import           AOC.Parser (Parser, eol, sepEndBy1, signedDecimal)
+import           AOC.Interval (Interval(..), quasiOverlaps, union')
 
-data Coords = Coords !Integer !Integer deriving (Eq)
-data Interval = Interval !Integer !Integer deriving (Eq)
+type Coords = V2 Integer
 data Scan = Scan !Coords !Coords !Integer
 
 parser :: Parser [Scan]
@@ -15,45 +16,30 @@ parser = line `sepEndBy1` eol where
         y1 <- ", y=" *> signedDecimal
         x2 <- ": closest beacon is at x=" *> signedDecimal
         y2 <- ", y=" *> signedDecimal
-        let sensor = Coords x1 y1
-        let beacon = Coords x2 y2
+        let sensor = V2 x1 y1
+        let beacon = V2 x2 y2
         pure $ Scan sensor beacon (manhattan sensor beacon)
 
--- | manhattan distance
-manhattan :: Coords -> Coords -> Integer
-manhattan (Coords x1 y1) (Coords x2 y2) = abs (x1 - x2) + abs (y1 - y2)
-
--- | two (discrete) intervals quasioverlap if their union is an interval
-quasiOverlap :: Interval -> Interval -> Bool
-quasiOverlap (Interval x1 y1) (Interval x2 y2) = max x1 x2 <= min y1 y2 + 1
-
--- | return the union of the two intervals if this union is an interval
--- | undefined otherwise
-union :: Interval -> Interval -> Interval
-union itv1@(Interval x1 y1) itv2@(Interval x2 y2)
-    | quasiOverlap itv1 itv2 = Interval (min x1 x2) (max y1 y2)
-    | otherwise = error "union: not an interval"
-
 -- | return a set of disjoint intervals that contains the same points as the input
-toDisjointUnion :: [Interval] -> [Interval]
+toDisjointUnion :: [Interval Integer] -> [Interval Integer]
 toDisjointUnion [] = []
-toDisjointUnion (itv:itvs) = case find (quasiOverlap itv) itvs of
+toDisjointUnion (itv:itvs) = case find (quasiOverlaps itv) itvs of
     Nothing -> itv : toDisjointUnion itvs
-    Just itv' -> toDisjointUnion $ union itv itv' : filter (/= itv') itvs
+    Just itv' -> toDisjointUnion $ union' itv itv' : filter (/= itv') itvs
 
 -- | interval between a ball (w.r.t. Manhattan distance) and a row
-intersectionBallWithRow :: Coords -> Integer -> Integer -> Maybe Interval
-intersectionBallWithRow (Coords cx cy) radius row
+intersectionBallWithRow :: Coords -> Integer -> Integer -> Maybe (Interval Integer)
+intersectionBallWithRow (V2 cx cy) radius row
     | dx < 0 = Nothing
     | otherwise = Just $ Interval (cx - dx) (cx + dx)
     where dx = radius - abs (cy - row)
 
 -- | number of points on the interval
-itvLength :: Interval -> Integer
+itvLength :: Interval Integer -> Integer
 itvLength (Interval a b) = b - a + 1
 
 -- | union of disjoint intervals that does not cointain non detected beacons
-intervalsWithoutBeacons :: Integer -> [Scan] -> [Interval]
+intervalsWithoutBeacons :: Integer -> [Scan] -> [Interval Integer]
 intervalsWithoutBeacons y =
         toDisjointUnion
         . mapMaybe (\(Scan sensor _ dist) -> intersectionBallWithRow sensor dist y)
@@ -61,15 +47,15 @@ intervalsWithoutBeacons y =
 part1 :: [Scan] -> Integer
 part1 pairs = nbBeacons - nbDetectedBeacons where
     nbBeacons = sum . map itvLength $ intervalsWithoutBeacons yTarget pairs
-    nbDetectedBeacons = genericLength $ ordNub [x | Scan _ (Coords x y) _ <- pairs, y == yTarget]
+    nbDetectedBeacons = genericLength $ ordNub [x | Scan _ (V2 x y) _ <- pairs, y == yTarget]
     yTarget = 2000000
 
 corners :: Scan -> [Coords]
-corners (Scan (Coords x y) _ dist) = [l, u, r, d] where
-    l = Coords (x-dist-1) y
-    r = Coords (x+dist+1) y
-    u = Coords x (y-dist-1)
-    d = Coords x (y+dist+1)
+corners (Scan (V2 x y) _ dist) = [l, u, r, d] where
+    l = V2 (x-dist-1) y
+    r = V2 (x+dist+1) y
+    u = V2 x (y-dist-1)
+    d = V2 x (y+dist+1)
 
 {-
 x1 + q = x2 + r
@@ -79,9 +65,9 @@ y1 + q = y2 - r
 -}
 
 diagonalIntersection :: Coords -> Coords -> [Coords]
-diagonalIntersection (Coords x1 y1) (Coords x2 y2) =
+diagonalIntersection (V2 x1 y1) (V2 x2 y2) =
     if x1 <= x2
-    then [Coords (x1+q) (y1+q), Coords (x2-q) (y2-q)]
+    then [V2 (x1+q) (y1+q), V2 (x2-q) (y2-q)]
     else []
     where
     q = (x2 + y2 - x1 - y1) `div` 2
@@ -93,13 +79,13 @@ isNotDetected scans point =
 
 part2 :: [Scan] -> Maybe Integer
 part2 scans = do
-    Coords x y <- find (isNotDetected scans) candidates 
+    V2 x y <- find (isNotDetected scans) candidates 
     pure $ x * 4000000 + y
     where
     vs = scans >>= corners
     candidates = concat (diagonalIntersection <$> vs <*> vs)
-                        & filter \(Coords x y) -> x >= 0 && x < 4000000 
-                                                && y >= 0 && y < 4000000
+                        & filter \(V2 x y) -> x >= 0 && x < 4000000 
+                                            && y >= 0 && y < 4000000
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2

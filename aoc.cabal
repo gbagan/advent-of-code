@@ -31,15 +31,13 @@ executable aoc2020
                 AOC.V2
                 AOC.V3
 
-    default-language: Haskell2010
+    default-language: GHC2021
     default-extensions:
-                    BangPatterns
                     BlockArguments
                     LambdaCase
                     MultiWayIf
                     NoImplicitPrelude
                     OverloadedStrings
-                    TupleSections
                     TypeFamilies
 
     ghc-options:
@@ -97,17 +95,17 @@ executable aoc2021
                 AOC.V2
                 AOC.V3
 
-    default-language: Haskell2010
+    default-language: GHC2021
     default-extensions:
-                    BangPatterns
+
                     BlockArguments
                     LambdaCase
                     MultiWayIf
                     NoImplicitPrelude
                     OverloadedStrings
-                    TupleSections
+                    RecordWildCards
+                    TemplateHaskell
                     TypeFamilies
-                    TypeOperators
 
     ghc-options:
               -Wall
@@ -161,21 +159,16 @@ executable aoc2022
                 AOC.V2
                 AOC.V3
 
-    default-language:    Haskell2010
+    default-language:    GHC2021
     default-extensions:
-                    BangPatterns
                     BlockArguments
                     LambdaCase
                     MultiWayIf
-                    NamedFieldPuns
                     NoImplicitPrelude
                     OverloadedStrings
                     RecordWildCards
                     TemplateHaskell
-                    TupleSections
-                    TypeApplications
                     TypeFamilies
-                    TypeOperators
     ghc-options:
               -Wall
               -Wcompat
@@ -217,6 +210,7 @@ executable aoc2023
                 AOC
                 AOC.Prelude
                 AOC.Debug
+                AOC.Interval
                 AOC.List
                 AOC.Parser
                 AOC.Search
@@ -225,21 +219,16 @@ executable aoc2023
                 AOC.V2
                 AOC.V3
 
-    default-language:    Haskell2010
+    default-language:   GHC2021
     default-extensions:
-                    BangPatterns
                     BlockArguments
                     LambdaCase
                     MultiWayIf
-                    NamedFieldPuns
                     NoImplicitPrelude
                     OverloadedStrings
                     RecordWildCards
                     TemplateHaskell
-                    TupleSections
-                    TypeApplications
                     TypeFamilies
-                    TypeOperators
     ghc-options:
               -Wall
               -Wcompat
@@ -248,7 +237,6 @@ executable aoc2023
     build-depends:   base >= 4.15 && < 5
                      , array
                      , containers
-                     , insert-ordered-containers
                      , massiv
                      , megaparsec
                      , relude

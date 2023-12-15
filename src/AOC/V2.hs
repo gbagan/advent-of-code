@@ -56,3 +56,6 @@ instance Num a => Num (V2 a) where
 perp :: Num a => V2 a -> V2 a
 perp (V2 a b) = V2 (negate b) a
 {-# INLINE perp #-}
+
+manhattan :: Num a => V2 a -> V2 a -> a
+manhattan (V2 x1 y1) (V2 x2 y2) = abs (x1 - x2) + abs (y1 - y2)

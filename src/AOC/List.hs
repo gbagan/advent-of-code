@@ -1,10 +1,14 @@
 module AOC.List where
 
 import           AOC.Prelude
-import           Data.List (maximum)
+import           Data.List (maximum, minimum)
 
 allUnique :: Ord a => [a] -> Bool
 allUnique xs = length (ordNub xs) == length xs
+
+minimumMaybe :: Ord a => [a] -> Maybe a
+minimumMaybe [] = Nothing
+minimumMaybe l = Just $ minimum l
 
 maximumDef :: Ord a => a -> [a] -> a
 maximumDef def [] = def
