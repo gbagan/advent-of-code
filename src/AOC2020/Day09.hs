@@ -3,16 +3,15 @@ module AOC2020.Day09 (solve) where
 import           AOC.Prelude
 import           Data.List (minimum, maximum)
 import qualified Data.IntSet as Set
-import           Data.List.Split (divvy)
 import           AOC (aoc)
-import           AOC.List (slice)
+import           AOC.List (slice, sliding)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
 
 parser :: Parser [Int]
 parser = decimal `sepEndBy1` eol
 
 part1 :: [Int] -> Maybe Int
-part1 = listToMaybe <=< (find test . divvy 26 1 . reverse) where
+part1 = listToMaybe <=< (find test . sliding 26 . reverse) where
     test [] = False
     test (x:xs) = xs & all \y -> y+y == x || (x - y) `Set.notMember` s where
         s = Set.fromList xs

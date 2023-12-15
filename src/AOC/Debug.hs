@@ -3,8 +3,8 @@ module AOC.Debug where
 
 import Relude
 
-spy :: Show a => a -> a
-spy x = traceShow x x
+spy :: Show a => String -> a -> a
+spy str x = trace (str ++ show x) x
 
-spy' :: Show b => (a -> b) -> a -> a
-spy' f x = traceShow (f x) x
+spy' :: Show b => String -> (a -> b) -> a -> a
+spy' str f x = trace (str ++ show (f x)) x

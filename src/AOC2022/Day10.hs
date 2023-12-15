@@ -1,10 +1,10 @@
 -- https://adventofcode.com/2022/day/10
 {-# OPTIONS_GHC -Wno-deprecations #-}
 module AOC2022.Day10 (solve) where
-import           Relude hiding (unlines)
-import           Data.List (unlines)
-import           Data.List.Split (chunksOf, divvy)
+import           AOC.Prelude hiding (head, unlines)
+import           Data.List (head, unlines)
 import           AOC (aoc')
+import           AOC.List (grouped)
 import           AOC.Parser (Parser, sepEndBy1, eol, signedDecimal)
 
 data Instr = Noop | Addx Int
@@ -20,10 +20,10 @@ runInstrs = scanl' (flip runInstr) where
     runInstr (Addx v) = (+v)
 
 part1 :: [Int] -> Int
-part1 = sum . concat . divvy 1 40 . drop 19 . zipWith (*) [1..] 
+part1 = sum . map head . grouped 40 . drop 19 . zipWith (*) [1..] 
 
 part2 :: [Int] -> String
-part2 = unlines . map (zipWith drawPixel [0..]) . chunksOf 40 where
+part2 = unlines . map (zipWith drawPixel [0..]) . grouped 40 where
     drawPixel i x | abs (i - x) <= 1 = '#'
                   | otherwise = '.'
 

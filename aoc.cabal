@@ -56,7 +56,6 @@ executable aoc2020
                    , microlens
                    , microlens-platform
                    , relude
-                   , split
                    , text
                    , vector
 
@@ -192,7 +191,6 @@ executable aoc2022
                      , microlens-th
                      , relude
                      , rosezipper
-                     , split
                      , streams
                      , vector
                      , text
@@ -250,6 +248,7 @@ executable aoc2023
     build-depends:   base >= 4.15 && < 5
                      , array
                      , containers
+                     , insert-ordered-containers
                      , massiv
                      , megaparsec
                      , relude

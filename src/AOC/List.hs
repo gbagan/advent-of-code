@@ -33,6 +33,19 @@ wordsBy f s = case dropWhile f s of
     x:xs -> (x:w) : wordsBy f (drop1 z)
         where (w,z) = break f xs
 
+-- grouped 3 [1..8] = [[1, 2, 3], [4, 5, 6], [7, 8]]
+grouped :: Int -> [a] -> [[a]]
+grouped _ [] = []
+grouped n l = xs : grouped n ys where (xs, ys) = splitAt n l 
+
+-- sliding 3 [1..6] = [[1, 2, 3], [2, 3, 4], [3, 4, 5], [4, 5, 6]]
+sliding :: Int -> [a] -> [[a]]
+sliding n l = case (ys, l) of 
+    (_, []) -> []
+    ([], _) -> [xs]
+    (_, _:zs) -> xs : sliding n zs
+    where (xs, ys) = splitAt n l
+
 count :: (a -> Bool) -> [a] -> Int
 count f = length . filter f
 {-# INLINE count #-}

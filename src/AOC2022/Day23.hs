@@ -4,8 +4,8 @@ import           AOC.Prelude
 import           Data.List (minimum, maximum, (!!))
 import qualified Data.HashMap.Strict as Map ((!))
 import qualified Data.HashSet as Set
-import           Data.List.Split (divvy)
 import           AOC (aoc)
+import           AOC.List (sliding)
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
 import           AOC.Util (freqs, kingAdjacentPoints')
 import           AOC.V2 (V2(..))
@@ -21,8 +21,7 @@ listToV2Set l =
     Set.fromList
         [ V2 i j
         | (i, row) <- zip [0..] l
-        , (j, v) <- zip [0..] row
-        , v
+        , (j, True) <- zip [0..] row
         ]
 
 rules :: [Rule]
@@ -48,7 +47,7 @@ runRound rules' elves = elves' where
 
 simulate :: HashSet (V2 Int) -> [HashSet (V2 Int)]
 simulate elves = scanl' (flip runRound) elves rules' where
-    rules' = divvy 4 1 rules
+    rules' = sliding 4 rules
 
 part1 :: HashSet (V2 Int) -> Int
 part1 elves = (maxr - minr + 1) * (maxc - minc + 1) - Set.size elves' where
