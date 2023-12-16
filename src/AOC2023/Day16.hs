@@ -12,8 +12,9 @@ import           AOC.Parser (Parser, sepEndBy1, eol, choice, some)
 import           AOC.Search (reachableFrom)
 
 data Tile = Empty | Horizontal | Vertical | Slash | Antislash
-type Coord = V2 Int
+type Position = V2 Int
 type Direction = V2 Int
+type Beam = (Position, Direction)
 type Grid = Matrix B Tile
 
 parser :: Parser Grid 
@@ -33,14 +34,14 @@ nextDirections (V2 drow dcol) = \case
     Vertical | dcol /= 0 -> [V2 (-1) 0, V2 1 0]
     _ -> [V2 drow dcol]
 
-neighbors :: Grid -> (Coord, Direction) -> [(Coord, Direction)]
+neighbors :: Grid -> Beam -> [Beam]
 neighbors grid (pos, dir) = [ (nextPos, nextDir)
                             | nextDir <- nextDirections dir (grid ! toIx2 pos)
                             , let nextPos = pos + nextDir
                             , isJust (grid !? toIx2 nextPos)
                             ]
 
-energized :: Grid -> (Coord, Direction) -> Int
+energized :: Grid -> Beam -> Int
 energized grid start = Set.size $ Set.map fst reachable where
     reachable = reachableFrom (neighbors grid) start
 
