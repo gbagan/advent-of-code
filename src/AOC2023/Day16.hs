@@ -17,7 +17,7 @@ type Direction = V2 Int
 type Grid = Matrix B Tile
 
 parser :: Parser Grid 
-parser = A.fromLists' @B Seq <$> some tile `sepEndBy1` eol where
+parser = A.fromLists' Seq <$> some tile `sepEndBy1` eol where
     tile = choice [ Empty <$ "."
                   , Horizontal <$ "-"
                   , Vertical <$ "|"
@@ -41,7 +41,7 @@ neighbors grid (pos, dir) = [ (nextPos, nextDir)
                             ]
 
 energized :: Grid -> (Coord, Direction) -> Int
-energized grid start = Set.size . Set.fromList $ map fst reachable where
+energized grid start = Set.size $ Set.map fst reachable where
     reachable = reachableFrom (neighbors grid) start
 
 part1 :: Grid -> Int
