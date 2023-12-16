@@ -5,7 +5,7 @@ import           Data.List (maximum)
 import qualified Data.HashSet as Set
 import           Data.Massiv.Array (Matrix, (!), (!?), B, Comp(Seq), Sz(Sz2))
 import qualified Data.Massiv.Array as A
-import           Control.Parallel.Strategies (parListChunk, rdeepseq, using)
+-- import           Control.Parallel.Strategies (parListChunk, rdeepseq, using)
 import           AOC (aoc)
 import           AOC.V2 (V2(..), toIx2)
 import           AOC.Parser (Parser, sepEndBy1, eol, choice, some)
@@ -49,7 +49,7 @@ part1 :: Grid -> Int
 part1 grid = energized grid (V2 0 0, V2 0 1)
 
 part2 :: Grid -> Int
-part2 grid = maximum (map (energized grid) starts `using` parListChunk 20 rdeepseq) where
+part2 grid = maximum (map (energized grid) starts) where
     Sz2 h w = A.size grid
     starts = concat $
                 [[(V2 r 0, V2 0 1), (V2 r (w-1), V2 0 (-1))] | r <- [0 .. h-1]]

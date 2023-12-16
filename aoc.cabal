@@ -48,6 +48,7 @@ executable aoc2020
     build-depends: base >= 4.15 && < 5
                    , array
                    , containers
+                   , heap
                    , linear
                    , massiv
                    , megaparsec
