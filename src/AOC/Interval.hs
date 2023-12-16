@@ -19,14 +19,14 @@ overlaps :: Ord a => Interval a -> Interval a -> Bool
 overlaps (Interval x1 y1) (Interval x2 y2) = max x1 x2 <= min y1 y2
 
 -- | two (discrete) intervals quasioverlap if their union is an interval
-quasiOverlaps :: Integral a => Interval a -> Interval a -> Bool
-quasiOverlaps (Interval x1 y1) (Interval x2 y2) = max x1 x2 <= min y1 y2 + 1
+isConnected :: Integral a => Interval a -> Interval a -> Bool
+isConnected (Interval x1 y1) (Interval x2 y2) = max x1 x2 <= min y1 y2 + 1
 
 -- | two (discrete) intervals quasioverlap if their union is an interval
 quasiOverlap :: Interval Integer -> Interval Integer -> Bool
 quasiOverlap (Interval x1 y1) (Interval x2 y2) = max x1 x2 <= min y1 y2 + 1
 
-union' :: Integral a => Interval a -> Interval a -> Interval a
+union' :: Integral a => Interval a -> Interval a -> Maybe (Interval a)
 union' itv1@(Interval x1 y1) itv2@(Interval x2 y2)
-    | itv1 `quasiOverlaps` itv2 = Interval (min x1 x2) (max y1 y2)
-    | otherwise = error "union: not an interval"
+    | itv1 `isConnected` itv2 = Just $ Interval (min x1 x2) (max y1 y2)
+    | otherwise = Nothing

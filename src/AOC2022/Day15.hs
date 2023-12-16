@@ -4,7 +4,7 @@ import           Relude
 import           AOC (aoc)
 import           AOC.V2 (V2(..), manhattan)
 import           AOC.Parser (Parser, eol, sepEndBy1, signedDecimal)
-import           AOC.Interval (Interval(..), quasiOverlaps, union')
+import           AOC.Interval (Interval(..), union')
 
 type Coords = V2 Integer
 data Scan = Scan !Coords !Coords !Integer
@@ -22,10 +22,12 @@ parser = line `sepEndBy1` eol where
 
 -- | return a set of disjoint intervals that contains the same points as the input
 toDisjointUnion :: [Interval Integer] -> [Interval Integer]
-toDisjointUnion [] = []
-toDisjointUnion (itv:itvs) = case find (quasiOverlaps itv) itvs of
-    Nothing -> itv : toDisjointUnion itvs
-    Just itv' -> toDisjointUnion $ union' itv itv' : filter (/= itv') itvs
+toDisjointUnion = go . sort where
+    go [] = []
+    go [x] = [x]
+    go (itv1:itv2:itvs) = case union' itv1 itv2 of
+        Nothing -> itv1 : toDisjointUnion (itv2 : itvs)
+        Just itv' -> toDisjointUnion (itv' : itvs)
 
 -- | interval between a ball (w.r.t. Manhattan distance) and a row
 intersectionBallWithRow :: Coords -> Integer -> Integer -> Maybe (Interval Integer)
