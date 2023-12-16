@@ -1,21 +1,23 @@
 -- https://adventofcode.com/2023/day/16
 module AOC2023.Day16 (solve) where
-import           AOC.Prelude hiding (toList)
+import           AOC.Prelude
 import           Data.List (maximum)
 import qualified Data.HashSet as Set
+import           Data.Massiv.Array (Matrix, (!), (!?), B, Comp(Seq), Sz(Sz2))
+import qualified Data.Massiv.Array as A
+import           Control.Parallel.Strategies (parMap, rdeepseq)
 import           AOC (aoc)
 import           AOC.V2 (V2(..), toIx2)
 import           AOC.Parser (Parser, sepEndBy1, eol, choice, some)
-import           AOC.Search (dfs)
-import           Data.Massiv.Array (Matrix, (!), (!?), fromLists', size, B, Comp(Seq), Sz(Sz2))
+import           AOC.Search (reachableFrom)
 
 data Tile = Empty | Horizontal | Vertical | Slash | Antislash
 type Coord = V2 Int
 type Direction = V2 Int
-type Input = Matrix B Tile
+type Grid = Matrix B Tile
 
-parser :: Parser Input  
-parser = fromLists' @B Seq <$> some tile `sepEndBy1` eol where
+parser :: Parser Grid 
+parser = A.fromLists' @B Seq <$> some tile `sepEndBy1` eol where
     tile = choice [ Empty <$ "."
                   , Horizontal <$ "-"
                   , Vertical <$ "|"
@@ -24,27 +26,30 @@ parser = fromLists' @B Seq <$> some tile `sepEndBy1` eol where
                   ]
 
 nextDirections :: Direction -> Tile -> [Direction]
-nextDirections (V2 dr dc) = \case
-    Slash -> [V2 (-dc) (-dr)]
-    Antislash -> [V2 dc dr]
-    Horizontal | dr /= 0 -> [V2 0 (-1), V2 0 1]
-    Vertical | dc /= 0 -> [V2 (-1) 0, V2 1 0]
-    _ -> [V2 dr dc]
+nextDirections (V2 drow dcol) = \case
+    Slash -> [V2 (-dcol) (-drow)]
+    Antislash -> [V2 dcol drow]
+    Horizontal | drow /= 0 -> [V2 0 (-1), V2 0 1]
+    Vertical | dcol /= 0 -> [V2 (-1) 0, V2 1 0]
+    _ -> [V2 drow dcol]
 
-energized :: (Coord, Direction) -> Input -> Int
-energized start grid = Set.size . Set.fromList . map fst $ dfs nbors start where
-    nbors (pos, dir) = [ (nextPos, nextDir)
-                       | nextDir <- nextDirections dir (grid ! toIx2 pos)  
-                       , let nextPos = pos + nextDir
-                       , isJust (grid !? toIx2 nextPos)
-                       ]
+neighbors :: Grid -> (Coord, Direction) -> [(Coord, Direction)]
+neighbors grid (pos, dir) = [ (nextPos, nextDir)
+                            | nextDir <- nextDirections dir (grid ! toIx2 pos)
+                            , let nextPos = pos + nextDir
+                            , isJust (grid !? toIx2 nextPos)
+                            ]
 
-part1 :: Input -> Int
-part1 = energized (V2 0 0, V2 0 1)
+energized :: Grid -> (Coord, Direction) -> Int
+energized grid start = Set.size . Set.fromList $ map fst reachable where
+    reachable = reachableFrom (neighbors grid) start
 
-part2 :: Input -> Int
-part2 grid = maximum [energized start grid | start <- starts] where
-    Sz2 h w = size grid
+part1 :: Grid -> Int
+part1 grid = energized grid (V2 0 0, V2 0 1)
+
+part2 :: Grid -> Int
+part2 grid = maximum $ parMap rdeepseq (energized grid) starts where
+    Sz2 h w = A.size grid
     starts = concat $
                 [[(V2 r 0, V2 0 1), (V2 r (w-1), V2 0 (-1))] | r <- [0 .. h-1]]
              ++ [[(V2 0 c, V2 1 0), (V2 (h-1) c, V2 (-1) 0)] | c <- [0 .. w-1]]

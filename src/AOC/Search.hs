@@ -15,8 +15,8 @@ bfs nborFunc start = go HSet.empty (Seq.singleton (0, start)) where
                         (HSet.insert v visited)
                         (queue >< Seq.fromList [(d+1, u) | u <- nborFunc v])
 
-dfs :: Hashable a => (a -> [a]) -> a -> [a]
-dfs nborFunc start = go HSet.empty [start] where
+reachableFrom :: Hashable a => (a -> [a]) -> a -> [a]
+reachableFrom nborFunc start = go HSet.empty [start] where
     go visited [] = HSet.toList visited
     go visited (v : stack)
         | v `HSet.member` visited = go visited stack

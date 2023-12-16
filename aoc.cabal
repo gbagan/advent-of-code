@@ -238,11 +238,14 @@ executable aoc2023
               -Wcompat
               -Wincomplete-uni-patterns
               -Wredundant-constraints
+              -threaded
+              -rtsopts
     build-depends:   base >= 4.15 && < 5
                      , array
                      , containers
                      , massiv
                      , megaparsec
+                     , parallel
                      , relude
                      , text
                      , vector
