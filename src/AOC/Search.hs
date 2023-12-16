@@ -15,6 +15,13 @@ bfs nborFunc start = go HSet.empty (Seq.singleton (0, start)) where
                         (HSet.insert v visited)
                         (queue >< Seq.fromList [(d+1, u) | u <- nborFunc v])
 
+dfs :: Hashable a => (a -> [a]) -> a -> [a]
+dfs nborFunc start = go HSet.empty [start] where
+    go visited [] = HSet.toList visited
+    go visited (v : stack)
+        | v `HSet.member` visited = go visited stack
+        | otherwise = go (HSet.insert v visited) (nborFunc v ++ stack)
+
 distance :: Hashable a => (a -> [a]) -> (a -> Bool) -> a -> Maybe Int
 distance nborFunc destFunc start =
     fst <$> find (destFunc . snd) (bfs nborFunc start)

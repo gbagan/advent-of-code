@@ -2,7 +2,7 @@ module AOC.Interval where
 
 import AOC.Prelude
 
-data Interval a = Interval { _begin :: !a,  _end :: !a } deriving (Eq, Ord, Show)
+data Interval a = Interval { _start :: !a,  _end :: !a } deriving (Eq, Ord, Show)
 
 intersection :: Ord a => Interval a -> Interval a -> Maybe (Interval a)
 intersection (Interval begin1 end1) (Interval begin2 end2)

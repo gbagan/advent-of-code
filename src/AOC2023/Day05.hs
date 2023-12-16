@@ -27,7 +27,7 @@ fillRanges = filter ((/= 0) . thd3) . fillRanges' 0 . sortOn snd3 where
     fillRanges' start (x@(_, source, len) : xs) = (start, start, source-start) : x : fillRanges' (source+len) xs
 
 solve' :: [AMap] -> [Interval Int] -> Maybe Int
-solve' maps seedIntervals = minimumMaybe (map _begin finalIntervals) where
+solve' maps seedIntervals = minimumMaybe (map _start finalIntervals) where
     finalIntervals = foldl' go seedIntervals maps
     go intervals ranges = catMaybes (nextInterval <$> fillRanges ranges <*> intervals)
     nextInterval (dest, source, len) itv = do

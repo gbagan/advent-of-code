@@ -40,7 +40,7 @@ part1 :: Map Coord Int -> Int
 part1 m = sum [m ! p + 1 | (p, Nothing) <- LMap.toList (flow m)] 
 
 part2 :: Map Coord Int -> Int
-part2 = product . take 3 . sortOn Down . HMap.elems . freqs . LMap.elems . closure . flow . LMap.filter (<9)
+part2 = product . take 3 . sortOn Down . HMap.elems                                                                                                              . freqs . LMap.elems . closure . flow . LMap.filter (<9)
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
