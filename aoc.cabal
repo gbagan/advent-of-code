@@ -239,6 +239,7 @@ executable aoc2023
               -Wcompat
               -Wincomplete-uni-patterns
               -Wredundant-constraints
+              -O2
               -threaded
               -rtsopts
     build-depends:   base >= 4.15 && < 5

@@ -36,7 +36,10 @@ dfsM nborFunc start = go HSet.empty [start] where
             go (HSet.insert v visited) (nbors ++ queue)
 
 dijkstra :: (Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> v -> Maybe w
-dijkstra nborFunc targetFunc source = go Set.empty (Set.singleton (0, source)) where
+dijkstra nborFunc targetFunc source = dijkstra' nborFunc targetFunc [source]
+    
+dijkstra' :: (Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> [v] -> Maybe w
+dijkstra' nborFunc targetFunc sources = go Set.empty (Set.fromList . map (0,) $ sources) where
     go visited queue = case Set.minView queue of
         Nothing -> Nothing
         Just ((cost, v), queue')

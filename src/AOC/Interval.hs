@@ -30,3 +30,12 @@ union' :: Integral a => Interval a -> Interval a -> Maybe (Interval a)
 union' itv1@(Interval x1 y1) itv2@(Interval x2 y2)
     | itv1 `isConnected` itv2 = Just $ Interval (min x1 x2) (max y1 y2)
     | otherwise = Nothing
+
+-- | return a set of disjoint intervals that contains the same points as the input
+toDisjointUnion' :: Integral a => [Interval a] -> [Interval a]
+toDisjointUnion' = go . sort where
+    go [] = []
+    go [x] = [x]
+    go (itv1:itv2:itvs) = case union' itv1 itv2 of
+        Nothing -> itv1 : go (itv2 : itvs)
+        Just itv' -> go (itv' : itvs)

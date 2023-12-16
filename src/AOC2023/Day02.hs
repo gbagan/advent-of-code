@@ -4,8 +4,8 @@ import           AOC.Prelude hiding (id)
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, eol, sepEndBy1)
 
-data RGB = RGB Int Int Int
-data Game = Game Int [RGB]
+data RGB = RGB !Int !Int !Int
+data Game = Game !Int [RGB]
 
 parser :: Parser [Game]
 parser = game `sepEndBy1` eol where
