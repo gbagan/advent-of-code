@@ -116,10 +116,12 @@ executable aoc2021
     build-depends: base >= 4.15 && < 5
                    , array
                    , containers
+                   , heap
                    , massiv
                    , megaparsec
                    , relude
                    , vector
+                   , vector-instances
                    , text
 
 executable aoc2022
@@ -179,6 +181,7 @@ executable aoc2022
     build-depends:   base >= 4.15 && < 5
                      , containers
                      , hashtables
+                     , heap
                      , linear
                      , megaparsec
                      , massiv
@@ -245,6 +248,7 @@ executable aoc2023
     build-depends:   base >= 4.15 && < 5
                      , array
                      , containers
+                     , heap
                      , massiv
                      , megaparsec
                      , parallel

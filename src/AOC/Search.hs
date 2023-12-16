@@ -3,8 +3,8 @@ module AOC.Search where
 import           Relude
 import           Data.Sequence (Seq(..), (><))
 import qualified Data.Sequence as Seq
-import qualified Data.Set as Set
 import qualified Data.HashSet as HSet
+import qualified Data.Heap as H
 
 bfs :: Hashable a => (a -> [a]) -> a -> [(Int, a)]
 bfs nborFunc start = go HSet.empty (Seq.singleton (0, start)) where
@@ -35,16 +35,16 @@ dfsM nborFunc start = go HSet.empty [start] where
             nbors <- nborFunc v
             go (HSet.insert v visited) (nbors ++ queue)
 
-dijkstra :: (Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> v -> Maybe w
+dijkstra :: (Hashable v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> v -> Maybe w
 dijkstra nborFunc targetFunc source = dijkstra' nborFunc targetFunc [source]
     
-dijkstra' :: (Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> [v] -> Maybe w
-dijkstra' nborFunc targetFunc sources = go Set.empty (Set.fromList . map (0,) $ sources) where
-    go visited queue = case Set.minView queue of
+dijkstra' :: (Hashable v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> [v] -> Maybe w
+dijkstra' nborFunc targetFunc sources = go HSet.empty (H.fromList @H.FstMinPolicy . map (0,) $ sources) where
+    go visited queue = case H.view queue of
         Nothing -> Nothing
         Just ((cost, v), queue')
             | targetFunc v         -> Just cost
-            | Set.member v visited -> go visited queue'
+            | HSet.member v visited -> go visited queue'
             | otherwise            -> go
-                                        (Set.insert v visited)
-                                        (foldl' (flip Set.insert) queue' [(w+cost, u) | (u, w) <- nborFunc v])
+                                        (HSet.insert v visited)
+                                        (foldl' (flip H.insert) queue' [(w+cost, u) | (u, w) <- nborFunc v])

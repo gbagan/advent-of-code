@@ -1,7 +1,7 @@
 module AOC.V2 where
 
 import Relude
-import Data.Foldable1 (Foldable1, foldMap1)
+import           Data.Foldable1 (Foldable1, foldMap1)
 import           Data.Massiv.Array (Ix2(..))
 
 data V2 a = V2 { _x :: !a, _y :: !a } deriving (Eq, Ord, Show)

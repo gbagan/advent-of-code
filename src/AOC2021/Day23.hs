@@ -3,6 +3,7 @@ import           AOC.Prelude hiding (head, last)
 import           Relude.Unsafe (head, last)
 import qualified Data.Vector as Vec
 import           Data.Vector ((!), (//))
+import           Data.Vector.Instances ()
 import qualified Data.IntMap as IM
 import           AOC (aoc)
 import           AOC.Parser (Parser, anySingle, some)
@@ -12,6 +13,9 @@ data Amphipod = Amber | Bronze | Copper | Desert deriving (Eq, Ord, Enum)
 type Rooms = Vector [Amphipod]
 type Hall = IntMap Amphipod
 type Board = (Rooms, Hall)
+
+instance Hashable Amphipod where
+    hashWithSalt s v = s `hashWithSalt` fromEnum v
 
 boardFromAmphipods :: [Amphipod] -> Maybe Board
 boardFromAmphipods [a1, b1, c1, d1, a2, b2, c2, d2] =
