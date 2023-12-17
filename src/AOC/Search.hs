@@ -4,7 +4,7 @@ import           AOC.Prelude hiding (init)
 import           Data.Sequence (Seq(..), (><))
 import qualified Data.Sequence as Seq
 import qualified Data.HashSet as Set
-import qualified Data.HashMap.Strict as Map
+-- import qualified Data.HashMap.Strict as Map
 import qualified Data.HashPSQ as Q
 
 bfs :: Hashable a => (a -> [a]) -> a -> [(Int, a)]
@@ -48,14 +48,13 @@ dijkstra' nbors targetFunc sources = go Set.empty initialQueue where
         Nothing -> Nothing
         Just (v, cost, _, queue')
             | targetFunc v -> Just cost
-            | Set.member v visited -> go visited queue'
             | otherwise -> go
                             (Set.insert v visited)
                             (foldl' insert queue'
                                 [(v', cost+w') | (v', w') <- nbors v, not (v' `Set.member` visited)]
                             )
-    insert q (u, w) = case Q.lookup u q of
-        Just (w', _) | w' < w -> q
-        _ -> Q.insert u w () q
+    insert queue (u, w) = case Q.lookup u queue of
+        Just (w', _) | w' < w -> queue
+        _ -> Q.insert u w () queue
 
 {-# SPECIALISE dijkstra' :: (Hashable v, Ord v) => (v -> [(v, Int)]) -> (v -> Bool) -> [v] -> Maybe Int #-}
