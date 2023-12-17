@@ -48,12 +48,12 @@ executable aoc2020
     build-depends: base >= 4.15 && < 5
                    , array
                    , containers
-                   , heap
                    , linear
                    , massiv
                    , megaparsec
                    , microlens
                    , microlens-platform
+                   , psqueues
                    , relude
                    , text
                    , vector
@@ -117,9 +117,9 @@ executable aoc2021
     build-depends: base >= 4.15 && < 5
                    , array
                    , containers
-                   , heap
                    , massiv
                    , megaparsec
+                   , psqueues
                    , relude
                    , vector
                    , vector-instances
@@ -182,12 +182,12 @@ executable aoc2022
     build-depends:   base >= 4.15 && < 5
                      , containers
                      , hashtables
-                     , heap
                      , linear
                      , megaparsec
                      , massiv
                      , microlens
                      , microlens-th
+                     , psqueues
                      , relude
                      , rosezipper
                      , streams
@@ -249,10 +249,10 @@ executable aoc2023
     build-depends:   base >= 4.15 && < 5
                      , array
                      , containers
-                     , heap
                      , massiv
                      , megaparsec
                      , parallel
+                     , psqueues
                      , relude
                      , text
                      , vector

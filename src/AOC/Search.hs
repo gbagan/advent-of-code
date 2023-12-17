@@ -4,7 +4,7 @@ import           Relude
 import           Data.Sequence (Seq(..), (><))
 import qualified Data.Sequence as Seq
 import qualified Data.HashSet as HSet
-import qualified Data.Heap as H
+import qualified Data.HashPSQ as Q
 
 bfs :: Hashable a => (a -> [a]) -> a -> [(Int, a)]
 bfs nborFunc start = go HSet.empty (Seq.singleton (0, start)) where
@@ -35,16 +35,23 @@ dfsM nborFunc start = go HSet.empty [start] where
             nbors <- nborFunc v
             go (HSet.insert v visited) (nbors ++ queue)
 
-dijkstra :: (Hashable v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> v -> Maybe w
+dijkstra :: (Hashable v, Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> v -> Maybe w
 dijkstra nborFunc targetFunc source = dijkstra' nborFunc targetFunc [source]
-    
-dijkstra' :: (Hashable v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> [v] -> Maybe w
-dijkstra' nborFunc targetFunc sources = go HSet.empty (H.fromList @H.FstMinPolicy . map (0,) $ sources) where
-    go visited queue = case H.view queue of
+
+{-# SPECIALISE dijkstra :: (Hashable v, Ord v) => (v -> [(v, Int)]) -> (v -> Bool) -> v -> Maybe Int #-}
+
+dijkstra' :: (Hashable v, Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> [v] -> Maybe w
+dijkstra' nborFunc targetFunc sources = go HSet.empty initialQueue where
+    initialQueue = Q.fromList . map (,0,()) $ sources
+    go visited queue = case Q.minView queue of
         Nothing -> Nothing
-        Just ((cost, v), queue')
+        Just (v, cost, _, queue')
             | targetFunc v         -> Just cost
             | HSet.member v visited -> go visited queue'
             | otherwise            -> go
                                         (HSet.insert v visited)
-                                        (foldl' (flip H.insert) queue' [(w+cost, u) | (u, w) <- nborFunc v])
+                                        (foldl' insert queue' (nborFunc v))
+            where
+            insert p (u, w) = Q.insert u (w+cost) () p
+
+{-# SPECIALISE dijkstra' :: (Hashable v, Ord v) => (v -> [(v, Int)]) -> (v -> Bool) -> [v] -> Maybe Int #-}
