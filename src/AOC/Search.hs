@@ -1,39 +1,40 @@
 module AOC.Search where
 
-import           Relude
+import           AOC.Prelude hiding (init)
 import           Data.Sequence (Seq(..), (><))
 import qualified Data.Sequence as Seq
-import qualified Data.HashSet as HSet
+import qualified Data.HashSet as Set
+import qualified Data.HashMap.Strict as Map
 import qualified Data.HashPSQ as Q
 
 bfs :: Hashable a => (a -> [a]) -> a -> [(Int, a)]
-bfs nborFunc start = go HSet.empty (Seq.singleton (0, start)) where
+bfs nborFunc start = go Set.empty (Seq.singleton (0, start)) where
     go _ Empty = []
     go visited ((d, v) :<| queue)
-        | v `HSet.member` visited = go visited queue
+        | v `Set.member` visited = go visited queue
         | otherwise = (d, v) : go
-                        (HSet.insert v visited)
+                        (Set.insert v visited)
                         (queue >< Seq.fromList [(d+1, u) | u <- nborFunc v])
 
 reachableFrom :: Hashable a => (a -> [a]) -> a -> HashSet a
-reachableFrom nborFunc start = go HSet.empty [start] where
+reachableFrom nborFunc start = go Set.empty [start] where
     go visited [] = visited
     go visited (v : stack)
-        | v `HSet.member` visited = go visited stack
-        | otherwise = go (HSet.insert v visited) (nborFunc v ++ stack)
+        | v `Set.member` visited = go visited stack
+        | otherwise = go (Set.insert v visited) (nborFunc v ++ stack)
 
 distance :: Hashable a => (a -> [a]) -> (a -> Bool) -> a -> Maybe Int
 distance nborFunc destFunc start =
     fst <$> find (destFunc . snd) (bfs nborFunc start)
 
 dfsM :: (Hashable a, Monad m) => (a -> m [a]) -> a -> m ()
-dfsM nborFunc start = go HSet.empty [start] where
+dfsM nborFunc start = go Set.empty [start] where
     go _ [] = pure ()
     go visited (v:queue)
-        | v `HSet.member` visited = go visited queue
+        | v `Set.member` visited = go visited queue
         | otherwise = do
             nbors <- nborFunc v
-            go (HSet.insert v visited) (nbors ++ queue)
+            go (Set.insert v visited) (nbors ++ queue)
 
 dijkstra :: (Hashable v, Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> v -> Maybe w
 dijkstra nborFunc targetFunc source = dijkstra' nborFunc targetFunc [source]
@@ -41,17 +42,20 @@ dijkstra nborFunc targetFunc source = dijkstra' nborFunc targetFunc [source]
 {-# SPECIALISE dijkstra :: (Hashable v, Ord v) => (v -> [(v, Int)]) -> (v -> Bool) -> v -> Maybe Int #-}
 
 dijkstra' :: (Hashable v, Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> [v] -> Maybe w
-dijkstra' nborFunc targetFunc sources = go HSet.empty initialQueue where
-    initialQueue = Q.fromList . map (,0,()) $ sources
-    go visited queue = case Q.minView queue of
+dijkstra' nbors targetFunc sources = go Set.empty initialQueue where
+    initialQueue = Q.fromList [(s,0,()) | s <- sources]
+    go !visited !queue = case Q.minView queue of
         Nothing -> Nothing
         Just (v, cost, _, queue')
-            | targetFunc v         -> Just cost
-            | HSet.member v visited -> go visited queue'
-            | otherwise            -> go
-                                        (HSet.insert v visited)
-                                        (foldl' insert queue' (nborFunc v))
-            where
-            insert p (u, w) = Q.insert u (w+cost) () p
+            | targetFunc v -> Just cost
+            | Set.member v visited -> go visited queue'
+            | otherwise -> go
+                            (Set.insert v visited)
+                            (foldl' insert queue'
+                                [(v', cost+w') | (v', w') <- nbors v, not (v' `Set.member` visited)]
+                            )
+    insert q (u, w) = case Q.lookup u q of
+        Just (w', _) | w' < w -> q
+        _ -> Q.insert u w () q
 
 {-# SPECIALISE dijkstra' :: (Hashable v, Ord v) => (v -> [(v, Int)]) -> (v -> Bool) -> [v] -> Maybe Int #-}
