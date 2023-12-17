@@ -42,7 +42,7 @@ neighbors grid (pos, dir) = [ (nextPos, nextDir)
                             ]
 
 energized :: Grid -> Beam -> Int
-energized grid start = Set.size $ Set.map fst reachable where
+energized grid start = Set.size (Set.map fst reachable) where
     reachable = reachableFrom (neighbors grid) start
 
 part1 :: Grid -> Int
