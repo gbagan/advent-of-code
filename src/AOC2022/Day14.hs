@@ -7,7 +7,6 @@ import qualified Data.HashSet as Set
 import           Data.HashTable.ST.Basic as H
 import           AOC (aoc')
 import           AOC.Parser (Parser, sepEndBy1, sepBy1, eol, decimal)
-import           AOC.Util (cartesianProduct)
 
 type Scan = [(Int, Int)]
 type Rocks = HashSet (Int, Int)
@@ -26,7 +25,7 @@ adj (x, y) = [(x, y+1), (x-1, y+1), (x+1, y+1)]
 drawLine :: (Int, Int) -> (Int, Int) -> [(Int, Int)]
 drawLine (x1, y1) (x2, y2) | x1 > x2 = drawLine (x2, y1) (x1, y2)
                            | y1 > y2 = drawLine (x1, y2) (x2, y1)
-                           | otherwise = cartesianProduct [x1..x2] [y1..y2]
+                           | otherwise = (,) [x1..x2] <*> [y1..y2]
 
 drawScan :: Scan -> [(Int, Int)]
 drawScan [] = []

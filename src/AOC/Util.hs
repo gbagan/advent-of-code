@@ -15,10 +15,6 @@ majority f l = 2 * count f l >= length l
 median :: Ord a => [a] -> a
 median l = sort l !! (length l `div` 2)
 
-cartesianProduct :: [a] -> [b] -> [(a, b)]
-cartesianProduct l1 l2 = (,) <$> l1 <*> l2
-{-# INLINE cartesianProduct #-}
-
 clamp :: Ord a => (a, a) -> a -> a
 clamp (l, u) = max l . min u
 {-# INLINE clamp #-}
@@ -34,3 +30,7 @@ listTo2dMap l =
 binToInt :: [Bool] -> Int
 binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
 
+-- return the double of the polygon area
+shoelaceFormula :: [V2 Int] -> Int
+shoelaceFormula points = abs . sum $ zipWith go points (drop 1 points ++ points)
+    where go (V2 x y) (V2 x' y') = x * y' - x' * y
