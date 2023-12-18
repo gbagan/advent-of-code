@@ -31,6 +31,6 @@ binToInt :: [Bool] -> Int
 binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
 
 -- return the double of the polygon area
-shoelaceFormula :: [V2 Int] -> Int
+shoelaceFormula :: Num a => [V2 a] -> a
 shoelaceFormula points = abs . sum $ zipWith go points (drop 1 points ++ points)
     where go (V2 x y) (V2 x' y') = x * y' - x' * y

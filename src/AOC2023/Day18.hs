@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2023/day/18
 module AOC2023.Day18 (solve) where
-import           AOC.Prelude hiding (Down, Left, Right, tail)
+import           AOC.Prelude hiding (Down, Left, Right)
 import           Data.Char (isDigit, digitToInt)
 import           AOC (aoc)
 import           AOC.Parser (Parser, choice, sepEndBy1, eol, count, decimal, hexDigitChar)
@@ -40,11 +40,10 @@ trenchPoints = scanl' go (V2 0 0) where
 -- https://en.wikipedia.org/wiki/Pick%27s_theorem
 -- https://en.wikipedia.org/wiki/Shoelace_formula
 solveFor  :: ((Instr, Instr) -> Instr) -> [(Instr, Instr)] -> Int
-solveFor f instrs = boundary + interior  where
+solveFor f instrs = (doubleArea + boundary) `div` 2 + 1  where
     instrs' = map f instrs
     doubleArea = shoelaceFormula (trenchPoints instrs')
     boundary = sum [len | Instr _ len <- instrs']
-    interior = (doubleArea - boundary) `div` 2 + 1
 
 solve :: Text -> IO ()
 solve = aoc parser (solveFor fst) (solveFor snd)
