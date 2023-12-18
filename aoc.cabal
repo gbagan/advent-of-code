@@ -25,6 +25,7 @@ executable aoc2020
                 AOC2020.Day13
                 AOC
                 AOC.List
+                AOC.Number
                 AOC.Prelude
                 AOC.Parser
                 AOC.Search
