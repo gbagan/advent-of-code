@@ -22,6 +22,7 @@ executable aoc2020
                 AOC2020.Day10
                 AOC2020.Day11
                 AOC2020.Day12
+                AOC2020.Day13
                 AOC
                 AOC.List
                 AOC.Prelude
