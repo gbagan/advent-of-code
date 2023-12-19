@@ -220,6 +220,7 @@ executable aoc2023
                 AOC2023.Day17
                 AOC2023.Day18
                 AOC2023.Day19
+                AOC2023.Day20
                 AOC
                 AOC.Prelude
                 AOC.Area

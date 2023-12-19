@@ -44,15 +44,13 @@ catLens = \case
     S -> sL
 
 part1 :: Input -> Int
-part1 (Input workflows ratings) = sum [score rating | rating <- ratings, accepts rating]
-    where
+part1 (Input workflows ratings) = sum . map score $ filter accepts ratings where
     accepts rating = go "in" where
-        go name =
-            let steps = workflows Map.! name in
-            case passTests rating steps of
-                Accept -> True
-                Reject -> False
-                Goto name' -> go name'   
+        go name = case passTests rating steps of
+            Accept -> True
+            Reject -> False
+            Goto name' -> go name'   
+            where steps = workflows Map.! name
     passTests _ [] = error "passTests: cannot happen"
     passTests rating ((Step test instr):steps) = case test of
         Otherwise -> instr
@@ -64,7 +62,7 @@ part1 (Input workflows ratings) = sum [score rating | rating <- ratings, accepts
 splitRatings :: Test -> [RatingRange] -> ([RatingRange], [RatingRange])
 splitRatings test = partitionEithers . concatMap (splitRating test) where
     splitRating Otherwise rating = [Right rating]
-    splitRating (LT cat n) rating = 
+    splitRating (LT cat n) rating =
         let (min_, max_) = rating ^. catLens cat in
         if | min_ >= n -> [Left rating]
            | max_ < n -> [Right rating]
@@ -80,7 +78,7 @@ splitRatings test = partitionEithers . concatMap (splitRating test) where
                           ]
 
 part2 :: Input -> Int
-part2 (Input workflows _) = sum . map score $ go initRanges (workflows Map.! "in")
+part2 (Input workflows _) = sum . map size $ go initRanges (workflows Map.! "in")
     where
     initRanges = [Rating (1, 4000) (1, 4000) (1, 4000) (1, 4000)]
     go _ [] = error "part2: cannot happen"
@@ -92,7 +90,7 @@ part2 (Input workflows _) = sum . map score $ go initRanges (workflows Map.! "in
                 Goto name -> go succeeded (workflows Map.! name)
         ratings' = if null failed then succeeded' else succeeded' ++ go failed steps
 
-    score (Rating (xmin, xmax)  (mmin, mmax)  (amin, amax)  (smin, smax)) =
+    size (Rating (xmin, xmax) (mmin, mmax) (amin, amax) (smin, smax)) =
         (xmax - xmin + 1) * (mmax - mmin + 1) * (amax - amin + 1) * (smax - smin + 1)
 
 solve :: Text -> IO ()
