@@ -23,6 +23,7 @@ executable aoc2020
                 AOC2020.Day11
                 AOC2020.Day12
                 AOC2020.Day13
+                AOC2020.Day14
                 AOC
                 AOC.List
                 AOC.Number
@@ -255,6 +256,8 @@ executable aoc2023
                      , containers
                      , massiv
                      , megaparsec
+                     , microlens
+                     , microlens-platform
                      , parallel
                      , psqueues
                      , relude

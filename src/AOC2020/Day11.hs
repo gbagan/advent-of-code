@@ -23,7 +23,7 @@ step1 m = makeArray Seq (size m) \(Ix2 i j) ->
         Occupied | count (==Occupied) nbors >= 4 -> Empty
                  | otherwise -> Occupied
 
-neighborInDirection :: Matrix B Seat -> (V2 Int) -> (V2 Int) -> Maybe Seat
+neighborInDirection :: Matrix B Seat -> V2 Int -> V2 Int -> Maybe Seat
 neighborInDirection g p dxy = go (p + dxy) where
     go xy = case g !? toIx2 xy of
         Nothing -> Nothing

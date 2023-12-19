@@ -22,16 +22,6 @@ modularInverse a n
 
 {-# SPECIALISE modularInverse :: Integer -> Integer -> Maybe Integer #-}
 
-{-
-chineseRemainder :: Integral a => [(a, a)] -> Maybe (a, a)
-chineseRemainder = foldlM go (0, 1) where
-    go (r1, m1) (r2, m2) = do
-        im2 <- modularInverse m2 m1
-        let r = r2 + (r1 - r2) * m2 * im2
-        let m = m1 * m2
-        return (r `mod` m, m)
--}
-
 -- Given a list of (ri, mi)
 -- returns a tuple (q, m) where {q + j m | j in Z} is the set of solutions
 -- of the equations x = ri (mod mi)
