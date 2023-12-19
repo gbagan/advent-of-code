@@ -24,8 +24,12 @@ executable aoc2020
                 AOC2020.Day12
                 AOC2020.Day13
                 AOC2020.Day14
+                AOC2020.Day15
+                AOC2020.Day16
                 AOC
+                AOC.Interval
                 AOC.List
+                AOC.Monad
                 AOC.Number
                 AOC.Prelude
                 AOC.Parser
@@ -56,6 +60,7 @@ executable aoc2020
                    , megaparsec
                    , microlens
                    , microlens-platform
+                   , primitive
                    , psqueues
                    , relude
                    , text
@@ -93,6 +98,7 @@ executable aoc2021
                 AOC
                 AOC.Area
                 AOC.List
+                AOC.Monad
                 AOC.Prelude
                 AOC.Parser
                 AOC.Search
@@ -113,10 +119,11 @@ executable aoc2021
                     TypeFamilies
 
     ghc-options:
-              -Wall
-              -Wcompat
-              -Wincomplete-uni-patterns
-              -Wredundant-constraints
+            -O2
+            -Wall
+            -Wcompat
+            -Wincomplete-uni-patterns
+            -Wredundant-constraints
     build-depends: base >= 4.15 && < 5
                    , array
                    , containers
@@ -160,6 +167,7 @@ executable aoc2022
                 AOC
                 AOC.List
                 AOC.Interval
+                AOC.Monad
                 AOC.Prelude
                 AOC.Parser
                 AOC.Search
@@ -227,6 +235,8 @@ executable aoc2023
                 AOC.Debug
                 AOC.Interval
                 AOC.List
+                AOC.Monad
+                AOC.Number
                 AOC.Parser
                 AOC.Search
                 AOC.Tuple

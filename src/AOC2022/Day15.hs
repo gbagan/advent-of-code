@@ -41,7 +41,7 @@ part1 :: [Scan] -> Integer
 part1 pairs = nbBeacons - nbDetectedBeacons where
     nbBeacons = sum . map itvLength $ intervalsWithoutBeacons yTarget pairs
     nbDetectedBeacons = genericLength $ ordNub [x | Scan _ (V2 x y) _ <- pairs, y == yTarget]
-    yTarget = 2000000
+    yTarget = 2_000_000
 
 corners :: Scan -> [Coords]
 corners (Scan (V2 x y) _ dist) = [l, u, r, d] where
@@ -73,12 +73,12 @@ isNotDetected scans point =
 part2 :: [Scan] -> Maybe Integer
 part2 scans = do
     V2 x y <- find (isNotDetected scans) candidates 
-    pure $ x * 4000000 + y
+    pure $ x * 4_000_000 + y
     where
     vs = scans >>= corners
     candidates = concat (diagonalIntersection <$> vs <*> vs)
-                        & filter \(V2 x y) -> x >= 0 && x < 4000000 
-                                            && y >= 0 && y < 4000000
+                        & filter \(V2 x y) -> x >= 0 && x < 4_000_000 
+                                            && y >= 0 && y < 4_000_000
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2

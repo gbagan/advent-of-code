@@ -2,19 +2,16 @@
 module AOC2020.Day14 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
--- import           Data.Bits ((.&.), (.|.), xor, complement, shiftL, shiftR, popCount)
+import           Data.Bits ((.&.), (.|.), complement)
 import qualified Data.IntMap.Strict as Map
 import           AOC.Parser (Parser, sepEndBy1, choice, count, eol, decimal)
-import           AOC.Util (binToInt)
 
 data Bit = Zero | One | X
 data Instr = Write !Int !Int | Mask ![Bit]
 type Input = [Instr]
 
-intToBin :: Int -> [Bool]
-intToBin = reverse . go (36 :: Int) where
-    go 0 _ = []
-    go c n = (n `mod` 2 == 1) : go (c-1) (n `div` 2)
+powers2 :: [Int]
+powers2 = reverse . take 36 $ iterate' (*2) 1
 
 parser :: Parser Input
 parser = (mask <|> write) `sepEndBy1` eol where    
@@ -23,10 +20,10 @@ parser = (mask <|> write) `sepEndBy1` eol where
     bit = choice [Zero <$ "0", One <$ "1", X <$ "X"]
 
 applyMask :: [Bit] -> Int -> Int
-applyMask mask n = binToInt $ zipWith applyToBit mask (intToBin n) where
-    applyToBit One _ = True
-    applyToBit Zero _ = False
-    applyToBit X b = b
+applyMask mask n = foldl' go n (zip mask powers2) where
+    go m (One, p) = m .|. p
+    go m (Zero, p) = m .&. complement p
+    go m _ = m
     
 part1 :: Input -> Int
 part1 instrs = sum . Map.elems . fst $ foldl' go (Map.empty, []) instrs where
@@ -39,7 +36,6 @@ maskCombinations [] = [[]]
 maskCombinations (Zero : bits) = (X:) <$> maskCombinations bits
 maskCombinations (One : bits) = (One:) <$> maskCombinations bits
 maskCombinations (X : bits) = (:) <$> [Zero, One] <*> maskCombinations bits
-
 
 part2 :: Input -> Int
 part2 instrs = sum . Map.elems . fst $ foldl' go (Map.empty, []) instrs where

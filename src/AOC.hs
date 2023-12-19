@@ -29,7 +29,7 @@ duration m = do
     begin <- getCPUTime
     !res <- m
     end <- getCPUTime
-    let diff = (end - begin) `div` 1000000 -- in microseconds 
+    let diff = (end - begin) `div` 1_000_000 -- in microseconds 
     let strDiff = if diff >= 10000 then
                     show (diff `div` 1000) <> " milliseconds"
                   else

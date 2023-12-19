@@ -86,7 +86,7 @@ part2 jets = height * cycles + height' where
         Stream.filter (\(_, x, y, _) -> x == rockIdx && y == jetIdx) states
     height = height2 - height1
     period = idx2 - idx1
-    (cycles, remaining) = (1000000000000 - idx1) `divMod` period
+    (cycles, remaining) = (1_000_000_000_000 - idx1) `divMod` period
     (_, _, _, Rest _ height') :> _ = Stream.filter (\(idx, _, _, _) -> idx == remaining) $
                                     simulate
                                         rest1

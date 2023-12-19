@@ -7,7 +7,7 @@ import           Lens.Micro.TH (makeLensesFor)
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepBy1,sepEndBy1, eol, choice, decimal, lowerChar, some, try)
 
-data Rating a = Rating { _x :: !a, _m :: !a, _a :: !a, _s :: !a}
+data Rating a = Rating { _x :: !a, _m :: !a, _a :: !a, _s :: !a} deriving Foldable
 data Category = X | M | A | S
 data Test = LT Category Int | GT Category Int | Otherwise
 data Instr = Accept | Reject | Goto String
@@ -36,7 +36,7 @@ parser = Input . Map.fromList <$> workflows <* eol <*> ratings where
         s <- ",s=" *> decimal <* "}"
         pure $ Rating x m a s
 
-catLens :: Category -> (forall a. Lens' (Rating a) a)
+catLens :: Category -> Lens' (Rating a) a
 catLens = \case
     X -> xL
     M -> mL
@@ -44,20 +44,19 @@ catLens = \case
     S -> sL
 
 part1 :: Input -> Int
-part1 (Input workflows ratings) = sum . map score $ filter accepts ratings where
+part1 (Input workflows ratings) = sum . map sum $ filter accepts ratings where
     accepts rating = go "in" where
         go name = case passTests rating steps of
             Accept -> True
             Reject -> False
-            Goto name' -> go name'   
+            Goto name' -> go name'  
             where steps = workflows Map.! name
     passTests _ [] = error "passTests: cannot happen"
-    passTests rating ((Step test instr):steps) = case test of
+    passTests rating (Step test instr : steps) = case test of
         Otherwise -> instr
         LT cat n | rating ^. catLens cat < n -> instr
         GT cat n | rating ^. catLens cat > n -> instr 
         _  -> passTests rating steps
-    score (Rating x m a s) = x + m + a + s
 
 splitRatings :: Test -> [RatingRange] -> ([RatingRange], [RatingRange])
 splitRatings test = partitionEithers . concatMap (splitRating test) where
@@ -85,9 +84,9 @@ part2 (Input workflows _) = sum . map size $ go initRanges (workflows Map.! "in"
     go ratings (Step test instr : steps) = ratings' where
         (failed, succeeded) = splitRatings test ratings
         succeeded' = case instr of
-                Accept -> succeeded
-                Reject -> []
-                Goto name -> go succeeded (workflows Map.! name)
+            Accept -> succeeded
+            Reject -> []
+            Goto name -> go succeeded (workflows Map.! name)
         ratings' = if null failed then succeeded' else succeeded' ++ go failed steps
 
     size (Rating (xmin, xmax) (mmin, mmax) (amin, amax) (smin, smax)) =

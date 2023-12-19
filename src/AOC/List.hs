@@ -42,6 +42,10 @@ grouped :: Int -> [a] -> [[a]]
 grouped _ [] = []
 grouped n l = xs : grouped n ys where (xs, ys) = splitAt n l 
 
+grouped2 :: [a] -> [(a, a)]
+grouped2 (x:y:xs) = (x, y) : grouped2 xs
+grouped2 _ = [] 
+
 -- sliding 3 [1..6] = [[1, 2, 3], [2, 3, 4], [3, 4, 5], [4, 5, 6]]
 sliding :: Int -> [a] -> [[a]]
 sliding n l = case (ys, l) of 

@@ -25,7 +25,7 @@ adj (x, y) = [(x, y+1), (x-1, y+1), (x+1, y+1)]
 drawLine :: (Int, Int) -> (Int, Int) -> [(Int, Int)]
 drawLine (x1, y1) (x2, y2) | x1 > x2 = drawLine (x2, y1) (x1, y2)
                            | y1 > y2 = drawLine (x1, y2) (x2, y1)
-                           | otherwise = (,) [x1..x2] <*> [y1..y2]
+                           | otherwise = (,) <$> [x1..x2] <*> [y1..y2]
 
 drawScan :: Scan -> [(Int, Int)]
 drawScan [] = []

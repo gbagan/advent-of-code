@@ -4,6 +4,12 @@ import AOC.Prelude
 
 data Interval a = Interval { _start :: !a,  _end :: !a } deriving (Eq, Ord, Show)
 
+member :: Ord a => a -> Interval a -> Bool
+member x (Interval y z) = y <= x && x <= z
+
+notMember :: Ord a => a -> Interval a -> Bool
+notMember x = not . member x
+
 intersection :: Ord a => Interval a -> Interval a -> Maybe (Interval a)
 intersection (Interval begin1 end1) (Interval begin2 end2)
     | end1 < begin2 || end2 < begin1 = Nothing

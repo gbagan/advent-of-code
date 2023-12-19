@@ -45,7 +45,7 @@ part1 = load . transpose . tilt . transpose
 part2 :: Grid -> Int
 part2 grid = load . transpose $ grids !! z where 
     (x, y) = findRepetition grids
-    z = x + (1000000000 - x) `mod` (y-x)
+    z = x + (1_000_000_000 - x) `mod` (y-x)
     grids = iterate' cycle (transpose grid)
     step = reverse . transpose . tilt
     cycle = step . step . step . step

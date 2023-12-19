@@ -52,7 +52,7 @@ part1 fs = sum [s | (File Directory _ s) <- T.flatten fs, s<= 100000]
 
 part2 :: FileSystem -> Integer
 part2 fs@(T.Node (File _ _ totalSize) _) = minimum [s | (File Directory _ s) <- T.flatten fs
-                                                      , totalSize - s <= 40000000
+                                                      , totalSize - s <= 40_000_000
                                                    ]
 
 solve :: Text -> IO ()
