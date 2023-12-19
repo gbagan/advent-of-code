@@ -257,7 +257,7 @@ executable aoc2023
                      , massiv
                      , megaparsec
                      , microlens
-                     , microlens-platform
+                     , microlens-th
                      , parallel
                      , psqueues
                      , relude

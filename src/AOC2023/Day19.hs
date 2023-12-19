@@ -2,6 +2,8 @@
 module AOC2023.Day19 (solve) where
 import           AOC.Prelude hiding (LT, GT)
 import qualified Data.HashMap.Strict as Map
+import           Lens.Micro (Lens', set, (^.))
+import           Lens.Micro.TH (makeLensesFor)
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepBy1,sepEndBy1, eol, choice, decimal, lowerChar, some, try)
 
@@ -12,6 +14,8 @@ data Instr = Accept | Reject | Goto String
 data Step = Step !Test !Instr
 type Workflows = HashMap String [Step]
 data Input = Input !Workflows ![Rating Int]
+
+makeLensesFor [("_x", "xL"), ("_m", "mL"), ("_a", "aL"), ("_s", "sL")] ''Rating
 
 parser :: Parser Input
 parser = Input . Map.fromList <$> workflows <* eol <*> ratings where
@@ -31,19 +35,12 @@ parser = Input . Map.fromList <$> workflows <* eol <*> ratings where
         s <- ",s=" *> decimal <* "}"
         pure $ Rating x m a s
 
-categoryNumber :: Category -> Rating a -> a
-categoryNumber = \case
-    X -> _x
-    M -> _m
-    A -> _a
-    S -> _s
-
-setCategoryNumber :: Category -> a -> Rating a -> Rating a
-setCategoryNumber = \case
-    X -> \n r -> r{_x = n}
-    M -> \n r -> r{_m = n}
-    A -> \n r -> r{_a = n}
-    S -> \n r -> r{_s = n}
+catLens :: Category -> (forall a. Lens' (Rating a) a)
+catLens = \case
+    X -> xL
+    M -> mL
+    A -> aL
+    S -> sL
 
 part1 :: Input -> Int
 part1 (Input workflows ratings) = sum [score rating | rating <- ratings, accepts rating]
@@ -58,10 +55,10 @@ part1 (Input workflows ratings) = sum [score rating | rating <- ratings, accepts
     passTests _ [] = error "passTests: cannot happen"
     passTests rating ((Step test instr):steps) = case test of
         Otherwise -> instr
-        LT cat n -> if categoryNumber cat rating < n 
+        LT cat n -> if rating ^. catLens cat < n 
                         then instr
                         else passTests rating steps
-        GT cat n -> if categoryNumber cat rating > n 
+        GT cat n -> if rating ^. catLens cat > n 
                         then instr
                         else passTests rating steps
     score (Rating x m a s) = x + m + a + s
@@ -76,31 +73,35 @@ splitRatings :: Test -> [Rating (Int, Int)] -> ([Rating (Int, Int)], [Rating (In
 splitRatings test = concatPairMap (splitRating test) where
     splitRating Otherwise rating = ([rating], [])
     splitRating (LT cat n) rating = 
-        let (min_, max_) = categoryNumber cat rating in
+        let lens = catLens cat
+            (min_, max_) = rating ^. lens
+        in
         if | min_ >= n -> ([], [rating])
            | max_ < n -> ([rating], [])
-           | otherwise -> ( [setCategoryNumber cat (min_, n-1) rating]
-                          , [setCategoryNumber cat (n, max_) rating]
+           | otherwise -> ( [set (catLens cat) (min_, n-1) rating]
+                          , [set (catLens cat) (n, max_) rating]
                           )
     splitRating (GT cat n) rating = 
-        let (min_, max_) = categoryNumber cat rating in
+        let lens = catLens cat
+            (min_, max_) = rating ^. lens
+        in
         if | max_ <= n -> ([], [rating])
            | min_ > n -> ([rating], [])
-           | otherwise -> ( [setCategoryNumber cat (n+1, max_) rating]
-                          , [setCategoryNumber cat (min_, n) rating]
+           | otherwise -> ( [set (catLens cat) (n+1, max_) rating]
+                          , [set (catLens cat) (min_, n) rating]
                           )
 
 part2 :: Input -> Int
 part2 (Input workflows _) = sum . map score $ go [Rating (1, 4000) (1, 4000) (1, 4000) (1, 4000)] (workflows Map.! "in")
     where
     go _ [] = error "part2 go: cannot happen"
-    go ratings (Step test instr : steps) = ratings1' ++ ratings2' where
+    go ratings (Step test instr : steps) = ratings' where
         (ratings1, ratings2) = splitRatings test ratings
         ratings1' = case instr of
                 Accept -> ratings1
                 Reject -> []
                 Goto name -> go ratings1 (workflows Map.! name)
-        ratings2' = if null ratings2 then [] else go ratings2 steps
+        ratings' = if null ratings2 then ratings1' else ratings1' ++ go ratings2 steps
 
     score (Rating (xmin, xmax)  (mmin, mmax)  (amin, amax)  (smin, smax)) =
         (xmax - xmin + 1) * (mmax - mmin + 1) * (amax - amin + 1) * (smax - smin + 1)
