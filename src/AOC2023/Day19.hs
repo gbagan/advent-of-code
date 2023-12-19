@@ -14,6 +14,7 @@ data Instr = Accept | Reject | Goto String
 data Step = Step !Test !Instr
 type Workflows = HashMap String [Step]
 data Input = Input !Workflows ![Rating Int]
+type RatingRange = Rating (Int, Int)
 
 makeLensesFor [("_x", "xL"), ("_m", "mL"), ("_a", "aL"), ("_s", "sL")] ''Rating
 
@@ -60,7 +61,7 @@ part1 (Input workflows ratings) = sum [score rating | rating <- ratings, accepts
         _  -> passTests rating steps
     score (Rating x m a s) = x + m + a + s
 
-splitRatings :: Test -> [Rating (Int, Int)] -> ([Rating (Int, Int)], [Rating (Int, Int)])
+splitRatings :: Test -> [RatingRange] -> ([RatingRange], [RatingRange])
 splitRatings test = partitionEithers . concatMap (splitRating test) where
     splitRating Otherwise rating = [Right rating]
     splitRating (LT cat n) rating = 
@@ -79,16 +80,17 @@ splitRatings test = partitionEithers . concatMap (splitRating test) where
                           ]
 
 part2 :: Input -> Int
-part2 (Input workflows _) = sum . map score $ go [Rating (1, 4000) (1, 4000) (1, 4000) (1, 4000)] (workflows Map.! "in")
+part2 (Input workflows _) = sum . map score $ go initRanges (workflows Map.! "in")
     where
-    go _ [] = error "part2 go: cannot happen"
+    initRanges = [Rating (1, 4000) (1, 4000) (1, 4000) (1, 4000)]
+    go _ [] = error "part2: cannot happen"
     go ratings (Step test instr : steps) = ratings' where
-        (ratings2, ratings1) = splitRatings test ratings
-        ratings1' = case instr of
-                Accept -> ratings1
+        (failed, succeeded) = splitRatings test ratings
+        succeeded' = case instr of
+                Accept -> succeeded
                 Reject -> []
-                Goto name -> go ratings1 (workflows Map.! name)
-        ratings' = if null ratings2 then ratings1' else ratings1' ++ go ratings2 steps
+                Goto name -> go succeeded (workflows Map.! name)
+        ratings' = if null failed then succeeded' else succeeded' ++ go failed steps
 
     score (Rating (xmin, xmax)  (mmin, mmax)  (amin, amax)  (smin, smax)) =
         (xmax - xmin + 1) * (mmax - mmin + 1) * (amax - amin + 1) * (smax - smin + 1)
