@@ -55,12 +55,9 @@ part1 (Input workflows ratings) = sum [score rating | rating <- ratings, accepts
     passTests _ [] = error "passTests: cannot happen"
     passTests rating ((Step test instr):steps) = case test of
         Otherwise -> instr
-        LT cat n -> if rating ^. catLens cat < n 
-                        then instr
-                        else passTests rating steps
-        GT cat n -> if rating ^. catLens cat > n 
-                        then instr
-                        else passTests rating steps
+        LT cat n | rating ^. catLens cat < n -> instr
+        GT cat n | rating ^. catLens cat > n -> instr 
+        _  -> passTests rating steps
     score (Rating x m a s) = x + m + a + s
 
 concatPairMap :: (a -> ([b], [c])) -> [a] -> ([b], [c])
