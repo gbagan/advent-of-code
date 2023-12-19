@@ -60,40 +60,30 @@ part1 (Input workflows ratings) = sum [score rating | rating <- ratings, accepts
         _  -> passTests rating steps
     score (Rating x m a s) = x + m + a + s
 
-concatPairMap :: (a -> ([b], [c])) -> [a] -> ([b], [c])
-concatPairMap _ [] = ([], [])
-concatPairMap f (x:xs) = (ys ++ ys', zs ++ zs') where
-        (ys, zs) = f x
-        (ys', zs') = concatPairMap f xs
-
 splitRatings :: Test -> [Rating (Int, Int)] -> ([Rating (Int, Int)], [Rating (Int, Int)])
-splitRatings test = concatPairMap (splitRating test) where
-    splitRating Otherwise rating = ([rating], [])
+splitRatings test = partitionEithers . concatMap (splitRating test) where
+    splitRating Otherwise rating = [Right rating]
     splitRating (LT cat n) rating = 
-        let lens = catLens cat
-            (min_, max_) = rating ^. lens
-        in
-        if | min_ >= n -> ([], [rating])
-           | max_ < n -> ([rating], [])
-           | otherwise -> ( [set (catLens cat) (min_, n-1) rating]
-                          , [set (catLens cat) (n, max_) rating]
-                          )
+        let (min_, max_) = rating ^. catLens cat in
+        if | min_ >= n -> [Left rating]
+           | max_ < n -> [Right rating]
+           | otherwise -> [ Right $ set (catLens cat) (min_, n-1) rating
+                          , Left $ set (catLens cat) (n, max_) rating
+                          ]
     splitRating (GT cat n) rating = 
-        let lens = catLens cat
-            (min_, max_) = rating ^. lens
-        in
-        if | max_ <= n -> ([], [rating])
-           | min_ > n -> ([rating], [])
-           | otherwise -> ( [set (catLens cat) (n+1, max_) rating]
-                          , [set (catLens cat) (min_, n) rating]
-                          )
+        let (min_, max_) = rating ^. catLens cat in
+        if | max_ <= n -> [Left rating]
+           | min_ > n -> [Right rating]
+           | otherwise -> [ Right $ set (catLens cat) (n+1, max_) rating
+                          , Left $ set (catLens cat) (min_, n) rating
+                          ]
 
 part2 :: Input -> Int
 part2 (Input workflows _) = sum . map score $ go [Rating (1, 4000) (1, 4000) (1, 4000) (1, 4000)] (workflows Map.! "in")
     where
     go _ [] = error "part2 go: cannot happen"
     go ratings (Step test instr : steps) = ratings' where
-        (ratings1, ratings2) = splitRatings test ratings
+        (ratings2, ratings1) = splitRatings test ratings
         ratings1' = case instr of
                 Accept -> ratings1
                 Reject -> []
