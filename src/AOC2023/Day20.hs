@@ -1,13 +1,17 @@
 -- https://adventofcode.com/2023/day/20
 module AOC2023.Day20 (solve) where
-import           AOC.Prelude hiding (Type, round, state)
-import           Data.List ((!!))
+import           AOC.Prelude hiding (Type, head, round, state)
+import           Data.List (head)
 import           AOC (aoc)
 import qualified Data.HashMap.Strict as Map
+import           Lens.Micro (ix)
+import           Lens.Micro.Mtl ((.=), (+=))
+import           Lens.Micro.TH (makeLenses)
+import           Lens.Micro.Platform ()
 import           AOC.Parser (Parser, sepBy1, sepEndBy1, some, lowerChar, eol)
 
-data Type = FlipFlop | Conjunction | Broadcaster
-data Instr = Instr !Type ![String]
+data Type = FlipFlop | Conjunction | Broadcaster deriving (Show)
+data Instr = Instr !Type [String] deriving (Show)
 type Network = HashMap String Instr
 
 parser :: Parser Network
@@ -18,49 +22,74 @@ parser = Map.fromList <$> instr `sepEndBy1` eol where
         ns <- name `sepBy1` ", "
         pure (n, Instr t ns)
     name = some lowerChar
-    type_ = FlipFlop <$ "%" <|> Conjunction <$ "&" <|> Broadcaster <$ ""
+    type_ = FlipFlop <$ "%" <|> Conjunction <$ "&" <|> pure Broadcaster
 
-type NState = 
-    ( HashMap String Bool
-    , HashMap String (HashMap String Bool)
-    , Int
-    , Int
-    )
+data NState = NState 
+    { _ffState :: !(HashMap String Bool)  -- the state of flip flap mdoules
+    , _from :: !(HashMap String (HashMap String Bool)) -- last signal sent by predecessor
+    , _nbLow :: !Int
+    , _nbHigh :: !Int
+    , _seen :: !(HashMap String Bool)
+    }
 
-round :: Network -> NState -> NState
-round network acc = sendSignal acc ("broadcaster", "$dummy", False) where
-    sendSignal (states, from, nbLow, nbHigh) (name, srcName, isHigh) = (states'', from'', nbLow'', nbHigh'') where
-        nbLow' = nbLow + fromEnum (not isHigh)
-        nbHigh' = nbHigh + fromEnum isHigh
-        Instr type_ dest = network Map.! name
-        state = states Map.! name
-        (state', sendHigh, send, from') = case (type_, isHigh) of
-            (Broadcaster, _) -> (state, False, True, from)
-            (FlipFlop, True) -> (state, False, False, from)
-            (FlipFlop, False) -> (not state, not state, True, from)
-            (Conjunction, _) -> 
-                let from3 = Map.adjust (Map.insert srcName isHigh) name from
-                    sendHigh' = any not $ Map.elems (from3 Map.! name)
-                in
-                    (state, sendHigh', True, from3)
-        states' = Map.insert name state' states
-        (states'', from'', nbLow'', nbHigh'') =
-            if send then
-                foldl' sendSignal (states', from', nbLow', nbHigh') (map (,name,sendHigh) dest) 
-            else
-                (states', from', nbLow', nbHigh')
+makeLenses ''NState
+
+round :: Network -> State NState ()
+round network = do
+        seen .= Map.map (const False) network
+        sendSignal "broadcaster" "$dummy" False
+    where
+    sendSignal name srcName isHigh = do
+        if isHigh then do 
+            nbHigh += 1
+        else do
+            nbLow += 1
+            seen . ix name .= True
+        let Instr type_ dests = network Map.! name
+        case type_ of
+            Broadcaster ->
+                forM_ dests \dest ->
+                    sendSignal dest name False 
+            FlipFlop ->
+                unless isHigh do 
+                    nstate <- get
+                    let state = _ffState nstate Map.! name 
+                    ffState . ix name .= not state
+                    forM_ dests \dest ->
+                        sendSignal dest name (not state)
+            Conjunction -> do
+                from . ix name . ix srcName .= isHigh
+                nstate <- get
+                let isHigh' = any not $ Map.elems (_from nstate Map.! name)
+                forM_ dests \dest ->
+                    sendSignal dest name isHigh'
+
+initNState :: Network -> NState
+initNState network = NState initFfState initFrom 0 0 initSeens where
+    initFfState = Map.map (const False) network
+    emptyFrom = Map.map (const Map.empty) network
+    edgeList = concat . Map.elems $ Map.mapWithKey (\u (Instr _ vs) -> map (u,) vs) network 
+    initFrom = foldl' (\fr (u, v) -> Map.adjust (Map.insert u False) v fr) emptyFrom edgeList
+    initSeens =  Map.map (const False) network
 
 part1 :: Network -> Int
-part1 network = nbLow * nbHigh  where
+part1 network = _nbLow finalState * _nbHigh finalState where
     network' = Map.insert "rx" (Instr Broadcaster []) network
-    initStates = Map.map (const False) network'
-    emptyFrom = Map.map (const Map.empty) network'
-    edgeList = concat . Map.elems $ Map.mapWithKey (\u (Instr _ vs) -> map (u,) vs) network' 
-    !initFrom = foldl' (\fr (u, v) -> Map.adjust (Map.insert u False) v fr) emptyFrom edgeList
-    (_, _, nbLow, nbHigh) = traceShow (emptyFrom Map.! "rx") $ iterate' (round network') (initStates, initFrom, 0, 0) !! 1000
+    nstate = initNState network'
+    finalState = flip execState nstate do
+        forM_ [(1::Int)..1000] \_ -> round network'
 
-part2 :: Network -> Int
-part2 _ = 1
+part2 :: Network -> Integer
+part2 network = foldl' lcm 1 cycles where
+    network' = Map.insert "rx" (Instr Broadcaster []) network
+    nstate = initNState network'
+    predRx = head . Map.keys $ _from nstate Map.! "rx"
+    predPredRx = Map.keys $ _from nstate Map.! predRx
+    nstates = iterate' (execState (round network')) nstate
+    cycles = predPredRx <&> \name ->
+        head [idx |  (idx, True) <- zip [0..] . map ((Map.! name) . _seen) $ nstates]
+    --findCycle (x:y:z:_) = traceShow (x, y-x, z-y) (y-x, z-y)
+    -- findCycle _ = error "findCycle: cannot happend"
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
