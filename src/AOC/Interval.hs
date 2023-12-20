@@ -1,8 +1,12 @@
 module AOC.Interval where
 
-import AOC.Prelude
+import AOC.Prelude hiding (show)
+import Prelude (show)
 
-data Interval a = Interval { _start :: !a,  _end :: !a } deriving (Eq, Ord, Show)
+data Interval a = Interval { _start :: !a,  _end :: !a } deriving (Eq, Ord)
+
+instance Show a => Show (Interval a) where
+    show (Interval a b) = "[" ++ show a ++ ".." ++ show b ++ "]"
 
 member :: Ord a => a -> Interval a -> Bool
 member x (Interval y z) = y <= x && x <= z

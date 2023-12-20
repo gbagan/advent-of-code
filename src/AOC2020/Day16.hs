@@ -30,12 +30,15 @@ part1 (Input fields _ nearbyTickets) = sum [n | n <- nearby, all (I.notMember n)
     nearby = concat nearbyTickets
 
 part2 :: Input -> Int
-part2 (Input fields myTicket nearbyTickets) = 0 where
+part2 (Input fields myTicket nearbyTickets) = traceShow itvs' 0 where
     itvs = concatMap _itvs fields
     nearbyTickets' = filter (any \t -> all (I.notMember t) itvs) nearbyTickets
     trTickets = zip [0..] . transpose $ myTicket : nearbyTickets'
-    itvs' = zip [0..] (map _itvs fields)
-
+    itvs' = map _itvs fields
+    graph = itvs' <&> \itvs'' -> trTickets & mapMaybe \(j, tickets) ->
+        if all (\ticket -> any (I.member ticket) itvs'') tickets
+            then Just j
+            else Nothing
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
