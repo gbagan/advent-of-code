@@ -4,18 +4,21 @@ import           AOC.Prelude hiding (Type, head, round, state)
 import           Data.List (head)
 import           AOC (aoc)
 import qualified Data.HashMap.Strict as Map
+import qualified Data.Sequence as Seq 
+import           Data.Sequence (Seq(..), (><))
 import           Lens.Micro (ix)
 import           Lens.Micro.Mtl ((.=), (+=))
 import           Lens.Micro.TH (makeLenses)
 import           Lens.Micro.Platform ()
 import           AOC.Parser (Parser, sepBy1, sepEndBy1, some, lowerChar, eol)
 
+
 data Type = FlipFlop | Conjunction | Broadcaster deriving (Show)
 data Module = Module !Type [String] deriving (Show)
 type Network = HashMap String Module
 
 parser :: Parser Network
-parser = Map.fromList <$> module_ `sepEndBy1` eol where
+parser = insertRx . Map.fromList <$> module_ `sepEndBy1` eol where
     module_ = do
         t <- type_
         n <- name <* " -> "
@@ -23,6 +26,7 @@ parser = Map.fromList <$> module_ `sepEndBy1` eol where
         pure (n, Module t ns)
     name = some lowerChar
     type_ = FlipFlop <$ "%" <|> Conjunction <$ "&" <|> pure Broadcaster
+    insertRx = Map.insert "rx" (Module Broadcaster [])
 
 data NState = NState 
     { _ffState :: !(HashMap String Bool)  -- the state of flip flap mdoules
@@ -34,13 +38,11 @@ data NState = NState
 
 makeLenses ''NState
 
-round :: Network -> State NState ()
-round network = do
-        seen .= Map.map (const False) network
-        sendSignal "broadcaster" "$dummy" False
-    where
-    sendSignal name srcName signal = do
-        if signal then  
+sendSignal :: Network -> Seq (String, String, Bool) -> State NState ()
+sendSignal network = \case
+    Seq.Empty -> pure ()
+    ((name, srcName, signal) :<| queue') -> do
+        if signal then
             nbHigh += 1
         else do
             nbLow += 1
@@ -48,21 +50,25 @@ round network = do
         let Module type_ dests = network Map.! name
         case type_ of
             Broadcaster ->
-                forM_ dests \dest ->
-                    sendSignal dest name False 
+                sendSignal network $ queue' >< Seq.fromList (map (,name, False) dests)
             FlipFlop ->
-                unless signal do -- low signal 
+                if signal then -- low signal 
+                    sendSignal network queue'
+                else do 
                     nstate <- get
                     let state = _ffState nstate Map.! name 
                     ffState . ix name .= not state
-                    forM_ dests \dest ->
-                        sendSignal dest name (not state)
+                    sendSignal network $ queue' >< Seq.fromList (map (,name, not state) dests)
             Conjunction -> do
                 from . ix name . ix srcName .= signal
                 nstate <- get
                 let signal' = any not $ Map.elems (_from nstate Map.! name)
-                forM_ dests \dest ->
-                    sendSignal dest name signal'
+                sendSignal network $ queue' >< Seq.fromList (map (,name, signal') dests)
+
+round :: Network -> State NState ()
+round network = do
+    seen .= Map.map (const False) network
+    sendSignal network $ Seq.singleton ("broadcaster", "$dummy", False)
 
 initNState :: Network -> NState
 initNState network = NState initFfState initFrom 0 0 initSeen where
@@ -76,22 +82,22 @@ initNState network = NState initFfState initFrom 0 0 initSeen where
 
 part1 :: Network -> Int
 part1 network = _nbLow finalState * _nbHigh finalState where
-    network' = Map.insert "rx" (Module Broadcaster []) network
-    nstate = initNState network'
+    nstate = initNState network
     finalState = flip execState nstate do
-        forM_ [(1::Int)..1000] \_ -> round network'
+        forM_ [(1::Int)..1000] \_ -> round network
 
 part2 :: Network -> Integer
 part2 network = foldl' lcm 1 cycles where
-    network' = Map.insert "rx" (Module Broadcaster []) network
-    nstate = initNState network'
+    nstate = initNState network
     predRx = head . Map.keys $ _from nstate Map.! "rx"
     predPredRx = Map.keys $ _from nstate Map.! predRx
-    nstates = iterate' (execState (round network')) nstate
-    cycles = predPredRx <&> \name ->
-        findCycle [idx |  (idx, True) <- zip [0..] . map ((Map.! name) . _seen) $ nstates]
-    findCycle (x:y:_) = y - x
-    findCycle _ = error "findCycle: cannot happen"
+    nstates = iterate' (execState (round network)) nstate
+    cycles = map extractCycle predPredRx
+    extractCycle name = head [ idx 
+                             | (idx, True) <- zip [0..] 
+                                . map ((Map.! name) . _seen) 
+                                 $ nstates
+                             ]
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
