@@ -13,9 +13,19 @@ import           Lens.Micro.Platform ()
 import           AOC.Parser (Parser, sepBy1, sepEndBy1, some, lowerChar, eol)
 
 
-data Type = FlipFlop | Conjunction | Broadcaster deriving (Show)
-data Module = Module !Type [String] deriving (Show)
+data Type = FlipFlop | Conjunction | Broadcaster
+data Module = Module !Type [String]
 type Network = HashMap String Module
+
+data NState = NState 
+    { _ffState :: !(HashMap String Bool)  -- the state of flip flap mdoules
+    , _from :: !(HashMap String (HashMap String Bool)) -- last signal sent by predecessor
+    , _nbLow :: !Int
+    , _nbHigh :: !Int
+    , _seen :: !(HashMap String Bool)
+    }
+
+makeLenses ''NState
 
 parser :: Parser Network
 parser = insertRx . Map.fromList <$> module_ `sepEndBy1` eol where
@@ -28,21 +38,11 @@ parser = insertRx . Map.fromList <$> module_ `sepEndBy1` eol where
     type_ = FlipFlop <$ "%" <|> Conjunction <$ "&" <|> pure Broadcaster
     insertRx = Map.insert "rx" (Module Broadcaster [])
 
-data NState = NState 
-    { _ffState :: !(HashMap String Bool)  -- the state of flip flap mdoules
-    , _from :: !(HashMap String (HashMap String Bool)) -- last signal sent by predecessor
-    , _nbLow :: !Int
-    , _nbHigh :: !Int
-    , _seen :: !(HashMap String Bool)
-    }
-
-makeLenses ''NState
-
 sendSignal :: Network -> Seq (String, String, Bool) -> State NState ()
 sendSignal network = \case
     Seq.Empty -> pure ()
-    ((name, srcName, signal) :<| queue') -> do
-        if signal then
+    ((name, srcName, pulse) :<| queue') -> do
+        if pulse then
             nbHigh += 1
         else do
             nbLow += 1
@@ -52,7 +52,7 @@ sendSignal network = \case
             Broadcaster ->
                 sendSignal network $ queue' >< Seq.fromList (map (,name, False) dests)
             FlipFlop ->
-                if signal then -- low signal 
+                if pulse then 
                     sendSignal network queue'
                 else do 
                     nstate <- get
@@ -60,7 +60,7 @@ sendSignal network = \case
                     ffState . ix name .= not state
                     sendSignal network $ queue' >< Seq.fromList (map (,name, not state) dests)
             Conjunction -> do
-                from . ix name . ix srcName .= signal
+                from . ix name . ix srcName .= pulse
                 nstate <- get
                 let signal' = any not $ Map.elems (_from nstate Map.! name)
                 sendSignal network $ queue' >< Seq.fromList (map (,name, signal') dests)
