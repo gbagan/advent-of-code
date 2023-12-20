@@ -5,7 +5,7 @@ import           AOC (aoc)
 import           AOC.Parser (Parser, some, letterChar, char, sepBy1, sepEndBy1, eol, decimal, hspace)
 import           AOC.Interval (Interval(..))
 import qualified AOC.Interval as I
-import           AOC.Search (maximumMatching')
+import           AOC.Search (maximumMatching)
 import qualified Data.Vector as V
 import qualified Data.HashMap.Strict as Map
 
@@ -35,14 +35,14 @@ part2 (Input fields myTicket nearbyTickets) = do
     let itvs = concatMap _itvs fields
     let departures = [i | (i, field) <- zip [0..] fields, "departure" `isPrefixOf` _name field]
     let nearbyTickets' = filter (all \t -> any (I.member t) itvs) nearbyTickets
-    let trTickets = zip [0..] . transpose $ myTicket : nearbyTickets'
-    let itvs' = map _itvs fields
-    let graph = itvs' <&> \itvs'' -> trTickets & mapMaybe \(j, tickets) ->
-            if all (\ticket -> any (I.member ticket) itvs'') tickets
-                then Just j
-                else Nothing
-    let graph' = (V.length vMyTicket, V.fromList graph)
-    let m = maximumMatching' graph'
+    let trTickets = zip [(0::Int)..] . transpose $ myTicket : nearbyTickets'
+    let itvs' = zip [(0::Int)..] (map _itvs fields)
+    let graph = Map.fromList $ itvs' <&> second \itvs'' -> 
+            trTickets & mapMaybe \(j, tickets) ->
+                    if all (\ticket -> any (I.member ticket) itvs'') tickets
+                        then Just j
+                        else Nothing
+    let m = maximumMatching graph
     guard $ Map.size m == V.length vMyTicket
     values <- sequenceA [(vMyTicket V.!?) =<< m Map.!? i | i <- departures]
     Just (product values)

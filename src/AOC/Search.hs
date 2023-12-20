@@ -134,17 +134,14 @@ maximumMatching' :: IntGraph -> Matching Int Int
 maximumMatching' g = go (greedyMatching g) where
     go m = maybe m go (findAugmentingPath g m)
 
-{-
 maximumMatching :: (Hashable a, Hashable b) => BipartiteGraph a b -> Matching a b
-maximumMatching g = 0 where
+maximumMatching g = m' where
     verticesInA = Map.keys g
-    verticesInB = Set.fromList $ Set.unions [Set.fromList nbor | nbor <- Map.elems g]
+    verticesInB = Set.toList $ Set.unions [Set.fromList nbor | nbor <- Map.elems g]
     vA = V.fromList verticesInA
     vB = V.fromList verticesInB
-    dictA = Map.fromList $ zip verticesInA [0..]
     dictB = Map.fromList $ zip verticesInB [0..]
     g' = (length verticesInB, V.fromList . map (map (dictB Map.!)) $ Map.elems g)
     m = maximumMatching' g'
     m' = Map.fromList . map go $ Map.toList m
     go (i, j) = (vA V.! i, vB V.! j)
--}

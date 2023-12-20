@@ -1,7 +1,8 @@
 module AOC.V3 where
 
-import Relude
+import AOC.Prelude hiding (tail)
 import Data.Foldable1 (Foldable1, foldMap1)
+import Data.List (tail)
 
 data V3 a = V3 !a !a !a deriving (Eq,Ord,Show)
 
@@ -52,3 +53,6 @@ instance Num a => Num (V3 a) where
     {-# INLINE signum #-}
     fromInteger = pure . fromInteger
     {-# INLINE fromInteger #-}
+
+surrounding :: Integral a => V3 a -> [V3 a]
+surrounding p = [p + V3 dx dy dz | [dx,dy,dz] <- tail (replicateM 3 [0,-1,1])]

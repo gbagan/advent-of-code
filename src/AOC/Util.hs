@@ -3,6 +3,7 @@ import           AOC.Prelude
 import           AOC.List (count)
 import           Relude.Unsafe ((!!))
 import qualified Data.HashMap.Strict as HMap
+import qualified Data.HashSet as HSet
 import           AOC.V2 (V2(..))
 
 freqs :: Hashable a => [a] -> HashMap a Int
@@ -26,6 +27,15 @@ listTo2dMap l =
         | (i, row) <- zip [0..] l
         , (j, v) <- zip [0..] row
         ]
+
+listTo2dSet :: [[Bool]] -> HashSet (V2 Int)
+listTo2dSet l =
+    HSet.fromList
+        [ V2 i j
+        | (i, row) <- zip [0..] l
+        , (j, True) <- zip [0..] row
+        ]
+
 
 binToInt :: [Bool] -> Int
 binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0

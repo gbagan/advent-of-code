@@ -26,6 +26,7 @@ executable aoc2020
                 AOC2020.Day14
                 AOC2020.Day15
                 AOC2020.Day16
+                AOC2020.Day17
                 AOC
                 AOC.Interval
                 AOC.List
@@ -37,6 +38,7 @@ executable aoc2020
                 AOC.Util
                 AOC.V2
                 AOC.V3
+                AOC.V4
 
     default-language: GHC2021
     default-extensions:
@@ -229,6 +231,7 @@ executable aoc2023
                 AOC2023.Day18
                 AOC2023.Day19
                 AOC2023.Day20
+                AOC2023.Day21
                 AOC
                 AOC.Prelude
                 AOC.Area
