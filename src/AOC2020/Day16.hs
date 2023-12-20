@@ -29,21 +29,23 @@ part1 (Input fields _ nearbyTickets) = sum [n | n <- nearby, all (I.notMember n)
     itvs = concatMap _itvs fields
     nearby = concat nearbyTickets
 
-part2 :: Input -> Int
-part2 (Input fields myTicket nearbyTickets) = product values where
-    vMyTicket = V.fromList myTicket
-    itvs = concatMap _itvs fields
-    departures = [i | (i, field) <- zip [0..] fields, "departure" `isPrefixOf` _name field]
-    nearbyTickets' = filter (all \t -> any (I.member t) itvs) nearbyTickets
-    trTickets = zip [0..] . transpose $ myTicket : nearbyTickets'
-    itvs' = map _itvs fields
-    graph = itvs' <&> \itvs'' -> trTickets & mapMaybe \(j, tickets) ->
-        if all (\ticket -> any (I.member ticket) itvs'') tickets
-            then Just j
-            else Nothing
-    graph' = (V.length vMyTicket, V.fromList graph)
-    m = maximumMatching' graph'
-    values = departures <&> \i -> vMyTicket V.! (m Map.! i)
+part2 :: Input -> Maybe Int
+part2 (Input fields myTicket nearbyTickets) = do
+    let vMyTicket = V.fromList myTicket
+    let itvs = concatMap _itvs fields
+    let departures = [i | (i, field) <- zip [0..] fields, "departure" `isPrefixOf` _name field]
+    let nearbyTickets' = filter (all \t -> any (I.member t) itvs) nearbyTickets
+    let trTickets = zip [0..] . transpose $ myTicket : nearbyTickets'
+    let itvs' = map _itvs fields
+    let graph = itvs' <&> \itvs'' -> trTickets & mapMaybe \(j, tickets) ->
+            if all (\ticket -> any (I.member ticket) itvs'') tickets
+                then Just j
+                else Nothing
+    let graph' = (V.length vMyTicket, V.fromList graph)
+    let m = maximumMatching' graph'
+    guard $ Map.size m == V.length vMyTicket
+    values <- sequenceA [(vMyTicket V.!?) =<< m Map.!? i | i <- departures]
+    Just (product values)
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
