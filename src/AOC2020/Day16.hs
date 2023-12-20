@@ -7,7 +7,7 @@ import           AOC.Interval (Interval(..))
 import qualified AOC.Interval as I
 import           AOC.Search (maximumMatching')
 import qualified Data.Vector as V
-
+import qualified Data.HashMap.Strict as Map
 
 data Field = Field { _name :: String, _itvs :: [Interval Int] }
 data Input = Input [Field] [Int] [[Int]]
@@ -30,15 +30,20 @@ part1 (Input fields _ nearbyTickets) = sum [n | n <- nearby, all (I.notMember n)
     nearby = concat nearbyTickets
 
 part2 :: Input -> Int
-part2 (Input fields myTicket nearbyTickets) = traceShow itvs' 0 where
+part2 (Input fields myTicket nearbyTickets) = product values where
+    vMyTicket = V.fromList myTicket
     itvs = concatMap _itvs fields
-    nearbyTickets' = filter (any \t -> all (I.notMember t) itvs) nearbyTickets
+    departures = [i | (i, field) <- zip [0..] fields, "departure" `isPrefixOf` _name field]
+    nearbyTickets' = filter (all \t -> any (I.member t) itvs) nearbyTickets
     trTickets = zip [0..] . transpose $ myTicket : nearbyTickets'
     itvs' = map _itvs fields
     graph = itvs' <&> \itvs'' -> trTickets & mapMaybe \(j, tickets) ->
         if all (\ticket -> any (I.member ticket) itvs'') tickets
             then Just j
             else Nothing
+    graph' = (V.length vMyTicket, V.fromList graph)
+    m = maximumMatching' graph'
+    values = departures <&> \i -> vMyTicket V.! (m Map.! i)
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
