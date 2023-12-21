@@ -12,6 +12,20 @@ times n f x
     | otherwise = times (n-1) f $! f x
 {-# INLINE times #-}
 
+timesM :: Monad m => Int -> (a -> m a) -> a -> m a
+timesM n f x
+    | n <= 0    = pure x
+    | otherwise = do
+        x' <- f x
+        timesM (n-1) f x'
+{-# INLINE timesM #-}
+
+timesM_ :: Monad m => Int -> m () -> m ()
+timesM_ n f
+    | n <= 0    = pure ()
+    | otherwise = f *> timesM_ (n-1) f
+{-# INLINE timesM_ #-}
+
 majority :: (a -> Bool) -> [a] -> Bool
 majority f l = 2 * count f l >= length l
 

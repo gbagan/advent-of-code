@@ -14,7 +14,7 @@ import           AOC.Search (reachableFrom')
 
 data Brick = Brick { _begin :: !(V3 Int), _end :: !(V3 Int) } deriving (Show)
 type Cube = V3 Int
-type Space = HashMap (V2 Int) Int
+type Heights = HashMap (V2 Int) Int
 
 parser :: Parser [Brick]
 parser = brick `sepEndBy1` eol where
@@ -28,14 +28,14 @@ sortBricks = sortOn (view _z . _begin)
 cubesOf :: Brick -> [Cube]
 cubesOf (Brick (V3 x1 y1 z1) (V3 x2 y2 z2)) = V3 <$> [x1..x2] <*> [y1..y2] <*> [z1,z2]
 
-fallOne :: (Space, Brick) -> (Space, Brick)
-fallOne (space, brick) = (space', brick') where
+fallOne :: (Heights, Brick) -> (Heights, Brick)
+fallOne (heights, brick) = (heights', brick') where
     cubes = cubesOf brick
-    height = maximum [HMap.findWithDefault 0 (V2 x y) space | (V3 x y _) <- cubes]
+    height = maximum [HMap.findWithDefault 0 (V2 x y) heights | (V3 x y _) <- cubes]
     Brick start@(V3 _ _ z) end = brick
     brick' = Brick (start - V3 0 0 (z - height)) (end - V3 0 0 (z - height)) 
-    space' = foldl' go space (cubesOf brick')
-    go spc (V3 x y z') = HMap.insert (V2 x y) (z'+1) spc
+    heights' = foldl' go heights (cubesOf brick')
+    go hts (V3 x y z') = HMap.insert (V2 x y) (z'+1) hts
 
 fall :: [Brick] -> [Brick]
 fall = go HMap.empty where

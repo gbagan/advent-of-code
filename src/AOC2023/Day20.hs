@@ -11,6 +11,7 @@ import           Lens.Micro.Mtl ((.=), (+=))
 import           Lens.Micro.TH (makeLenses)
 import           Lens.Micro.Platform ()
 import           AOC.Parser (Parser, sepBy1, sepEndBy1, some, lowerChar, eol)
+import           AOC.Util (timesM_)
 
 
 data Type = FlipFlop | Conjunction | Broadcaster
@@ -84,7 +85,7 @@ part1 :: Network -> Int
 part1 network = _nbLow finalState * _nbHigh finalState where
     nstate = initNState network
     finalState = flip execState nstate do
-        forM_ [(1::Int)..1000] \_ -> pushButton network
+        timesM_ 1000 (pushButton network)
 
 part2 :: Network -> Integer
 part2 network = foldl' lcm 1 cycles where
