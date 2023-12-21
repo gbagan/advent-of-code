@@ -21,16 +21,22 @@ bfs nborFunc start = go Set.empty (Seq.singleton (0, start)) where
                         (Set.insert v visited)
                         (queue >< Seq.fromList [(d+1, u) | u <- nborFunc v])
 
-reachableFrom :: Hashable a => (a -> [a]) -> a -> HashSet a
-reachableFrom nborFunc start = go Set.empty [start] where
-    go visited [] = visited
-    go visited (v : stack)
-        | v `Set.member` visited = go visited stack
-        | otherwise = go (Set.insert v visited) (nborFunc v ++ stack)
-
 distance :: Hashable a => (a -> [a]) -> (a -> Bool) -> a -> Maybe Int
 distance nborFunc destFunc start =
     fst <$> find (destFunc . snd) (bfs nborFunc start)
+
+reachableFrom :: Hashable a => (a -> [a]) -> a -> HashSet a
+reachableFrom nborFunc = reachableFrom' \v _ -> nborFunc v
+
+reachableFrom' :: Hashable a => (a -> HashSet a -> [a]) -> a -> HashSet a
+reachableFrom' nborFunc start = go Set.empty [start] where
+    go visited [] = visited
+    go visited (v:queue)
+        | v `Set.member` visited = go visited queue
+        | otherwise =
+            let visited' = Set.insert v visited
+                nbors = nborFunc v visited' 
+            in go visited' (nbors ++ queue)
 
 dfsM :: (Hashable a, Monad m) => (a -> m [a]) -> a -> m ()
 dfsM nborFunc start = dfsM' nborFunc [start]

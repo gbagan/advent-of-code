@@ -10,6 +10,7 @@ import           AOC.Parser (Parser, decimal, eol, sepEndBy1)
 import           AOC.V2 (V2(..))
 import           AOC.V3 (V3(..), _z)
 import           Lens.Micro.Extras (view)
+import           AOC.Search (reachableFrom')
 
 data Brick = Brick { _begin :: !(V3 Int), _end :: !(V3 Int) } deriving (Show)
 type Cube = V3 Int
@@ -77,16 +78,6 @@ part1 (bricks, support, supported) = length disintegrated where
     canBeDisintegrated i = all isStable (supported Map.! i)
     disintegrated = [i | (i, _) <- zip [0..] bricks, canBeDisintegrated i]
 
-dfs :: Hashable a => (a -> HashSet a -> [a]) -> a -> HashSet a
-dfs nborFunc start = go HSet.empty [start] where
-    go visited [] = visited
-    go visited (v:queue)
-        | v `HSet.member` visited = go visited queue
-        | otherwise =
-            let visited' = HSet.insert v visited
-                nbors = nborFunc v visited' 
-            in go visited' (nbors ++ queue)
-
 part2 :: ([Brick], IntMap [Int], IntMap [Int]) -> Int
 part2 (bricks, support, supported) = res where
     nborFunc v disintegrated =
@@ -94,7 +85,7 @@ part2 (bricks, support, supported) = res where
         | next <- supported Map.! v
         , all (`HSet.member` disintegrated) (support Map.! next)
         ] 
-    res = sum [HSet.size (dfs nborFunc i) - 1 | (i, _) <- zip [0..] bricks]
+    res = sum [HSet.size (reachableFrom' nborFunc i) - 1 | (i, _) <- zip [0..] bricks]
 
 solve :: Text -> IO ()
 solve = aoc' parser (Just . precomp) part1 part2
