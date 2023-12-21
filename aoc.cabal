@@ -11,6 +11,7 @@ library aoclib
     exposed-modules:
         AOC
         AOC.Area
+        AOC.Debug
         AOC.Interval
         AOC.List
         AOC.Monad

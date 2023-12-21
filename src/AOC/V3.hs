@@ -3,6 +3,7 @@ module AOC.V3 where
 import AOC.Prelude hiding (tail)
 import Data.Foldable1 (Foldable1, foldMap1)
 import Data.List (tail)
+import Lens.Micro (Lens', lens)
 
 data V3 a = V3 !a !a !a deriving (Eq,Ord,Show)
 
@@ -56,3 +57,12 @@ instance Num a => Num (V3 a) where
 
 surrounding :: Integral a => V3 a -> [V3 a]
 surrounding (V3 x y z) = tail (V3 <$> [x, x-1, x+1] <*> [y, y-1, y+1] <*> [z, z-1, z+1])
+
+_x :: Lens' (V3 a) a
+_x = lens (\(V3 x _ _) -> x) (\(V3 _ y z) x -> V3 x y z)
+
+_y :: Lens' (V3 a) a
+_y = lens (\(V3 _ y _) -> y) (\(V3 x _ z) y -> V3 x y z)
+
+_z :: Lens' (V3 a) a
+_z = lens (\(V3 _ _ z) -> z) (\(V3 x y _) z -> V3 x y z)
