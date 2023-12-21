@@ -1,11 +1,10 @@
 module AOC2021.Day19 (solve) where
 import           AOC.Prelude
 import           Data.List (maximum)
-import qualified Data.HashMap.Strict as Map
 import           AOC.V3 (V3(..))
 import           AOC (aoc')
 import           AOC.Parser (Parser, eol, numberChar, sepEndBy1, some, signedDecimal)
-import           AOC.Util (freqs)
+import           AOC.List (freqs)
 
 type Scan = [V3 Int]
 
@@ -35,7 +34,7 @@ align :: Scan -> Scan -> Maybe (Scan, V3 Int)
 align scan scan' = listToMaybe [(map (+ pos) rot, pos) | rot <- scanRotations scan', pos <- overlap scan rot]
 
 overlap :: Scan -> Scan -> [V3 Int]
-overlap scan scan' = Map.keys . Map.filter (>= 12) . freqs $ (-) <$> scan <*> scan'
+overlap scan scan' = [p | (p, freq) <- freqs $ (-) <$> scan <*> scan', freq >= 12] 
 
 part1 :: [(Scan, V3 Int)] -> Int
 part1 = length . ordNub . concatMap fst

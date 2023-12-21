@@ -1,9 +1,9 @@
 module AOC2021.Day14 (solve) where
 import           AOC.Prelude hiding (head, last)
-import           Relude.Unsafe (head, last, (!!))
-import           Data.List (minimum, maximum)
+import           Data.List (head, last, minimum, maximum)
 import qualified Data.Map.Strict as Map
 import           AOC (aoc)
+import           AOC.Util (times)
 import           AOC.Parser (Parser, eol, sepEndBy1, some, upperChar)
 
 type Rules = Map String Char
@@ -34,10 +34,10 @@ pairsMapToFreqs str =
     . Map.fromListWith (+)
     . Map.foldlWithKey' (\acc (a, b) v -> (a, v) : (b, v) : acc) []
 
-algo :: Int -> Input -> Int
-algo n (Input s rules) = maximum freqs - minimum freqs where
+solveFor :: Int -> Input -> Int
+solveFor n (Input s rules) = maximum freqs - minimum freqs where
     pairs = stringToPairsMap s
-    freqs = Map.elems . pairsMapToFreqs s $ iterate' (step rules) pairs !! n
+    freqs = Map.elems . pairsMapToFreqs s $ times n (step rules) pairs
 
 solve :: Text -> IO ()
-solve = aoc parser (algo 10) (algo 40)
+solve = aoc parser (solveFor 10) (solveFor 40)

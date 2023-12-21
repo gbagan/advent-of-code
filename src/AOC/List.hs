@@ -2,6 +2,7 @@ module AOC.List where
 
 import           AOC.Prelude
 import           Data.List (maximum, minimum)
+import qualified Data.HashMap.Strict as HMap
 
 allUnique :: Ord a => [a] -> Bool
 allUnique xs = length (ordNub xs) == length xs
@@ -55,8 +56,11 @@ sliding n l = case (ys, l) of
     where (xs, ys) = splitAt n l
 
 count :: (a -> Bool) -> [a] -> Int
-count f = length . filter f
-{-# INLINE count #-}
+count f = foldl' (\acc x -> if f x then acc+1 else acc) 0
+
+freqs :: Hashable a => [a] -> [(a, Int)]
+freqs = HMap.toList . HMap.fromListWith (+) . map (,1)
+{-# INLINE freqs #-}
 
 slice :: Int -> Int -> [a] -> [a]
 slice start end = take (end - start + 1) . drop start

@@ -6,9 +6,11 @@ import qualified Data.HashMap.Strict as HMap
 import qualified Data.HashSet as HSet
 import           AOC.V2 (V2(..))
 
-freqs :: Hashable a => [a] -> HashMap a Int
-freqs = HMap.fromListWith (+) . map (,1)
-{-# INLINE freqs #-}
+times :: Int -> (a -> a) -> a -> a
+times n f x
+    | n <= 0 = x
+    | otherwise = times (n-1) f $! f x
+{-# INLINE times #-}
 
 majority :: (a -> Bool) -> [a] -> Bool
 majority f l = 2 * count f l >= length l

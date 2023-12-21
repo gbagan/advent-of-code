@@ -1,10 +1,10 @@
 -- https://adventofcode.com/2020/day/12
 module AOC2020.Day12 (solve) where
 import           AOC.Prelude
-import           Relude.Unsafe ((!!))
 import           AOC.V2 (V2(..), perp)
 import           AOC (aoc)
 import           AOC.Parser (Parser, choice, sepEndBy1, eol, decimal)
+import           AOC.Util (times)
 
 data Instr = N !Int | S !Int | W !Int | E !Int | F !Int | L !Int | R !Int
 
@@ -22,7 +22,7 @@ part1 xs = abs a + abs b where
         W n -> (pos - V2 n 0, dir)
         E n -> (pos + V2 n 0, dir)
         F n -> (pos + fmap (*n) dir, dir)
-        L n -> (pos, iterate' perp dir !! (n `div` 90))
+        L n -> (pos, times (n `div` 90) perp dir)
         R n -> go (pos, dir) (L $ 360-n)
 
 part2 :: [Instr] -> Int
@@ -34,7 +34,7 @@ part2 xs = abs a + abs b where
         W n -> (pos, wpos - V2 n 0)
         E n -> (pos, wpos + V2 n 0)
         F n -> (pos + fmap (*n) wpos, wpos)
-        L n -> (pos, iterate' perp wpos !! (n `div` 90))
+        L n -> (pos, times (n `div` 90) perp wpos)
         R n -> go (pos, wpos) (L $ 360-n)
 
 

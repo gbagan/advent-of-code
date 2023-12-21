@@ -1,12 +1,11 @@
 -- https://adventofcode.com/2020/day/17
 module AOC2020.Day17 (solve) where
 import           AOC.Prelude
-import           Data.List ((!!))
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
 import qualified Data.HashSet as Set 
 import qualified Data.HashMap.Strict as Map
-import           AOC.Util (listTo2dSet)
+import           AOC.Util (times, listTo2dSet)
 import           AOC.V2 (V2(..))
 import           AOC.V3 (V3(..))
 import qualified AOC.V3 as V3
@@ -33,7 +32,7 @@ parser = listTo2dSet <$> some cube `sepEndBy1` eol where
     cube = False <$ "." <|> True <$ "#"
 
 solveFor :: Hashable a => (V2 Int -> a) -> (a -> [a]) -> Grid2 -> Int
-solveFor to nbor grid = Set.size $ iterate' (step nbor) (Set.map to grid) !! 6
+solveFor to nbor grid = Set.size $ times 6 (step nbor) (Set.map to grid)
 
 part1 :: Grid2 -> Int
 part1 = solveFor toV3 V3.surrounding where

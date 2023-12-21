@@ -1,13 +1,13 @@
 module AOC2021.Day09 (solve) where
 import           AOC.Prelude
 import           Data.Char (digitToInt)
-import qualified Data.HashMap.Strict as HMap
 import           Data.Map.Lazy ((!))
 import qualified Data.Map.Lazy as LMap
 import           AOC (aoc)
 import           AOC.Parser (Parser, digitChar, eol, sepEndBy1, some)
+import           AOC.List (freqs)
 import           AOC.V2 (V2(..), adjacent)
-import           AOC.Util (freqs)
+
 
 type Coord = V2 Int
 
@@ -40,7 +40,7 @@ part1 :: Map Coord Int -> Int
 part1 m = sum [m ! p + 1 | (p, Nothing) <- LMap.toList (flow m)] 
 
 part2 :: Map Coord Int -> Int
-part2 = product . take 3 . sortOn Down . HMap.elems                                                                                                              . freqs . LMap.elems . closure . flow . LMap.filter (<9)
+part2 = product . take 3 . sortOn Down . map snd . freqs . LMap.elems . closure . flow . LMap.filter (<9)
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2

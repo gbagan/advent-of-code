@@ -1,9 +1,8 @@
 module AOC2021.Day05 (solve) where
 import           AOC.Prelude
-import qualified Data.HashMap.Strict as Map
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, eol, sepEndBy1)
-import           AOC.Util (freqs)
+import           AOC.List (count, freqs)
 
 data Line = Line (Int, Int) (Int, Int)
 data Diag = Diag | NoDiag deriving Eq
@@ -25,7 +24,7 @@ points diag (Line (x1, y1) (x2, y2))
     | otherwise    = []
 
 countIntersections :: Diag -> [Line] -> Int
-countIntersections diag = Map.size . Map.filter (>1) . freqs . concatMap (points diag)
+countIntersections diag = count (>1) . map snd . freqs . concatMap (points diag)
 
 solve :: Text -> IO ()
 solve = aoc parser (countIntersections NoDiag) (countIntersections Diag)

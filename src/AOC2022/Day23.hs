@@ -2,12 +2,11 @@
 module AOC2022.Day23 (solve) where
 import           AOC.Prelude
 import           Data.List (minimum, maximum, (!!))
-import qualified Data.HashMap.Strict as Map ((!))
+import qualified Data.HashMap.Strict as Map
 import qualified Data.HashSet as Set
 import           AOC (aoc)
-import           AOC.List (sliding)
+import           AOC.List (freqs, sliding)
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
-import           AOC.Util (freqs)
 import           AOC.V2 (V2(..), surrounding)
 
 type Rule = ([V2 Int], V2 Int)
@@ -41,7 +40,7 @@ runRound rules' elves = elves' where
     applyRule elf (checks, move) = if not $ any ((`Set.member` elves) . (+elf)) checks
                      then Just (elf + move)
                      else Nothing
-    elfCounter = freqs . map snd $ Set.toList transitions
+    elfCounter = Map.fromList . freqs . map snd $ Set.toList transitions
     elves' = transitions & Set.map \(elf, elf') ->
         if elfCounter Map.! elf' >= 2 then elf else elf'
 

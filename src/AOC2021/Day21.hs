@@ -1,11 +1,10 @@
 module AOC2021.Day21 (solve) where
 import           AOC.Prelude
-import qualified Data.HashMap.Strict as Map
 import           Data.Array (Array, listArray, range, (!))
 import           AOC.V2 (V2(..))
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, eol)
-import           AOC.Util (freqs)
+import           AOC.List (freqs)
 
 parser :: Parser (Int, Int)
 parser = (,) <$ "Player 1 starting position: " <*> decimal <* eol
@@ -20,7 +19,7 @@ part1 (p1, p2) = go 0 (p1-1) (p2-1) 0 0 where
                             go (nbRolls+3) pos2 pos1' score2 (score1 + pos1' + 1)
 
 diceFreq :: [(Int, Int)]
-diceFreq = Map.toList $ freqs [x+y+z | x <- [1..3], y <- [1..3], z <- [1..3]]
+diceFreq = freqs [x+y+z | x <- [1..3], y <- [1..3], z <- [1..3]]
 
 scores :: Array (Int, Int, Int, Int) (V2 Int)
 scores = listArray bds
