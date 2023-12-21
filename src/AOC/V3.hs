@@ -55,4 +55,4 @@ instance Num a => Num (V3 a) where
     {-# INLINE fromInteger #-}
 
 surrounding :: Integral a => V3 a -> [V3 a]
-surrounding p = [p + V3 dx dy dz | [dx,dy,dz] <- tail (replicateM 3 [0,-1,1])]
+surrounding (V3 x y z) = tail (V3 <$> [x, x-1, x+1] <*> [y, y-1, y+1] <*> [z, z-1, z+1])

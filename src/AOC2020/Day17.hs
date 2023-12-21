@@ -17,22 +17,23 @@ type Grid2 = HashSet (V2 Int)
 unionsWith :: Hashable a => (b -> b -> b) -> [HashMap a b] -> HashMap a b
 unionsWith f = foldl' (Map.unionWith f) Map.empty
 
+test :: Hashable a => HashSet a -> a -> Int -> Bool
+test grid pos val = val == 3 || val == 2 && Set.member pos grid
+
 step :: Hashable a => (a -> [a]) -> HashSet a -> HashSet a
 step nbor grid = 
     Map.keysSet
-    . Map.filterWithKey check
+    . Map.filterWithKey (test grid)
     . unionsWith (+)
-    . map (Map.fromList . map (,1::Int) . nbor)
+    . map (Map.fromList . map (,1) . nbor)
     $ Set.toList grid
-    where
-    check pos val = val == 3 || val == 2 && Set.member pos grid
 
 parser :: Parser Grid2
 parser = listTo2dSet <$> some cube `sepEndBy1` eol where
     cube = False <$ "." <|> True <$ "#"
 
 solveFor :: Hashable a => (V2 Int -> a) -> (a -> [a]) -> Grid2 -> Int
-solveFor to nbor grid = Set.size $ times 6 (step nbor) (Set.map to grid)
+solveFor convert nbor grid = Set.size $ times 6 (step nbor) (Set.map convert grid)
 
 part1 :: Grid2 -> Int
 part1 = solveFor toV3 V3.surrounding where

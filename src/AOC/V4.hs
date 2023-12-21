@@ -68,4 +68,4 @@ _t :: Lens' (V4 a) a
 _t = lens (\(V4 _ _ _ t) -> t) (\(V4 x y z _) t -> V4 x y z t)
 
 surrounding :: Integral a => V4 a -> [V4 a]
-surrounding p = [p + V4 dx dy dz dt | [dx,dy,dz,dt] <- tail (replicateM 4 [0,-1,1])]
+surrounding (V4 x y z t) = tail (V4 <$> [x, x-1, x+1] <*> [y, y-1, y+1] <*> [z, z-1, z+1] <*> [t, t-1, t+1])

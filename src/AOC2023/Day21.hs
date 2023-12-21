@@ -18,12 +18,11 @@ parser = some tile `sepEndBy1` eol where
 precomp :: [[Tile]] -> Maybe (Grid, V2 Int)
 precomp tiles = do
     start <- listToMaybe [V2 i j | (i, j, Start) <- flattenWithIndex tiles]
-    let tiles' = map (map (==Rock)) tiles
-    let matrix = fromLists' Seq tiles'
+    let matrix = fromLists' Seq $ map (map (==Rock)) tiles
     pure (matrix, start)
 
-nbors :: Grid -> V2 Int -> [V2 Int]
-nbors grid = filter (not . (grid !) . toIx2 . mod2) . adjacent where
+neighbors :: Grid -> V2 Int -> [V2 Int]
+neighbors grid = filter (not . (grid !) . toIx2 . mod2) . adjacent where
     Sz2 h w = size grid
     mod2 (V2 r c) = V2 (r `mod` h) (c `mod` w)
 
@@ -36,7 +35,7 @@ nbReachable n = fromIntegral
                 . map fst
 
 part1 :: (Grid, V2 Int) -> Integer
-part1 (grid, start) = nbReachable 64 $ bfs (nbors grid) start
+part1 (grid, start) = nbReachable 64 $ bfs (neighbors grid) start
 
 -- given a quadratic sequence with first terms u0, u1, u0,  compute u_n
 quadraticSequence :: Integer -> Integer -> Integer -> Integer -> Integer
@@ -51,11 +50,11 @@ part2 (grid, start) = result where
     nbSteps = 26_501_365
     Sz2 h _ = size grid
     r = nbSteps `mod` h
-    bfsResult = bfs (nbors grid) start
+    bfsResult = bfs (neighbors grid) start
     u0 = nbReachable r bfsResult
     u1 = nbReachable (r+h) bfsResult
     u2 = nbReachable (r+2*h) bfsResult
-    result = quadraticSequence u0 u1 u2 (fromIntegral $ nbSteps `div` h)
+    result = quadraticSequence u0 u1 u2 . fromIntegral $ nbSteps `div` h
 
 solve :: Text -> IO ()
 solve = aoc' parser precomp part1 part2

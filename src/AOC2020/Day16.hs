@@ -6,10 +6,9 @@ import           AOC.Parser (Parser, some, letterChar, char, sepBy1, sepEndBy1, 
 import           AOC.Interval (Interval(..))
 import qualified AOC.Interval as I
 import           AOC.Search (maximumMatching)
-import qualified Data.Vector as V
 import qualified Data.HashMap.Strict as Map
 
-data Field = Field { _name :: String, _itvs :: [Interval Int] }
+data Field = Field { _name :: String, _ranges :: [Interval Int] }
 data Input = Input [Field] [Int] [[Int]]
 
 parser :: Parser Input
@@ -26,26 +25,21 @@ parser = do
 part1 :: Input -> Int
 part1 (Input fields _ nearbyTickets) = sum [n | n <- nearby, all (I.notMember n) itvs]
     where
-    itvs = concatMap _itvs fields
+    itvs = concatMap _ranges fields
     nearby = concat nearbyTickets
 
-part2 :: Input -> Maybe Int
-part2 (Input fields myTicket nearbyTickets) = do
-    let vMyTicket = V.fromList myTicket
-    let itvs = concatMap _itvs fields
-    let departures = [i | (i, field) <- zip [0..] fields, "departure" `isPrefixOf` _name field]
-    let nearbyTickets' = filter (all \t -> any (I.member t) itvs) nearbyTickets
-    let trTickets = zip [(0::Int)..] . transpose $ myTicket : nearbyTickets'
-    let itvs' = zip [(0::Int)..] (map _itvs fields)
-    let graph = Map.fromList $ itvs' <&> second \itvs'' -> 
-            trTickets & mapMaybe \(j, tickets) ->
-                    if all (\ticket -> any (I.member ticket) itvs'') tickets
-                        then Just j
-                        else Nothing
-    let m = maximumMatching graph
-    guard $ Map.size m == V.length vMyTicket
-    values <- sequenceA [(vMyTicket V.!?) =<< m Map.!? i | i <- departures]
-    Just (product values)
+match :: Int -> Field -> Bool
+match x (Field _ ranges) = any (I.member x) ranges
+
+matchedFields :: [Field] -> [Int] -> [String]
+matchedFields fields col = [_name field | field <- fields, all (`match` field) col]
+
+part2 :: Input -> Int
+part2 (Input fields myTicket nearbyTickets) = product values where
+    goodTickets = filter (all (\x -> any (match x) fields)) nearbyTickets
+    graph = Map.fromList $ zip myTicket [matchedFields fields col | col <- transpose goodTickets]
+    matching = maximumMatching graph -- assume this is a perfect matching
+    values = [val | (val, name) <- Map.toList matching, "departure" `isPrefixOf` name]  
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2

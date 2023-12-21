@@ -128,7 +128,7 @@ findAugmentingPath (m, graph) matching = runST do
             Nothing -> pure [v]
             Just parent -> do
                 xs <- findPath parents parent
-                pure $ v : xs 
+                pure $! v : xs 
 
 maximumMatching' :: IntGraph -> Matching Int Int
 maximumMatching' g = go (greedyMatching g) where
