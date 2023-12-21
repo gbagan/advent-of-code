@@ -3,6 +3,7 @@ module AOC.V4 where
 import AOC.Prelude hiding (tail)
 import Data.Foldable1 (Foldable1, foldMap1)
 import Data.List (tail)
+import Lens.Micro (Lens', lens)
 
 data V4 a = V4 !a !a !a !a deriving (Eq,Ord,Show)
 
@@ -53,6 +54,18 @@ instance Num a => Num (V4 a) where
     {-# INLINE signum #-}
     fromInteger = pure . fromInteger
     {-# INLINE fromInteger #-}
+
+_x :: Lens' (V4 a) a
+_x = lens (\(V4 x _ _ _) -> x) (\(V4 _ y z t) x -> V4 x y z t)
+
+_y :: Lens' (V4 a) a
+_y = lens (\(V4 _ y _ _) -> y) (\(V4 x _ z t) y -> V4 x y z t)
+
+_z :: Lens' (V4 a) a
+_z = lens (\(V4 _ _ z _) -> z) (\(V4 x y _ t) z -> V4 x y z t)
+
+_t :: Lens' (V4 a) a
+_t = lens (\(V4 _ _ _ t) -> t) (\(V4 x y z _) t -> V4 x y z t)
 
 surrounding :: Integral a => V4 a -> [V4 a]
 surrounding p = [p + V4 dx dy dz dt | [dx,dy,dz,dt] <- tail (replicateM 4 [0,-1,1])]

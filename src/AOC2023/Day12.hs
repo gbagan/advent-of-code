@@ -4,7 +4,7 @@ import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, some, eol, decimal, hspace)
 import qualified Data.Vector as V
-import           Data.Array (listArray, range, (!))
+import           Data.Massiv.Array ((!), makeArray, BL, Comp(Seq), Sz(Sz2), Ix2(..))
 
 data Spring = Operational | Damaged | Unknown deriving (Eq)
 type Row = ([Spring], [Int])
@@ -15,27 +15,29 @@ parser = row `sepEndBy1` eol where
     spring = Operational <$ "." <|> Damaged <$ "#" <|> Unknown <$ "?"
 
 countArrangements :: Row -> Integer
-countArrangements (springs, groups) = arr ! (0, 0) where
+countArrangements (springs, groups) = arr ! Ix2 0 0 where
     vsprings = V.fromList (springs ++ [Operational])
     springsLength = V.length vsprings
     vGroups = V.fromList groups
     groupsLength = V.length vGroups
     nextOperational = V.generate springsLength \i ->
         if vsprings V.! i == Operational then i else nextOperational V.! (i+1)
-    arr = listArray bounds [
+    arr = makeArray @BL Seq (Sz2 (springsLength+1) (groupsLength+1)) \(Ix2 pos groupPos) ->
         if pos == springsLength then
             if groupPos == groupsLength then 1 else 0
         else
             let nextOp = nextOperational V.! pos
                 pos' =  pos + vGroups V.! groupPos
-                x = if vsprings V.! pos /= Damaged then arr ! (pos + 1, groupPos) else 0
+                x = if vsprings V.! pos /= Damaged
+                        then arr ! Ix2 (pos + 1) groupPos 
+                        else 0
                 y = if groupPos < groupsLength && nextOp >= pos' && vsprings V.! pos' /= Damaged
-                    then arr ! (pos' + 1, groupPos + 1)
-                    else 0
+                        then arr ! Ix2 (pos' + 1) (groupPos + 1)
+                        else 0
             in x + y
-        | (pos, groupPos) <- range bounds
-        ]
-    bounds = ((0, 0), (springsLength, groupsLength))
+    --    | (pos, groupPos) <- range bounds
+    --    ]
+    -- bounds = ((0, 0), (springsLength, groupsLength))
 
 solveFor :: (Row -> Row) -> [Row] -> Integer
 solveFor f = sum . map (countArrangements . f)

@@ -22,6 +22,7 @@ import qualified Day18 (solve)
 import qualified Day19 (solve)
 import qualified Day20 (solve)
 import qualified Day21 (solve)
+import qualified Day22 (solve)
 import           AOC (aocMain)
 
 solutions :: Map String (Text -> IO ())
@@ -47,6 +48,7 @@ solutions = Map.fromList
             ,   ("19", Day19.solve)
             ,   ("20", Day20.solve)
             ,   ("21", Day21.solve)
+            ,   ("22", Day22.solve)
             ]
 
 main :: IO ()

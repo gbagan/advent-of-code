@@ -3,12 +3,12 @@ module Day19 (solve) where
 import           AOC.Prelude
 import           Data.List (maximum)
 import           Lens.Micro.Extras (view)
-import           Linear.V4 (V4(..), _x, _y, _z)
+import           AOC.V4 (V4(..), _x, _y, _z)
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
 import           AOC.Search (dfsM)
 
-type Resource = V4 Int -- ore clay obsidian geode
+type Resource = V4 Int -- ore clay obsdian geode
 data Blueprint = Blueprint !Resource !Resource !Resource !Resource
 
 parser :: Parser [Blueprint]
