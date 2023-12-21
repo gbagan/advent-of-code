@@ -40,11 +40,11 @@ part1 (grid, start) = nbReachable 64 $ bfs (nbors grid) start
 
 -- given a quadratic sequence with first terms u0, u1, u0,  compute u_n
 quadraticSequence :: Integer -> Integer -> Integer -> Integer -> Integer
-quadraticSequence u0 u1 u2 n = u0 + n * d1 + n * (n-1) * d' `div` 2
+quadraticSequence u0 u1 u2 n = u0 + n * u0' + n * (n-1) * u0'' `div` 2
     where
-    d1 = u1 - u0
-    d2 = u2 - u1
-    d' = d2 - d1
+    u0' = u1 - u0
+    u1' = u2 - u1
+    u0'' = u1' - u0'
 
 part2 :: (Grid, V2 Int) -> Integer
 part2 (grid, start) = result where
