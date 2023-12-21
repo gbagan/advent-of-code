@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2020/day/15
-module AOC2020.Day15 (solve) where
+module Day15 (solve) where
 import           AOC.Prelude hiding (init, last, round)
 import           Data.List (init, last)
 import           Control.Monad.ST (ST, runST)

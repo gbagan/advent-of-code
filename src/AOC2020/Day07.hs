@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2020/day/7
-module AOC2020.Day07 (solve) where
+module Day07 (solve) where
 import           AOC.Prelude
 import qualified Data.Text as Text
 import qualified Data.HashSet as Set

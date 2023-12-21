@@ -1,4 +1,4 @@
-module AOC2021.Day21 (solve) where
+module Day21 (solve) where
 import           AOC.Prelude
 import           Data.Array (Array, listArray, range, (!))
 import           AOC.V2 (V2(..))

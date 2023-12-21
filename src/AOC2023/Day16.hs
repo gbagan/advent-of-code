@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2023/day/16
-module AOC2023.Day16 (solve) where
+module Day16 (solve) where
 import           AOC.Prelude
 import           Data.List (maximum)
 import qualified Data.HashSet as Set

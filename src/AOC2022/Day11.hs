@@ -1,8 +1,8 @@
 -- https://adventofcode.com/2022/day/11
 {-# OPTIONS_GHC -Wno-unused-top-binds #-}
-module AOC2022.Day11 (solve) where
+module Day11 (solve) where
 import           AOC.Prelude
-import           Relude.Unsafe ((!!))
+import           Data.List ((!!))
 import           Lens.Micro ((^.), (.~), (%~), ix)
 import           Lens.Micro.TH (makeLenses)
 import           AOC (aoc)

@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2022/day/23
-module AOC2022.Day23 (solve) where
+module Day23 (solve) where
 import           AOC.Prelude
 import           Data.List (minimum, maximum, (!!))
 import qualified Data.HashMap.Strict as Map

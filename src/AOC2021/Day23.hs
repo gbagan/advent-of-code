@@ -1,6 +1,6 @@
-module AOC2021.Day23 (solve) where
+module Day23 (solve) where
 import           AOC.Prelude hiding (head, last)
-import           Relude.Unsafe (head, last)
+import           Data.List (head, last)
 import qualified Data.Vector as Vec
 import           Data.Vector ((!), (//))
 import           Data.Vector.Instances ()

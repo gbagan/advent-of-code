@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2022/day/1
-module AOC2022.Day19 (solve) where
-import           Relude
+module Day19 (solve) where
+import           AOC.Prelude
 import           Data.List (maximum)
 import           Lens.Micro.Extras (view)
 import           Linear.V4 (V4(..), _x, _y, _z)

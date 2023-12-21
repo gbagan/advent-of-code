@@ -1,7 +1,7 @@
 -- https://adventofcode.com/2023/day/8
-module AOC2023.Day08 (solve) where
+module Day08 (solve) where
 import           AOC.Prelude hiding (last)
-import           Relude.Unsafe (last)
+import           Data.List (last)
 import           Data.Maybe (fromJust)
 import qualified Data.HashMap.Strict as Map
 import           Data.HashMap.Strict ((!))

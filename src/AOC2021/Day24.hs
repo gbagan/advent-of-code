@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
-module AOC2021.Day24 (solve) where
+module Day24 (solve) where
 import           AOC.Prelude
-import           Relude.Unsafe ((!!))
+import           Data.List ((!!))
 import           AOC (aoc')
 import           AOC.Parser (Parser, choice, sepEndBy1, eol, signedDecimal)
 

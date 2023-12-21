@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2020/day/16
-module AOC2020.Day16 (solve) where
+module Day16 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, some, letterChar, char, sepBy1, sepEndBy1, eol, decimal, hspace)

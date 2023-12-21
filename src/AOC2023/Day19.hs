@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2023/day/19
-module AOC2023.Day19 (solve) where
+module Day19 (solve) where
 import           AOC.Prelude hiding (LT, GT)
 import qualified Data.HashMap.Strict as Map
 import           Lens.Micro (Lens', set, (^.))

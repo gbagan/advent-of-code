@@ -1,7 +1,7 @@
 -- https://adventofcode.com/2023/day/6
-module AOC2023.Day06 (solve) where
-import           Relude
-import           Relude.Unsafe (read)
+module Day06 (solve) where
+import           AOC.Prelude
+import           Prelude (read)
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, hspace, decimal)
 

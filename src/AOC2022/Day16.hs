@@ -1,10 +1,10 @@
 -- https://adventofcode.com/2022/day/16
-module AOC2022.Day16 (solve) where
-import           Relude hiding (get, init, some)
+module Day16 (solve) where
+import           AOC.Prelude hiding (get, init)
 import           Data.List (maximum)
 import qualified Data.IntSet as IS
 import qualified Data.Vector as V
-import           Data.Vector (Vector, (!))
+import           Data.Vector ((!))
 import qualified Data.HashMap.Strict as M
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepBy1, sepEndBy1, some, eol, upperChar, decimal)

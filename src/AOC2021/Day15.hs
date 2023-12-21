@@ -1,4 +1,4 @@
-module AOC2021.Day15 (solve) where
+module Day15 (solve) where
 import           AOC.Prelude
 import           Data.Char (digitToInt)
 import           Data.Massiv.Array (Matrix, (!), (!?), fromLists', makeArray, U, Comp(Seq), Ix2(..), Sz(..))

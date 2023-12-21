@@ -1,4 +1,4 @@
-module AOC2021.Day16 (solve) where
+module Day16 (solve) where
 import           AOC.Prelude hiding (Op)
 import           Data.List (maximum, minimum)
 import           AOC (aoc')

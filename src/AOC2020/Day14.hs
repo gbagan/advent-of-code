@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2020/day/14
-module AOC2020.Day14 (solve) where
+module Day14 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           Data.Bits ((.&.), (.|.), complement)

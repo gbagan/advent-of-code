@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2023/day/20
-module AOC2023.Day20 (solve) where
+module Day20 (solve) where
 import           AOC.Prelude hiding (Type, head, round, state)
 import           Data.List (head)
 import           AOC (aoc)

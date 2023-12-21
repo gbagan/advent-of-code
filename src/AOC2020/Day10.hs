@@ -1,4 +1,4 @@
-module AOC2020.Day10 (solve) where
+module Day10 (solve) where
 import           AOC.Prelude
 import           Data.List (maximum)
 import qualified Data.Vector as V

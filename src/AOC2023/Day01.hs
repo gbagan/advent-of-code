@@ -1,7 +1,7 @@
 -- https://adventofcode.com/2023/day/1
-module AOC2023.Day01 (solve) where
+module Day01 (solve) where
 import           AOC.Prelude hiding (head, last)
-import           Relude.Unsafe (head, last)
+import           Data.List (head, last)
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, some, alphaNumChar, eol)
 

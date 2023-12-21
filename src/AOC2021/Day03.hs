@@ -1,6 +1,6 @@
-module AOC2021.Day03 (solve) where
+module Day03 (solve) where
 import           AOC.Prelude
-import           Relude.Unsafe ((!!))
+import           Data.List ((!!))
 import           AOC (aoc)
 import           AOC.Parser (Parser, bitP, eol, sepEndBy1, some)
 import           AOC.Util (binToInt, majority)

@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2020/day/4
-module AOC2020.Day04 (solve) where
+module Day04 (solve) where
 import           AOC.Prelude
 import qualified Data.HashMap.Strict as Map
 import           Text.Megaparsec (parseMaybe)

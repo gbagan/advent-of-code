@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-deprecations #-}
 module AOC.Debug where
 
-import Relude
+import AOC.Prelude
 
 spy :: Show a => String -> a -> a
 spy str x = trace (str ++ show x) x

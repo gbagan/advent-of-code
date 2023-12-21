@@ -1,7 +1,7 @@
 -- https://adventofcode.com/2022/day/9
-module AOC2022.Day09 (solve) where
-import           Relude hiding (last)
-import           Relude.Unsafe (last)
+module Day09 (solve) where
+import           AOC.Prelude hiding (last)
+import           Data.List (last)
 import qualified Data.Set as Set
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, hspace, decimal)

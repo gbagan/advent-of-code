@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2023/day/7
-module AOC2023.Day07 (solve) where
+module Day07 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.List (count)

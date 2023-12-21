@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2022/day/21
-module AOC2022.Day21 (solve) where
-import           Relude hiding (Op, some)
+module Day21 (solve) where
+import           AOC.Prelude hiding (Op)
 import qualified Data.HashMap.Strict as Map
 import qualified Data.Text as Text
 import           AOC (aoc)

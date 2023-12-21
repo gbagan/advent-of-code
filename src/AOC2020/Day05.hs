@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2020/day/3
-module AOC2020.Day05 (solve) where
-import           Relude hiding (some, tail)
+module Day05 (solve) where
+import           AOC.Prelude hiding (tail)
 import           Data.List (maximum, tail)
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, some, char, eol)

@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2022/day/10
 {-# OPTIONS_GHC -Wno-deprecations #-}
-module AOC2022.Day10 (solve) where
+module Day10 (solve) where
 import           AOC.Prelude hiding (head, unlines)
 import           Data.List (head, unlines)
 import           AOC (aoc')

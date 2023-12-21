@@ -1,4 +1,4 @@
-module AOC2021.Day12 (solve) where
+module Day12 (solve) where
 import           AOC.Prelude
 import           Data.Char (isUpper)
 import           Data.Map ((!))

@@ -1,4 +1,4 @@
-module AOC2021.Day22 (solve) where
+module Day22 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, eol, sepEndBy1, signedDecimal)

@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2022/day/24
-module AOC2022.Day24 (solve) where
-import           Relude hiding (some)
+module Day24 (solve) where
+import           AOC.Prelude
 import           AOC.V3 (V3(..))
 import           Data.Massiv.Array (Matrix, (!), (!?), fromLists', size, B, Comp(Seq), Ix2(..), Sz(..))
 import           AOC (aoc)

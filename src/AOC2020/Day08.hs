@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2020/day/7
-module AOC2020.Day08 (solve) where
+module Day08 (solve) where
 import           AOC.Prelude
 import qualified Data.IntSet as Set
 import qualified Data.Vector as V

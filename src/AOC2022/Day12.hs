@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2022/day/12
-module AOC2022.Day12 (solve) where
+module Day12 (solve) where
 import           AOC.Prelude
 import           Data.Massiv.Array (Matrix, (!?), fromLists', toLists2, U, Comp(Seq))
 import           AOC (aoc)

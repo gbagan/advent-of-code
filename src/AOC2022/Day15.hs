@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2022/day/15
-module AOC2022.Day15 (solve) where
-import           Relude
+module Day15 (solve) where
+import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.V2 (V2(..), manhattan)
 import           AOC.Parser (Parser, eol, sepEndBy1, signedDecimal)

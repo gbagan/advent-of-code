@@ -1,4 +1,4 @@
-module AOC2021.Day09 (solve) where
+module Day09 (solve) where
 import           AOC.Prelude
 import           Data.Char (digitToInt)
 import           Data.Map.Lazy ((!))

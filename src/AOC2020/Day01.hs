@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2020/day/1
-module AOC2020.Day01 (solve) where
+module Day01 (solve) where
 import           AOC.Prelude
 import qualified Data.IntSet as Set
 import           AOC (aoc)

@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2020/day/13
-module AOC2020.Day13 (solve) where
+module Day13 (solve) where
 import           AOC.Prelude
 import           Data.List (minimum)
 import           AOC (aoc)

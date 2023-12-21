@@ -1,6 +1,6 @@
-module AOC2021.Day20 (solve) where
+module Day20 (solve) where
 import           AOC.Prelude hiding (get)
-import           Relude.Unsafe ((!!))
+import           Data.List ((!!))
 import qualified Data.Massiv.Array as A
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, char, eol, some)

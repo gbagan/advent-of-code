@@ -1,46 +1,31 @@
+cabal-version:       2.2
 name:                aoc
 version:             0.1.0.0
 license:             MIT
 author:              Guillaume Bagan
 copyright:           2022 Guillaume Bagan
 build-type:          Simple
-cabal-version:       >=1.10
 
-executable aoc2020
-    hs-source-dirs:      src
-    main-is:             AOC2020/Main.hs
-    other-modules:
-                AOC2020.Day01
-                AOC2020.Day02
-                AOC2020.Day03
-                AOC2020.Day04
-                AOC2020.Day05
-                AOC2020.Day06
-                AOC2020.Day07
-                AOC2020.Day08
-                AOC2020.Day09
-                AOC2020.Day10
-                AOC2020.Day11
-                AOC2020.Day12
-                AOC2020.Day13
-                AOC2020.Day14
-                AOC2020.Day15
-                AOC2020.Day16
-                AOC2020.Day17
-                AOC
-                AOC.Interval
-                AOC.List
-                AOC.Monad
-                AOC.Number
-                AOC.Prelude
-                AOC.Parser
-                AOC.Search
-                AOC.Util
-                AOC.V2
-                AOC.V3
-                AOC.V4
+library aoclib
+    hs-source-dirs: src
+    exposed-modules:
+        AOC
+        AOC.Area
+        AOC.Interval
+        AOC.List
+        AOC.Monad
+        AOC.Number
+        AOC.Prelude
+        AOC.Parser
+        AOC.Search
+        AOC.Tuple
+        AOC.Util
+        AOC.V2
+        AOC.V3
+        AOC.V4
 
     default-language: GHC2021
+    
     default-extensions:
                     BlockArguments
                     LambdaCase
@@ -55,227 +40,56 @@ executable aoc2020
               -Wincomplete-uni-patterns
               -Wredundant-constraints
     build-depends: base >= 4.15 && < 5
+                   , containers
+                   , massiv
+                   , megaparsec
+                   , psqueues
+                   , relude
+                   , text
+                   , vector
+
+common aoc-exe
+    default-language: GHC2021
+    default-extensions: BlockArguments LambdaCase MultiWayIf NoImplicitPrelude OverloadedStrings RecordWildCards TemplateHaskell TypeFamilies
+    ghc-options: -O2 -Wall -Wcompat -Wincomplete-uni-patterns -Wredundant-constraints
+    build-depends:  base >= 4.15 && < 5
+                   , aoclib
                    , array
                    , containers
                    , linear
                    , massiv
                    , megaparsec
                    , microlens
+                   , microlens-mtl
+                   , microlens-th
                    , microlens-platform
-                   , primitive
-                   , psqueues
                    , relude
                    , text
+                   , unordered-containers
                    , vector
+
+executable aoc2020
+    import: aoc-exe
+    hs-source-dirs:      src/AOC2020
+    main-is:             Main.hs
+    other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13 Day14 Day15 Day16 Day17
 
 executable aoc2021
-    hs-source-dirs:      src
-    main-is:             AOC2021/Main.hs
-    other-modules:
-                AOC2021.Day01
-                AOC2021.Day02
-                AOC2021.Day03
-                AOC2021.Day04
-                AOC2021.Day05
-                AOC2021.Day06
-                AOC2021.Day07
-                AOC2021.Day08
-                AOC2021.Day09
-                AOC2021.Day10
-                AOC2021.Day11
-                AOC2021.Day12
-                AOC2021.Day13
-                AOC2021.Day14
-                AOC2021.Day15
-                AOC2021.Day16
-                AOC2021.Day17
-                AOC2021.Day18
-                AOC2021.Day19
-                AOC2021.Day20
-                AOC2021.Day21
-                AOC2021.Day22
-                AOC2021.Day23
-                AOC2021.Day24
-                AOC2021.Day25
-                AOC
-                AOC.Area
-                AOC.List
-                AOC.Monad
-                AOC.Prelude
-                AOC.Parser
-                AOC.Search
-                AOC.Util
-                AOC.V2
-                AOC.V3
-
-    default-language: GHC2021
-    default-extensions:
-
-                    BlockArguments
-                    LambdaCase
-                    MultiWayIf
-                    NoImplicitPrelude
-                    OverloadedStrings
-                    RecordWildCards
-                    TemplateHaskell
-                    TypeFamilies
-
-    ghc-options:
-            -O2
-            -Wall
-            -Wcompat
-            -Wincomplete-uni-patterns
-            -Wredundant-constraints
-    build-depends: base >= 4.15 && < 5
-                   , array
-                   , containers
-                   , massiv
-                   , megaparsec
-                   , psqueues
-                   , relude
-                   , vector
-                   , vector-instances
-                   , text
+    import: aoc-exe         
+    hs-source-dirs:      src/AOC2021
+    main-is:             Main.hs
+    other-modules:  Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13 Day14 Day15 Day16 Day17 Day18 Day19 Day20 Day21 Day22 Day23 Day24 Day25
+    build-depends: vector-instances
 
 executable aoc2022
-    hs-source-dirs:      src
-    main-is:             AOC2022/Main.hs
-    other-modules:
-                AOC2022.Day01
-                AOC2022.Day02
-                AOC2022.Day03
-                AOC2022.Day04
-                AOC2022.Day05
-                AOC2022.Day06
-                AOC2022.Day07
-                AOC2022.Day08
-                AOC2022.Day09
-                AOC2022.Day10
-                AOC2022.Day11
-                AOC2022.Day12
-                AOC2022.Day13
-                AOC2022.Day14
-                AOC2022.Day15
-                AOC2022.Day16
-                AOC2022.Day17
-                AOC2022.Day18
-                AOC2022.Day19
-                AOC2022.Day20
-                AOC2022.Day21
-                AOC2022.Day22
-                AOC2022.Day23
-                AOC2022.Day24
-                AOC2022.Day25
-                AOC
-                AOC.List
-                AOC.Interval
-                AOC.Monad
-                AOC.Prelude
-                AOC.Parser
-                AOC.Search
-                AOC.Util
-                AOC.V2
-                AOC.V3
-
-    default-language:    GHC2021
-    default-extensions:
-                    BlockArguments
-                    LambdaCase
-                    MultiWayIf
-                    NoImplicitPrelude
-                    OverloadedStrings
-                    RecordWildCards
-                    TemplateHaskell
-                    TypeFamilies
-    ghc-options:
-              -Wall
-              -Wcompat
-              -Wincomplete-uni-patterns
-              -Wredundant-constraints
-    build-depends:   base >= 4.15 && < 5
-                     , containers
-                     , hashtables
-                     , linear
-                     , megaparsec
-                     , massiv
-                     , microlens
-                     , microlens-th
-                     , psqueues
-                     , relude
-                     , rosezipper
-                     , streams
-                     , vector
-                     , text
+    import: aoc-exe
+    hs-source-dirs:      src/AOC2022
+    main-is:             Main.hs
+    other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13 Day14 Day15 Day16 Day17 Day18 Day19 Day20 Day21 Day22 Day23 Day24 Day25
+    build-depends:  hashtables, linear, rosezipper, streams
 
 executable aoc2023
-    hs-source-dirs:      src
-    main-is:             AOC2023/Main.hs
-    other-modules:
-                AOC2023.Day01
-                AOC2023.Day02
-                AOC2023.Day03
-                AOC2023.Day04
-                AOC2023.Day05
-                AOC2023.Day06
-                AOC2023.Day07
-                AOC2023.Day08
-                AOC2023.Day09
-                AOC2023.Day10
-                AOC2023.Day11
-                AOC2023.Day12
-                AOC2023.Day13
-                AOC2023.Day14
-                AOC2023.Day15
-                AOC2023.Day16
-                AOC2023.Day17
-                AOC2023.Day18
-                AOC2023.Day19
-                AOC2023.Day20
-                AOC2023.Day21
-                AOC
-                AOC.Prelude
-                AOC.Area
-                AOC.Debug
-                AOC.Interval
-                AOC.List
-                AOC.Monad
-                AOC.Number
-                AOC.Parser
-                AOC.Search
-                AOC.Tuple
-                AOC.Util
-                AOC.V2
-                AOC.V3
-
-    default-language:   GHC2021
-    default-extensions:
-                    BlockArguments
-                    LambdaCase
-                    MultiWayIf
-                    NoImplicitPrelude
-                    OverloadedStrings
-                    RecordWildCards
-                    TemplateHaskell
-                    TypeFamilies
-    ghc-options:
-              -Wall
-              -Wcompat
-              -Wincomplete-uni-patterns
-              -Wredundant-constraints
-              -O2
-              -threaded
-              -rtsopts
-    build-depends:   base >= 4.15 && < 5
-                     , array
-                     , containers
-                     , massiv
-                     , megaparsec
-                     , microlens
-                     , microlens-mtl
-                     , microlens-th
-                     , microlens-platform
-                     , parallel
-                     , psqueues
-                     , relude
-                     , text
-                     , vector
+    import: aoc-exe
+    hs-source-dirs:      src/AOC2023
+    main-is:             Main.hs
+    other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13 Day14 Day15 Day16 Day17 Day18 Day19 Day20 Day21

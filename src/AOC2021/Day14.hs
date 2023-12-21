@@ -1,4 +1,4 @@
-module AOC2021.Day14 (solve) where
+module Day14 (solve) where
 import           AOC.Prelude hiding (head, last)
 import           Data.List (head, last, minimum, maximum)
 import qualified Data.Map.Strict as Map

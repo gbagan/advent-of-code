@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2023/day/15
-module AOC2023.Day15 (solve) where
+module Day15 (solve) where
 import           AOC.Prelude
 import qualified Data.IntMap.Strict as IntMap
 import qualified Data.Sequence as Seq

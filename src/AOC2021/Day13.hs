@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-deprecations #-}
-module AOC2021.Day13 (solve) where
-import           Relude hiding (fold, head, some)
-import           Relude.Unsafe (head)
+module Day13 (solve) where
+import           AOC.Prelude hiding (fold, head)
+import           Data.List (head)
 import           Data.List (maximum)
 import qualified Data.Set as Set
 import           AOC (aoc)

@@ -1,4 +1,4 @@
-module AOC2021.Day17 (solve) where
+module Day17 (solve) where
 import           AOC.Prelude hiding (elem)
 import           AOC (aoc)
 import           AOC.Parser (Parser, signedDecimal)

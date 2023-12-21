@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2023/day/21
-module AOC2023.Day21 (solve) where
+module Day21 (solve) where
 import           AOC.Prelude hiding (head, last)
 import           Data.Massiv.Array (Matrix, (!), fromLists', size, U, Comp(Seq), Sz(..))
 import           AOC (aoc')

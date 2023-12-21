@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2020/day/3
-module AOC2020.Day03 (solve) where
-import           Relude hiding (some)
+module Day03 (solve) where
+import           AOC.Prelude
 import           Data.Massiv.Array (Matrix, (!), fromLists', size, U, Comp(Seq), Ix2(..), Sz(..))
 import           AOC (aoc)
 import           AOC.List (count)

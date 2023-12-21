@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2020/day/11
-module AOC2020.Day11 (solve) where
+module Day11 (solve) where
 import           AOC.Prelude hiding (toList)
 import           Data.Massiv.Array (Matrix, (!), (!?), fromLists', toList, makeArray, size, B, Comp(Seq), Ix2(..))
 import           AOC (aoc)

@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2022/day/25
-module AOC2022.Day25 (solve) where
+module Day25 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, choice, eol, sepEndBy1, some)

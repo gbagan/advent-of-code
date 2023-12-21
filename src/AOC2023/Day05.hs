@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2023/day/5
-module AOC2023.Day05 (solve) where
+module Day05 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Interval (Interval(..), intersection, translate)

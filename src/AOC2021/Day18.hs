@@ -1,4 +1,4 @@
-module AOC2021.Day18 (solve) where
+module Day18 (solve) where
 import           AOC.Prelude
 import           Data.List (foldl1', maximum)
 import           AOC (aoc)

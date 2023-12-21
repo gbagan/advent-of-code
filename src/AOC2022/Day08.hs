@@ -1,12 +1,12 @@
 -- https://adventofcode.com/2022/day/8
-module AOC2022.Day08 (solve) where
-import           Relude
+module Day08 (solve) where
+import           AOC.Prelude
 import           Data.Maybe (fromJust)
 import           Data.Char (digitToInt)
 import           Data.List (maximum)
 import           Data.Massiv.Array (Matrix, (!?), fromLists', toLists2, U, Comp(Seq), Ix2(..))
 import           AOC (aoc)
-import           AOC.Parser (Parser, sepEndBy1, eol, numberChar)
+import           AOC.Parser (Parser, sepEndBy1, eol, numberChar, some)
 import           AOC.List (count, flattenWithIndex)
 
 parser :: Parser (Matrix U Int)

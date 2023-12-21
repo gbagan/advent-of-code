@@ -1,6 +1,6 @@
-module AOC2021.Day08 (solve) where
+module Day08 (solve) where
 import           AOC.Prelude
-import           Relude.Unsafe ((!!))
+import           Data.List ((!!))
 import qualified Data.Map.Strict as Map
 import qualified Data.IntSet as IS
 import qualified Data.Set as Set

@@ -1,6 +1,6 @@
-module AOC2021.Day07 (solve) where
+module Day07 (solve) where
 import           AOC.Prelude
-import           Relude.Unsafe ((!!))
+import           Data.List ((!!))
 import           AOC (aoc)
 import           AOC.Parser (Parser, char, decimal, sepBy1)
 import           AOC.List (average)

@@ -1,9 +1,9 @@
-module AOC2021.Day25  where
-import           Relude
-import           Data.List (findIndex, maximum)
+module Day25  where
+import           AOC.Prelude
+import           Data.List (maximum)
 import qualified Data.HashMap.Strict as Map
 import           AOC (aoc)
-import           AOC.Parser (Parser, choice, sepEndBy1, eol)
+import           AOC.Parser (Parser, choice, sepEndBy1, eol, some)
 import           AOC.V2 (V2(..))
 import           AOC.Util (listTo2dMap)
 
@@ -40,7 +40,7 @@ step' nbRows nbCols (board, _) = (board2, modif1 || modif2) where
     (board2, modif2) = step nbRows nbCols South board1
 
 part1 :: Input -> Maybe Int
-part1 (Input nbCols nbRows board) = findIndex (not . snd) $ iterate (step' nbCols nbRows) (board, True)
+part1 (Input nbCols nbRows board) = findIndex (not . snd) $ iterate' (step' nbCols nbRows) (board, True)
 
 solve :: Text -> IO ()
 solve = aoc parser part1 (const (0 :: Int))

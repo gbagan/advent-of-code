@@ -1,6 +1,6 @@
-module AOC2021.Day04 (solve) where
+module Day04 (solve) where
 import           AOC.Prelude hiding (head)
-import           Relude.Unsafe (head)
+import           Data.List (head)
 import           AOC (aoc)
 import           AOC.Parser (Parser, char, decimal, eol, hspace, sepEndBy1, sepBy1)
 

@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2022/day/14
-module AOC2022.Day14 (solve) where
-import           Relude
+module Day14 (solve) where
+import           AOC.Prelude
 import           Control.Monad.ST (runST)
 import           Data.List (maximum)
 import qualified Data.HashSet as Set

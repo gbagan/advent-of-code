@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2023/day/14
-module AOC2023.Day14 (solve) where
+module Day14 (solve) where
 import           AOC.Prelude hiding (cycle, empty)
 import           Data.List ((!!))
 import qualified Data.HashMap.Strict as Map

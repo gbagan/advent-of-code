@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2020/day/12
-module AOC2020.Day12 (solve) where
+module Day12 (solve) where
 import           AOC.Prelude
 import           AOC.V2 (V2(..), perp)
 import           AOC (aoc)

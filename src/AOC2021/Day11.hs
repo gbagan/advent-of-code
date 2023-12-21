@@ -1,6 +1,6 @@
-module AOC2021.Day11 (solve) where
+module Day11 (solve) where
 import           AOC.Prelude hiding (tail)
-import           Relude.Unsafe (tail)
+import           Data.List (tail)
 import           Data.Char (digitToInt)
 import qualified Data.HashMap.Strict as Map
 import qualified Data.Set as Set

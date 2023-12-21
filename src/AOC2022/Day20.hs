@@ -1,7 +1,7 @@
 -- https://adventofcode.com/2022/day/20
-module AOC2022.Day20 (solve) where
-import           Relude
-import           Relude.Unsafe ((!!))
+module Day20 (solve) where
+import           AOC.Prelude
+import           Data.List ((!!))
 import           Data.Maybe (fromJust)
 import qualified Data.Sequence as Seq
 import           Data.Sequence (Seq(..), (><))
@@ -30,7 +30,7 @@ solveFor :: Int -> Int -> [Int] -> Int
 solveFor key nbIters l = a + b + c where
     s = Seq.fromList $ zip [0..] $ map (*key) l
     x0 = fromJust $ find ((==0) . snd) s
-    s' = rotateOn x0 $ iterate (iteration s) s !! nbIters
+    s' = rotateOn x0 $ iterate' (iteration s) s !! nbIters
     n = Seq.length s
     (_, a) = Seq.index s' (1000 `mod` n)
     (_, b) = Seq.index s' (2000 `mod` n)

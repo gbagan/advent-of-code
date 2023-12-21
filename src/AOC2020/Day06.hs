@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2020/day/3
-module AOC2020.Day06 (solve) where
-import           Relude hiding (group, some)
+module Day06 (solve) where
+import           AOC.Prelude hiding (group)
 import           Data.List (foldl1')
 import qualified Data.HashSet as Set
 import           AOC (aoc)

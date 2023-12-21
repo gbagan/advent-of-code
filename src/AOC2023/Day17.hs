@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2023/day/17
-module AOC2023.Day17 (solve) where
+module Day17 (solve) where
 import           AOC.Prelude
 import           Data.Char (digitToInt)
 import           Data.Massiv.Array (Matrix, (!), (!?), U, Comp(Seq), Sz(Sz2))

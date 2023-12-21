@@ -1,9 +1,9 @@
 -- https://adventofcode.com/2022/day/5
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use <$>" #-}
-module AOC2022.Day05 (solve) where
-import           Relude hiding (head, some)
-import           Relude.Unsafe (head, (!!))
+module Day05 (solve) where
+import           AOC.Prelude hiding (head)
+import           Data.List (head, (!!))
 import           Lens.Micro ((%~), (.~), ix)
 import           AOC (aoc)
 import           AOC.Parser (Parser, anySingle, between, manyTill, sepEndBy1, sepBy1, eol, upperChar, decimal)

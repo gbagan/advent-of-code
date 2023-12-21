@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2022/day/13
-module AOC2022.Day13 (solve) where
-import           Relude
+module Day13 (solve) where
+import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, between, sepEndBy1, sepBy, char, eol, decimal)
 import           AOC.List (count)

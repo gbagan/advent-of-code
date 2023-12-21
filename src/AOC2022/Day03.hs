@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2022/day/3
-module AOC2022.Day03 (solve) where
+module Day03 (solve) where
 import           AOC.Prelude hiding (head)
 import           Data.Char (isLower)
 import           Data.List (head, foldl1', intersect)

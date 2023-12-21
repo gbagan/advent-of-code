@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2023/day/10
-module AOC2023.Day10 (solve) where
+module Day10 (solve) where
 import           AOC.Prelude hiding (head)
 import           Data.List (head)
 import qualified Data.HashMap.Strict as Map

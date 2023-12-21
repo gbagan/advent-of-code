@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2020/day/9
-module AOC2020.Day09 (solve) where
+module Day09 (solve) where
 import           AOC.Prelude
 import           Data.List (minimum, maximum)
 import qualified Data.IntSet as Set

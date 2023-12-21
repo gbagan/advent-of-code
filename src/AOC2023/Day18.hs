@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2023/day/18
-module AOC2023.Day18 (solve) where
+module Day18 (solve) where
 import           AOC.Prelude hiding (Down, Left, Right)
 import           Data.Char (isDigit, digitToInt)
 import           AOC (aoc)

@@ -1,5 +1,5 @@
 -- https://adventofcode.com/2023/day/13
-module AOC2023.Day13 (solve) where
+module Day13 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import qualified Data.Vector as V

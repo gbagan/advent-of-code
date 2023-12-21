@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2022/day/7
-module AOC2022.Day07 (solve) where
-import           Relude hiding (some)
+module Day07 (solve) where
+import           AOC.Prelude
 import           Control.Monad (foldM)
 import           Data.List (minimum)
 import qualified Data.Tree as T

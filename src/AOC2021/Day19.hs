@@ -1,4 +1,4 @@
-module AOC2021.Day19 (solve) where
+module Day19 (solve) where
 import           AOC.Prelude
 import           Data.List (maximum)
 import           AOC.V3 (V3(..))

@@ -1,7 +1,7 @@
 -- https://adventofcode.com/2022/day/22
-module AOC2022.Day22 (solve) where
-import           Relude hiding (head, some)
-import           Relude.Unsafe ((!!), head)
+module Day22 (solve) where
+import           AOC.Prelude hiding (head)
+import           Data.List ((!!), head)
 import qualified Data.HashMap.Strict as Map
 import           AOC.V2 (V2(..))
 import           AOC (aoc)
@@ -61,7 +61,7 @@ solveFor move (Input grid instrs) = (r+1) * 1000 + (c+1) * 4 + dirScore finalDir
     go (pos, dir) = \case
         L -> (pos, goLeft dir)
         R -> (pos, goRight dir)
-        Move n -> iterate (move grid) (pos, dir) !! n
+        Move n -> iterate' (move grid) (pos, dir) !! n
 
     initPosition = head [v | i <- [0..], let v = V2 0 i, Map.lookup v grid == Just Empty]
     goLeft (V2 dr dc) = V2 (-dc) dr
