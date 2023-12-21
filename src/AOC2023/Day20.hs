@@ -65,8 +65,8 @@ sendSignal network = \case
                 let signal' = any not $ Map.elems (_from nstate Map.! name)
                 sendSignal network $ queue' >< Seq.fromList (map (,name, signal') dests)
 
-round :: Network -> State NState ()
-round network = do
+pushButton :: Network -> State NState ()
+pushButton network = do
     seen .= Map.map (const False) network
     sendSignal network $ Seq.singleton ("broadcaster", "$dummy", False)
 
@@ -84,14 +84,14 @@ part1 :: Network -> Int
 part1 network = _nbLow finalState * _nbHigh finalState where
     nstate = initNState network
     finalState = flip execState nstate do
-        forM_ [(1::Int)..1000] \_ -> round network
+        forM_ [(1::Int)..1000] \_ -> pushButton network
 
 part2 :: Network -> Integer
 part2 network = foldl' lcm 1 cycles where
     nstate = initNState network
     predRx = head . Map.keys $ _from nstate Map.! "rx"
     predPredRx = Map.keys $ _from nstate Map.! predRx
-    nstates = iterate' (execState (round network)) nstate
+    nstates = iterate' (execState (pushButton network)) nstate
     cycles = map extractCycle predPredRx
     extractCycle name = head [ idx 
                              | (idx, True) <- zip [0..] 

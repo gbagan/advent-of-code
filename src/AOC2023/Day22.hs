@@ -32,7 +32,7 @@ fallOne (space, brick) = (space', brick') where
     cubes = cubesOf brick
     height = maximum [HMap.findWithDefault 0 (V2 x y) space | (V3 x y _) <- cubes]
     Brick start@(V3 _ _ z) end = brick
-    brick' = Brick (start - V3 0 0 (z - height))  (end - V3 0 0 (z - height)) 
+    brick' = Brick (start - V3 0 0 (z - height)) (end - V3 0 0 (z - height)) 
     space' = foldl' go space (cubesOf brick')
     go spc (V3 x y z') = HMap.insert (V2 x y) (z'+1) spc
 
