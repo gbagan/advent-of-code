@@ -7,7 +7,7 @@ copyright:           2022 Guillaume Bagan
 build-type:          Simple
 
 library aoclib
-    hs-source-dirs: src
+    hs-source-dirs: libraries
     exposed-modules:
         AOC
         AOC.Area
