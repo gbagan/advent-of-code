@@ -4,15 +4,15 @@ import           AOC.Prelude
 import           Data.List (maximum)
 import           AOC (aoc')
 import qualified Data.HashMap.Strict as HMap
-import qualified Data.IntMap.Strict as Map
 import qualified Data.HashSet as HSet
+import qualified Data.Vector as V
 import           AOC.Parser (Parser, decimal, eol, sepEndBy1)
 import           AOC.V2 (V2(..))
 import           AOC.V3 (V3(..), _z)
 import           Lens.Micro.Extras (view)
 import           AOC.Search (reachableFrom')
 
-data Brick = Brick { _begin :: !(V3 Int), _end :: !(V3 Int) } deriving (Show)
+data Brick = Brick { _begin :: !(V3 Int), _end :: !(V3 Int) }
 type Cube = V3 Int
 type Heights = HashMap (V2 Int) Int
 
@@ -26,7 +26,7 @@ sortBricks = sortOn (view _z . _begin)
             . map (\(Brick p1 p2) -> Brick (min p1 p2) (max p1 p2))
 
 cubesOf :: Brick -> [Cube]
-cubesOf (Brick (V3 x1 y1 z1) (V3 x2 y2 z2)) = V3 <$> [x1..x2] <*> [y1..y2] <*> [z1,z2]
+cubesOf (Brick (V3 x1 y1 z1) (V3 x2 y2 z2)) = V3 <$> [x1..x2] <*> [y1..y2] <*> [z1..z2]
 
 fallOne :: (Heights, Brick) -> (Heights, Brick)
 fallOne (heights, brick) = (heights', brick') where
@@ -50,7 +50,7 @@ cubeOwners = foldl' go HMap.empty . zip [0..] where
                             owners
                             (cubesOf brick)
 
-precomp :: [Brick] -> ([Brick], IntMap [Int], IntMap [Int])
+precomp :: [Brick] -> ([Brick], Vector [Int], Vector [Int])
 precomp bricks = (bricks', support, supported) where
     bricks' = fall (sortBricks bricks)
     owners = cubeOwners bricks'
@@ -63,28 +63,28 @@ precomp bricks = (bricks', support, supported) where
                 , let j = owners HMap.!? (cube - V3 0 0 1)
                 , j /= Just i
                 ]
-    support = Map.fromList [(i, supportOf i brick) | (i, brick) <- zip [0..] bricks']
+    support = V.fromList [supportOf i brick | (i, brick) <- zip [0..] bricks']
     supportedBy i brick =
         ordNub . catMaybes $ [ j 
                              | cube <- cubesOf brick
                              , let j = owners HMap.!? (cube + V3 0 0 1)
                              , Just i /= j
                              ]
-    supported = Map.fromList [(i, supportedBy i brick) | (i, brick) <- zip [0..] bricks']
+    supported = V.fromList [supportedBy i brick | (i, brick) <- zip [0..] bricks']
 
-part1 :: ([Brick], IntMap [Int], IntMap [Int]) -> Int
+part1 :: ([Brick], Vector [Int], Vector [Int]) -> Int
 part1 (bricks, support, supported) = length disintegrated where
-    isStable i = length (support Map.! i) >= 2
-    canBeDisintegrated i = all isStable (supported Map.! i)
+    isStable i = length (support V.! i) >= 2
+    canBeDisintegrated i = all isStable (supported V.! i)
     disintegrated = [i | (i, _) <- zip [0..] bricks, canBeDisintegrated i]
 
-part2 :: ([Brick], IntMap [Int], IntMap [Int]) -> Int
+part2 :: ([Brick], Vector [Int], Vector [Int]) -> Int
 part2 (bricks, support, supported) = res where
     nborFunc v disintegrated =
-        [ next 
-        | next <- supported Map.! v
-        , all (`HSet.member` disintegrated) (support Map.! next)
-        ] 
+        [ next
+        | next <- supported V.! v
+        , all (`HSet.member` disintegrated) (support V.! next)
+        ]
     res = sum [HSet.size (reachableFrom' nborFunc i) - 1 | (i, _) <- zip [0..] bricks]
 
 solve :: Text -> IO ()
