@@ -12,7 +12,7 @@ import           AOC.Prelude
 import           Text.Megaparsec as P (Parsec, anySingle, anySingleBut, between, choice, count, many, manyTill, 
                                         sepBy, sepBy1, sepEndBy1, optional, some, takeP, takeRest, takeWhileP, try)
 import           Text.Megaparsec.Char as C (alphaNumChar, char, digitChar, eol, letterChar, space, hspace, hexDigitChar, lowerChar, numberChar, upperChar)
-import           Text.Megaparsec.Char.Lexer as L (decimal)
+import           Text.Megaparsec.Char.Lexer as L (decimal, lexeme)
 
 type Parser = Parsec Void Text
 type BinParser = P.Parsec Void [Bool]
