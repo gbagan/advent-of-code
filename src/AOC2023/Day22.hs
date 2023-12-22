@@ -66,7 +66,7 @@ precomp bricks = (bricks', support, supported) where
     supportedBy i brick =
         ordNub . catMaybes $ [ j 
                              | cube <- cubesOf brick
-                             , let j = owners HMap.!? (cube + V3 0 0 1)
+                             , let j = owners Map.!? (cube + V3 0 0 1)
                              , j /= Just i
                              ]
     supported = V.fromList [supportedBy i brick | (i, brick) <- zip [0..] bricks']

@@ -15,6 +15,10 @@ maximumDef :: Ord a => a -> [a] -> a
 maximumDef def [] = def
 maximumDef _ l = maximum l
 
+minimumDef :: Ord a => a -> [a] -> a
+minimumDef def [] = def
+minimumDef _ l = minimum l
+
 drop1 :: [a] -> [a]
 drop1 [] = []
 drop1 (_:xs) = xs
