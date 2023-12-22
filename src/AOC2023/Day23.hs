@@ -2,11 +2,10 @@
 module Day23 (solve) where
 import           AOC.Prelude hiding (pred)
 import           AOC (aoc)
-import qualified Data.HashSet as Set
 import           Data.Massiv.Array (Matrix, (!), (!?), makeArray, fromLists', size, B, Comp(Seq), Sz(..), Ix2(..))
 import           AOC.Parser (Parser, sepEndBy1, eol, some, choice)
-import           AOC.List (maximumDef)
 import           AOC.V2 (V2(..), adjacent, toIx2)
+import           AOC.Search (longestPath)
 
 data Tile = Path | Forest | North | South | West | East deriving (Eq)
 type Grid = Matrix B Tile
@@ -17,25 +16,16 @@ parser = fromLists' Seq <$> some tile `sepEndBy1` eol where
 
 neighbors1 :: Grid -> V2 Int -> [(V2 Int, Int)]
 neighbors1 grid p = case grid ! toIx2 p of
-    Path -> [(p', 1) | p' <- adjacent p, let tile = grid !? toIx2 p', tile /= Nothing && tile /= Just Forest]
+    Path -> [ (p', 1)
+            | p' <- adjacent p
+            , let tile = grid !? toIx2 p'
+            , tile /= Nothing && tile /= Just Forest
+            ]
     North -> [(p - V2 1 0, 1)]
     South -> [(p + V2 1 0, 1)]
     West -> [(p - V2 0 1, 1)]
     East -> [(p + V2 0 1, 1)]
     _ -> error "neighbors: cannot happen"
-
-neighbors2 :: Grid -> V2 Int -> [V2 Int]
-neighbors2 grid p =
-    [p' | p' <- adjacent p, let tile = grid !? toIx2 p', tile /= Nothing && tile /= Just Forest]
-
-longestPath :: (V2 Int -> [(V2 Int, Int)]) -> V2 Int -> V2 Int -> Int
-longestPath neighbors start dest = go Set.empty 0 start where
-    go visited len pos 
-        | pos == dest = len
-        | otherwise = maximumDef 0 [ go (Set.insert pos visited) (len+len') next
-                                   | (next, len') <- neighbors pos
-                                   , not $ next `Set.member` visited
-                                   ]
 
 part1 :: Grid -> Int
 part1 grid = longestPath neighbors start dest where
@@ -43,6 +33,13 @@ part1 grid = longestPath neighbors start dest where
     Sz2 h w = size grid
     start = V2 0 1
     dest = V2 (h-1) (w-2)
+
+neighbors2 :: Grid -> V2 Int -> [V2 Int]
+neighbors2 grid p = [ p' 
+                    | p' <- adjacent p
+                    , let tile = grid !? toIx2 p'
+                    , tile /= Nothing && tile /= Just Forest
+                    ]
 
 compressGrid :: Grid -> Matrix B [(V2 Int, Int)]
 compressGrid grid = makeArray Seq (Sz2 h w) \(Ix2 r c) ->

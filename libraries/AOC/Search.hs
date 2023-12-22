@@ -10,7 +10,7 @@ import qualified Data.HashPSQ as Q
 import qualified Data.Vector as V
 import qualified Data.Vector.Mutable as MV
 import           AOC.Monad (findM)
-import           AOC.List (grouped2)
+import           AOC.List (grouped2, maximumDef)
 
 bfs :: Hashable a => (a -> [a]) -> a -> [(Int, a)]
 bfs nborFunc start = go Set.empty (Seq.singleton (0, start)) where
@@ -53,7 +53,7 @@ dfsM' nborFunc = go Set.empty where
 dijkstra :: (Hashable v, Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> v -> Maybe w
 dijkstra nborFunc targetFunc source = dijkstra' nborFunc targetFunc [source]
 
-{-# SPECIALISE dijkstra :: (Hashable v, Ord v) => (v -> [(v, Int)]) -> (v -> Bool) -> v -> Maybe Int #-}
+{-# INLINE dijkstra #-}
 
 dijkstra' :: (Hashable v, Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> [v] -> Maybe w
 dijkstra' nbors targetFunc sources = go Set.empty initialQueue where
@@ -71,7 +71,18 @@ dijkstra' nbors targetFunc sources = go Set.empty initialQueue where
         Just (w', _) | w' < w -> queue
         _ -> Q.insert u w () queue
 
-{-# SPECIALISE dijkstra' :: (Hashable v, Ord v) => (v -> [(v, Int)]) -> (v -> Bool) -> [v] -> Maybe Int #-}
+{-# INLINE dijkstra' #-}
+
+longestPath :: Hashable a => (a -> [(a, Int)]) -> a -> a -> Int
+longestPath neighbors start dest = go Set.empty 0 start where
+    go visited len pos 
+        | pos == dest = len
+        | otherwise = maximumDef 0 [ go (Set.insert pos visited) (len+len') next
+                                   | (next, len') <- neighbors pos
+                                   , not $ next `Set.member` visited
+                                   ]
+
+{-# INLINE longestPath #-}
 
 type IntGraph = (Int, Vector [Int])
 type BipartiteGraph a b = HashMap a [b]
