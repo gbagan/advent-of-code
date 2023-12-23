@@ -63,8 +63,12 @@ count :: (a -> Bool) -> [a] -> Int
 count f = foldl' (\acc x -> if f x then acc+1 else acc) 0
 
 freqs :: Hashable a => [a] -> [(a, Int)]
-freqs = HMap.toList . HMap.fromListWith (+) . map (,1)
+freqs = HMap.toList . freqs'
 {-# INLINE freqs #-}
+
+freqs' :: Hashable a => [a] -> HashMap a Int
+freqs' = HMap.fromListWith (+) . map (,1)
+{-# INLINE freqs' #-}
 
 slice :: Int -> Int -> [a] -> [a]
 slice start end = take (end - start + 1) . drop start
