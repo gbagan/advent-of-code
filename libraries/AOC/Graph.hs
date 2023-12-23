@@ -102,6 +102,7 @@ perfectMatchings = go . map (second Set.fromList) where
         let (v, nbors) = minimumOn (Set.size . snd) g
         u <- Set.toList nbors
         ((v, u) :) <$> go [(w, Set.delete u nbors')  | (w, nbors') <- g, v /= w] 
+
 {-# INLINE perfectMatchings #-}
 
 {-
