@@ -2,6 +2,7 @@
 module Day19 (solve) where
 import           AOC.Prelude hiding (LT, GT)
 import qualified Data.HashMap.Strict as Map
+import qualified Data.Text as Text
 import           Lens.Micro (Lens', set, (^.))
 import           Lens.Micro.TH (makeLensesFor)
 import           AOC (aoc)
@@ -10,9 +11,9 @@ import           AOC.Parser (Parser, sepBy1,sepEndBy1, eol, choice, decimal, low
 data Rating a = Rating { _x :: !a, _m :: !a, _a :: !a, _s :: !a} deriving Foldable
 data Category = X | M | A | S
 data Test = LT Category Int | GT Category Int | Otherwise
-data Instr = Accept | Reject | Goto String
+data Instr = Accept | Reject | Goto Text
 data Step = Step !Test !Instr
-type Workflows = HashMap String [Step]
+type Workflows = HashMap Text [Step]
 data Input = Input !Workflows ![Rating Int]
 type RatingRange = Rating (Int, Int)
 
@@ -22,12 +23,13 @@ parser :: Parser Input
 parser = Input . Map.fromList <$> workflows <* eol <*> ratings where
     workflows = workflow `sepEndBy1` eol
     ratings = rating `sepEndBy1` eol
-    workflow = (,) <$> some lowerChar <* "{" <*> step `sepBy1` "," <* "}"
+    workflow = (,) <$> label <* "{" <*> step `sepBy1` "," <* "}"
+    label = Text.pack <$> some lowerChar
     step = try (Step <$> test <* ":" <*> instr) <|> (Step Otherwise <$> instr)
     test = do
         c <- category
         "<" *> (LT c <$> decimal) <|> ">" *> (GT c <$> decimal)
-    instr = Accept <$ "A" <|> Reject <$ "R" <|> Goto <$> some lowerChar
+    instr = Accept <$ "A" <|> Reject <$ "R" <|> Goto <$> label
     category = choice [X <$ "x", M <$ "m", A <$ "a", S <$ "s"]
     rating = do
         x <- "{x=" *> decimal

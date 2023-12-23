@@ -19,7 +19,7 @@ neighbors1 grid p = case grid ! toIx2 p of
     Path -> [ (p', 1)
             | p' <- adjacent p
             , let tile = grid !? toIx2 p'
-            , tile /= Nothing && tile /= Just Forest
+            , isJust tile && tile /= Just Forest
             ]
     North -> [(p - V2 1 0, 1)]
     South -> [(p + V2 1 0, 1)]
@@ -38,7 +38,7 @@ neighbors2 :: Grid -> V2 Int -> [V2 Int]
 neighbors2 grid p = [ p' 
                     | p' <- adjacent p
                     , let tile = grid !? toIx2 p'
-                    , tile /= Nothing && tile /= Just Forest
+                    , isJust tile && tile /= Just Forest
                     ]
 
 compressGrid :: Grid -> Matrix B [(V2 Int, Int)]

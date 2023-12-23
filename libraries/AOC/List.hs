@@ -1,23 +1,35 @@
 module AOC.List where
 
 import           AOC.Prelude
-import           Data.List (maximum, minimum)
+import           Data.List (maximum, minimum, maximumBy, minimumBy)
 import qualified Data.HashMap.Strict as HMap
 
 allUnique :: Ord a => [a] -> Bool
 allUnique xs = length (ordNub xs) == length xs
+{-# INLINE allUnique #-}
+
+minimumOn :: (Foldable t, Ord b) => (a -> b) -> t a -> a
+minimumOn f = minimumBy (comparing f)
+{-# INLINE minimumOn #-}
+
+maximumOn :: (Foldable t, Ord b) => (a -> b) -> t a -> a
+maximumOn f = maximumBy (comparing f)
+{-# INLINE maximumOn #-}
 
 minimumMaybe :: Ord a => [a] -> Maybe a
 minimumMaybe [] = Nothing
 minimumMaybe l = Just $ minimum l
+{-# INLINE minimumMaybe #-}
 
 maximumDef :: Ord a => a -> [a] -> a
 maximumDef def [] = def
 maximumDef _ l = maximum l
+{-# INLINE maximumDef #-}
 
 minimumDef :: Ord a => a -> [a] -> a
 minimumDef def [] = def
 minimumDef _ l = minimum l
+{-# INLINE minimumDef #-}
 
 drop1 :: [a] -> [a]
 drop1 [] = []
@@ -59,8 +71,9 @@ sliding n l = case (ys, l) of
     (_, _:zs) -> xs : sliding n zs
     where (xs, ys) = splitAt n l
 
-count :: (a -> Bool) -> [a] -> Int
+count :: Foldable t => (a -> Bool) -> t a -> Int
 count f = foldl' (\acc x -> if f x then acc+1 else acc) 0
+{-# INLINE count #-}
 
 freqs :: Hashable a => [a] -> [(a, Int)]
 freqs = HMap.toList . freqs'

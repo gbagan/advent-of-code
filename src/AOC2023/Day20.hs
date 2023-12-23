@@ -6,6 +6,7 @@ import           AOC (aoc)
 import qualified Data.HashMap.Strict as Map
 import qualified Data.Sequence as Seq 
 import           Data.Sequence (Seq(..), (><))
+import qualified Data.Text as Text
 import           Lens.Micro (ix)
 import           Lens.Micro.Mtl ((.=), (+=))
 import           Lens.Micro.TH (makeLenses)
@@ -13,17 +14,16 @@ import           Lens.Micro.Platform ()
 import           AOC.Parser (Parser, sepBy1, sepEndBy1, some, lowerChar, eol)
 import           AOC.Util (timesM_)
 
-
 data Type = FlipFlop | Conjunction | Broadcaster
-data Module = Module !Type [String]
-type Network = HashMap String Module
+data Module = Module !Type [Text]
+type Network = HashMap Text Module
 
 data NState = NState 
-    { _ffState :: !(HashMap String Bool)  -- the state of flip flap mdoules
-    , _from :: !(HashMap String (HashMap String Bool)) -- last signal sent by predecessor
+    { _ffState :: !(HashMap Text Bool)  -- the state of flip flap mdoules
+    , _from :: !(HashMap Text (HashMap Text Bool)) -- last signal sent by predecessor
     , _nbLow :: !Int
     , _nbHigh :: !Int
-    , _seen :: !(HashMap String Bool)
+    , _seen :: !(HashMap Text Bool)
     }
 
 makeLenses ''NState
@@ -32,14 +32,14 @@ parser :: Parser Network
 parser = insertRx . Map.fromList <$> module_ `sepEndBy1` eol where
     module_ = do
         t <- type_
-        n <- name <* " -> "
-        ns <- name `sepBy1` ", "
+        n <- label <* " -> "
+        ns <- label `sepBy1` ", "
         pure (n, Module t ns)
-    name = some lowerChar
+    label = Text.pack <$> some lowerChar
     type_ = FlipFlop <$ "%" <|> Conjunction <$ "&" <|> pure Broadcaster
     insertRx = Map.insert "rx" (Module Broadcaster [])
 
-sendSignal :: Network -> Seq (String, String, Bool) -> State NState ()
+sendSignal :: Network -> Seq (Text, Text, Bool) -> State NState ()
 sendSignal network = \case
     Seq.Empty -> pure ()
     ((name, srcName, pulse) :<| queue') -> do

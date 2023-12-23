@@ -19,11 +19,11 @@ type DistanceMat = HashMap (Int, Int) Int
 parser :: Parser Input
 parser = mapToInput . M.fromList <$> valve `sepEndBy1` eol where
     valve = do
-        name <- "Valve " *> some upperChar
+        label <- "Valve " *> some upperChar
         rate <- " has flow rate=" *> decimal
         _ <- "; tunnels lead to valves " <|> "; tunnel leads to valve "
         nbors <- some upperChar `sepBy1` ", "
-        pure (name, (rate, nbors))
+        pure (label, (rate, nbors))
 
 mapToInput :: HashMap String (Int, [String]) -> Input
 mapToInput m = Input graph dist init where

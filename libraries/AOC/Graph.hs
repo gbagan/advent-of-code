@@ -1,15 +1,15 @@
 module AOC.Graph where
 import           AOC.Prelude hiding (init)
-import           Control.Monad.ST (ST, runST)
+-- import           Control.Monad.ST (ST, runST)
 import           Data.Sequence (Seq(..), (><))
 import qualified Data.Sequence as Seq
 import qualified Data.HashSet as Set
-import qualified Data.HashMap.Strict as Map
+-- import qualified Data.HashMap.Strict as Map
 import qualified Data.HashPSQ as Q
-import qualified Data.Vector as V
-import qualified Data.Vector.Mutable as MV
-import           AOC.Monad (findM)
-import           AOC.List (grouped2, maximumDef)
+-- import qualified Data.Vector as V
+-- import qualified Data.Vector.Mutable as MV
+-- import           AOC.Monad (findM)
+import           AOC.List (minimumOn, maximumDef)
 
 bfs :: Hashable a => (a -> [a]) -> a -> [(Int, a)]
 bfs nborFunc start = go Set.empty (Seq.singleton (0, start)) where
@@ -72,7 +72,7 @@ dijkstra' nbors targetFunc sources = go Set.empty initialQueue where
     go !visited !queue = case Q.minView queue of
         Nothing -> Nothing
         Just (v, cost, _, queue')
-            | targetFunc v -> Just cost
+            | targetFunc v -> Just $! cost
             | otherwise -> go
                             (Set.insert v visited)
                             (foldl' insert queue'
@@ -94,6 +94,17 @@ longestPath neighbors start dest = go Set.empty 0 start where
                                    ]
 
 {-# INLINE longestPath #-}
+
+perfectMatchings :: (Eq a, Hashable b) => [(a, [b])] ->  [[(a, b)]]
+perfectMatchings = go . map (second Set.fromList) where
+    go [] = [[]]
+    go g = do
+        let (v, nbors) = minimumOn (Set.size . snd) g
+        u <- Set.toList nbors
+        ((v, u) :) <$> go [(w, Set.delete u nbors')  | (w, nbors') <- g, v /= w] 
+{-# INLINE perfectMatchings #-}
+
+{-
 
 type IntGraph = (Int, Vector [Int])
 type BipartiteGraph a b = HashMap a [b]
@@ -175,3 +186,4 @@ maximumMatching g = m' where
     go (i, j) = (vA V.! i, vB V.! j)
 
 {-# INLINE maximumMatching #-}
+-}

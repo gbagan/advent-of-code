@@ -5,8 +5,7 @@ import           AOC (aoc)
 import           AOC.Parser (Parser, some, letterChar, char, sepBy1, sepEndBy1, eol, decimal, hspace)
 import           AOC.Interval (Interval(..))
 import qualified AOC.Interval as I
-import           AOC.Graph (maximumMatching)
-import qualified Data.HashMap.Strict as Map
+import           AOC.Graph (perfectMatchings)
 
 data Field = Field { _name :: String, _ranges :: [Interval Int] }
 data Input = Input [Field] [Int] [[Int]]
@@ -34,12 +33,12 @@ match x (Field _ ranges) = any (I.member x) ranges
 matchedFields :: [Field] -> [Int] -> [String]
 matchedFields fields col = [_name field | field <- fields, all (`match` field) col]
 
-part2 :: Input -> Int
-part2 (Input fields myTicket nearbyTickets) = product values where
-    goodTickets = filter (all (\x -> any (match x) fields)) nearbyTickets
-    graph = Map.fromList $ zip myTicket [matchedFields fields col | col <- transpose goodTickets]
-    matching = maximumMatching graph -- assume this is a perfect matching
-    values = [val | (val, name) <- Map.toList matching, "departure" `isPrefixOf` name]
+part2 :: Input -> Maybe Int
+part2 (Input fields myTicket nearbyTickets) = do
+    let goodTickets = filter (all (\x -> any (match x) fields)) nearbyTickets
+    let graph = zip myTicket [matchedFields fields col | col <- transpose goodTickets]
+    matching <- listToMaybe $ perfectMatchings graph 
+    Just $! product [val | (val, name) <- matching, "departure" `isPrefixOf` name]
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2

@@ -22,7 +22,7 @@ transpose (Area xmin ymin xmax ymax) = Area ymin xmin ymax xmax
 intersect :: Ord a => Area a -> Area a -> Maybe (Area a)
 intersect (Area xmin1 ymin1 xmax1 ymax1) (Area xmin2 ymin2 xmax2 ymax2)
     | xmax1 < xmin2 || xmax2 < xmin1 || ymax1 < ymin2 || ymax2 < ymin1 = Nothing
-    | otherwise = Just $ Area
+    | otherwise = Just $! Area
                             (max xmin1 xmin2)
                             (max ymin1 ymin2)
                             (min xmax1 xmax2)

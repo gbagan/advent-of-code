@@ -39,6 +39,7 @@ library aoclib
         AOC.Prelude
         AOC.Parser
         AOC.Graph
+        AOC.HashSet
         AOC.Tuple
         AOC.Util
         AOC.V2
@@ -75,7 +76,7 @@ executable aoc2020
     import: aoc-exe
     hs-source-dirs:      src/AOC2020
     main-is:             Main.hs
-    other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13 Day14 Day15 Day16 Day17 Day18 Day19 Day20
+    other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13 Day14 Day15 Day16 Day17 Day18 Day19 Day20 Day21
     build-depends: parser-combinators
 
 executable aoc2021
