@@ -89,7 +89,6 @@ doJigsaw grids nwCorner = arr where
 
 drawPixels :: Matrix BL (Int, Grid) -> Matrix U Bool
 drawPixels arr = pixels where
-    arr' :: Matrix B (Matrix U Bool)
     arr' = A.compute @B $ A.map
             (A.fromLists' @U Seq . map (tail . init) .tail . init . snd)
             arr
