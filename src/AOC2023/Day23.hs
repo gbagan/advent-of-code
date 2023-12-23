@@ -53,8 +53,8 @@ compressGrid grid = makeArray Seq (Sz2 h w) \(Ix2 r c) ->
     where
     followPath pos pred len =
         case neighbors2 grid pos of
-            [next1, next2] | next1 == pred -> followPath next2 pos (len+1)
-                           | otherwise     -> followPath next1 pos (len+1)
+            [next1, next2] | next1 == pred -> followPath next2 pos $! len+1
+                           | otherwise     -> followPath next1 pos $! len+1
             _ -> (pos, len)
 
     Sz2 h w = size grid
