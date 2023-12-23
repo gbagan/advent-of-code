@@ -71,6 +71,9 @@ sliding n l = case (ys, l) of
     (_, _:zs) -> xs : sliding n zs
     where (xs, ys) = splitAt n l
 
+pairwise :: (a -> a -> b) -> [a] -> [b]
+pairwise f xs = [f y z | y : ys <- tails xs, z <- ys]
+
 count :: Foldable t => (a -> Bool) -> t a -> Int
 count f = foldl' (\acc x -> if f x then acc+1 else acc) 0
 {-# INLINE count #-}
