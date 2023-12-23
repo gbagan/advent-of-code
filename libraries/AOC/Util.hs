@@ -52,7 +52,6 @@ listTo2dSet l =
         , (j, True) <- zip [0..] row
         ]
 
-
 binToInt :: [Bool] -> Int
 binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
 
