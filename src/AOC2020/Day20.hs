@@ -3,13 +3,13 @@ module Day20 (solve) where
 
 import           AOC.Prelude hiding (head, last, init, tail)
 import           Data.List (head, last, init, tail)
-import qualified Data.IntMap.Strict as IMap
 import qualified Data.HashMap.Strict as Map
 import           Data.Massiv.Array (Matrix, (!), (!?), U, B, BL, Comp(Seq), Sz(..), Ix2(..))
 import qualified Data.Massiv.Array as A
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal, some)
 import           AOC.List (count, freqs')
+import           AOC.Tuple (thd3)
 import           AOC.Util (binToInt)
 
 type Grid = [[Bool]]
@@ -19,8 +19,8 @@ intSqrt :: Int -> Int
 intSqrt = floor . sqrt @Double . fromIntegral
 
 borderHash :: [Bool] -> Int
-borderHash xs = 10000000 * (min x y) + max x y where 
-    x = binToInt xs 
+borderHash xs = 10000000 * min x y + max x y where
+    x = binToInt xs
     y = binToInt (reverse xs)
 
 parser :: Parser Input
@@ -30,22 +30,23 @@ parser = grid `sepEndBy1` eol where
         (id_,) <$> some tile `sepEndBy1` eol
     tile = False <$ "." <|> True <$ "#"
 
-borders :: (Int, Grid) -> (Int, [Int])
-borders (id_, grid) = (id_, bds) where
+borders :: (Int, Grid) -> (Int, Grid, [Int])
+borders (id_, grid) = (id_, grid, bds) where
     bds = fmap borderHash [head grid, last grid, head tgrid, last tgrid]
     tgrid = transpose grid
 
 part1 :: Input -> Int
 part1 grids = product corners where
     bds = fmap borders grids
-    freqs = freqs' (concatMap snd bds) 
-    corners = [id_ | (id_, bds') <- bds, count (\b -> freqs Map.! b >= 2) bds' == 2] 
+    freqs = freqs' (concatMap thd3 bds)
+    corners = [id_ | (id_, _, bds') <- bds, count (\b -> freqs Map.! b >= 2) bds' == 2]
 
 seaMonster :: Grid
 seaMonster = map (map (=='#')) [ "                  # "
                                , "#    ##    ##    ###"
                                , " #  #  #  #  #  #   "
                                ]
+
 blackPositions :: Grid -> [(Int, Int)]
 blackPositions l =
     [ (i, j)
@@ -60,15 +61,15 @@ orientations grid = do
     f3 <- [id, reverse]
     pure . f1 . f2 $ f3 grid
 
-putPieces :: [(Int, Grid)] -> (Int, Grid) -> Matrix BL (Int, Grid)
-putPieces grids nwCorner = arr where
+doJigsaw :: [(Int, Grid)] -> (Int, Grid) -> Matrix BL (Int, Grid)
+doJigsaw grids nwCorner = arr where
     n = intSqrt (length grids)
     arr = A.makeArray Seq (Sz2 n n) \(Ix2 row col) ->
         if | row == 0 && col == 0 -> nwCorner
            | row == 0 ->
                 let (leftId, leftGrid) = arr ! Ix2 row (col-1)
                     leftBorder = map last leftGrid
-                in head 
+                in head
                     [ (id_, orientation)
                     | (id_, grid) <- grids
                     , id_ /= leftId
@@ -89,7 +90,7 @@ putPieces grids nwCorner = arr where
 drawPixels :: Matrix BL (Int, Grid) -> Matrix U Bool
 drawPixels arr = pixels where
     arr' :: Matrix B (Matrix U Bool)
-    arr' = A.compute @B $ A.map 
+    arr' = A.compute @B $ A.map
             (A.fromLists' @U Seq . map (tail . init) .tail . init . snd)
             arr
     Sz2 h _ = A.size arr'
@@ -102,10 +103,10 @@ roughness pixels = nbBlacks - nbSeaMonsters * seaMonsterSize where
     nbSeaMonsters = length
              [ ()
              | p <- orientations seaMonster
-             , let positions = blackPositions p 
+             , let monsterPositions = blackPositions p
              , x <- [0..h-1]
              , y <- [0..h-1]
-             , all (\(x', y') -> (pixels !? Ix2 (x+x') (y+y')) == Just True) positions
+             , all (\(x', y') -> (pixels !? Ix2 (x+x') (y+y')) == Just True) monsterPositions
              ]
     seaMonsterSize = length (blackPositions seaMonster)
     nbBlacks = count id (A.toList pixels)
@@ -113,18 +114,16 @@ roughness pixels = nbBlacks - nbSeaMonsters * seaMonsterSize where
 
 part2 :: Input -> Maybe Int
 part2 grids = do
-    let gridMap = IMap.fromList grids
     let bds = fmap borders grids
-    let freqs = freqs' (concatMap snd bds) 
-    cornerId <- listToMaybe [ id_
-                            | (id_, bds') <- bds
+    let freqs = freqs' (concatMap thd3 bds)
+    (cornerId, corner) <- listToMaybe [ (id_, grid)
+                            | (id_, grid, bds') <- bds
                             , count (\b -> freqs Map.! b >= 2) bds' == 2
                             ]
-    let !corner = gridMap IMap.! cornerId
     orientedCorner <- orientations corner & find \grid ->
-        freqs Map.! (borderHash $ head grid) == 1
+        freqs Map.! borderHash (head grid) == 1
         && freqs Map.! (borderHash . head $ transpose grid) == 1
-    let jigsaw = putPieces grids (cornerId, orientedCorner)
+    let jigsaw = doJigsaw grids (cornerId, orientedCorner)
     let pixels = drawPixels jigsaw
     pure $ roughness pixels
 
