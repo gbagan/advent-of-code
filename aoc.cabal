@@ -10,19 +10,19 @@ common aoc
     default-language: GHC2021
     
     default-extensions:
-                    BlockArguments
-                    LambdaCase
-                    MultiWayIf
-                    NoImplicitPrelude
-                    OverloadedStrings
-                    TypeFamilies
+        BlockArguments
+        LambdaCase
+        MultiWayIf
+        NoImplicitPrelude
+        OverloadedStrings
+        TypeFamilies
 
     ghc-options:
-              -O2
-              -Wall
-              -Wcompat
-              -Wincomplete-uni-patterns
-              -Wredundant-constraints
+        -O2
+        -Wall
+        -Wcompat
+        -Wincomplete-uni-patterns
+        -Wredundant-constraints
 
 library aoclib
     import: aoc
@@ -56,9 +56,6 @@ library aoclib
 
 common aoc-exe
     import: aoc
-    default-language: GHC2021
-    default-extensions: BlockArguments LambdaCase MultiWayIf NoImplicitPrelude OverloadedStrings RecordWildCards TemplateHaskell TypeFamilies
-    ghc-options: -O2 -Wall -Wcompat -Wincomplete-uni-patterns -Wredundant-constraints
     build-depends:  base >= 4.15 && < 5
                    , aoclib
                    , containers
