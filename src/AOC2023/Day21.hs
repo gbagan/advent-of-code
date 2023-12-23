@@ -6,7 +6,7 @@ import           AOC (aoc')
 import           AOC.Parser (Parser, sepEndBy1, some, eol)
 import           AOC.List (count, flattenWithIndex)
 import           AOC.V2 (V2(..), adjacent, toIx2)
-import           AOC.Search (bfs)
+import           AOC.Graph (bfs)
 
 data Tile = Garden | Rock | Start deriving (Eq)
 type Grid = Matrix U Bool

@@ -7,7 +7,7 @@ import           Data.Vector.Instances ()
 import qualified Data.IntMap as IM
 import           AOC (aoc)
 import           AOC.Parser (Parser, anySingle, some)
-import           AOC.Search (dijkstra)
+import           AOC.Graph (dijkstra)
 
 data Amphipod = Amber | Bronze | Copper | Desert deriving (Eq, Ord, Enum)
 type Rooms = Vector [Amphipod]

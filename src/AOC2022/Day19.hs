@@ -6,7 +6,7 @@ import           Lens.Micro.Extras (view)
 import           AOC.V4 (V4(..), _x, _y, _z)
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
-import           AOC.Search (dfsM)
+import           AOC.Graph (dfsM)
 
 type Resource = V4 Int -- ore clay obsdian geode
 data Blueprint = Blueprint !Resource !Resource !Resource !Resource

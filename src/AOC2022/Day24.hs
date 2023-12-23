@@ -4,7 +4,7 @@ import           AOC.Prelude
 import           AOC.V3 (V3(..))
 import           Data.Massiv.Array (Matrix, (!), (!?), fromLists', size, B, Comp(Seq), Ix2(..), Sz(..))
 import           AOC (aoc)
-import           AOC.Search (distance)
+import           AOC.Graph (distance)
 import           AOC.Parser (Parser, choice, sepEndBy1, eol, some)
 
 data Tile = North | South | West | East | Wall | Empty deriving (Eq)

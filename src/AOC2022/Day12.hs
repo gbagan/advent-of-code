@@ -4,7 +4,7 @@ import           AOC.Prelude
 import           Data.Massiv.Array (Matrix, (!?), fromLists', toLists2, U, Comp(Seq))
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, some, eol, letterChar, eol)
-import           AOC.Search (distance)
+import           AOC.Graph (distance)
 import           AOC.List (flattenWithIndex)
 import           AOC.V2 (V2(..), adjacent, toIx2)
 

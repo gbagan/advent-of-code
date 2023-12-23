@@ -5,7 +5,7 @@ import           Data.Massiv.Array (Matrix, (!), (!?), fromLists', makeArray, U,
 import           AOC (aoc)
 import           AOC.V2 (V2(..), adjacent, toIx2)
 import           AOC.Parser (Parser, sepEndBy1, some, digitChar, eol)
-import           AOC.Search (dijkstra)
+import           AOC.Graph (dijkstra)
 
 type Coord = V2 Int
 

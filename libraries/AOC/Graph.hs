@@ -1,5 +1,4 @@
-module AOC.Search where
-
+module AOC.Graph where
 import           AOC.Prelude hiding (init)
 import           Control.Monad.ST (ST, runST)
 import           Data.Sequence (Seq(..), (><))
@@ -21,12 +20,18 @@ bfs nborFunc start = go Set.empty (Seq.singleton (0, start)) where
                         (Set.insert v visited)
                         (queue >< Seq.fromList [(d+1, u) | u <- nborFunc v])
 
+{-# INLINE bfs #-}
+
 distance :: Hashable a => (a -> [a]) -> (a -> Bool) -> a -> Maybe Int
 distance nborFunc destFunc start =
     fst <$> find (destFunc . snd) (bfs nborFunc start)
 
+{-# INLINE distance #-}
+
 reachableFrom :: Hashable a => (a -> [a]) -> a -> HashSet a
 reachableFrom nborFunc = reachableFrom' \v _ -> nborFunc v
+
+{-# INLINE reachableFrom #-}
 
 reachableFrom' :: Hashable a => (a -> HashSet a -> [a]) -> a -> HashSet a
 reachableFrom' nborFunc start = go Set.empty [start] where
@@ -38,8 +43,12 @@ reachableFrom' nborFunc start = go Set.empty [start] where
                 nbors = nborFunc v visited' 
             in go visited' (nbors ++ queue)
 
+{-# INLINE reachableFrom' #-}
+
 dfsM :: (Hashable a, Monad m) => (a -> m [a]) -> a -> m ()
 dfsM nborFunc start = dfsM' nborFunc [start]
+
+{-# INLINE dfsM #-}
 
 dfsM' :: (Hashable a, Monad m) => (a -> m [a]) -> [a] -> m ()
 dfsM' nborFunc = go Set.empty where
@@ -49,6 +58,8 @@ dfsM' nborFunc = go Set.empty where
         | otherwise = do
             nbors <- nborFunc v
             go (Set.insert v visited) (nbors ++ queue)
+
+{-# INLINE dfsM' #-}
 
 dijkstra :: (Hashable v, Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> v -> Maybe w
 dijkstra nborFunc targetFunc source = dijkstra' nborFunc targetFunc [source]
@@ -88,8 +99,8 @@ type IntGraph = (Int, Vector [Int])
 type BipartiteGraph a b = HashMap a [b]
 type Matching a b = HashMap a b
 
-greedyMatching :: IntGraph -> Matching Int Int
-greedyMatching (m, graph) =
+_greedyMatching :: IntGraph -> Matching Int Int
+_greedyMatching (m, graph) =
     Map.fromList . catMaybes $ runST do
         matched <- MV.replicate m False
         zipWithM (go matched) [0..] (V.toList graph)
@@ -102,8 +113,8 @@ greedyMatching (m, graph) =
                 MV.write matched x True
                 pure $ Just (i, x)
 
-findAugmentingPath :: IntGraph -> Matching Int Int -> Maybe (Matching Int Int)
-findAugmentingPath (m, graph) matching = runST do
+_findAugmentingPath :: IntGraph -> Matching Int Int -> Maybe (Matching Int Int)
+_findAugmentingPath (m, graph) matching = runST do
     matched <- MV.replicate (n+m) Nothing
     parents <- MV.replicate (n+m) Nothing
     forM_ (Map.toList matching) \(u, v) -> do
@@ -147,9 +158,9 @@ findAugmentingPath (m, graph) matching = runST do
                 xs <- findPath parents parent
                 pure $! v : xs 
 
-maximumMatching' :: IntGraph -> Matching Int Int
-maximumMatching' g = go (greedyMatching g) where
-    go m = maybe m go (findAugmentingPath g m)
+_maximumMatching :: IntGraph -> Matching Int Int
+_maximumMatching g = go (_greedyMatching g) where
+    go m = maybe m go (_findAugmentingPath g m)
 
 maximumMatching :: (Hashable a, Hashable b) => BipartiteGraph a b -> Matching a b
 maximumMatching g = m' where
@@ -158,7 +169,9 @@ maximumMatching g = m' where
     vA = V.fromList verticesInA
     vB = V.fromList verticesInB
     dictB = Map.fromList $ zip verticesInB [0..]
-    g' = (length verticesInB, V.fromList . map (map (dictB Map.!)) $ Map.elems g)
-    m = maximumMatching' g'
+    g' = (V.length vB, V.fromList . map (map (dictB Map.!)) $ Map.elems g)
+    m = _maximumMatching g'
     m' = Map.fromList . map go $ Map.toList m
     go (i, j) = (vA V.! i, vB V.! j)
+
+{-# INLINE maximumMatching #-}

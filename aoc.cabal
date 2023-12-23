@@ -6,25 +6,7 @@ author:              Guillaume Bagan
 copyright:           2022 Guillaume Bagan
 build-type:          Simple
 
-library aoclib
-    hs-source-dirs: libraries
-    exposed-modules:
-        AOC
-        AOC.Area
-        AOC.Debug
-        AOC.Interval
-        AOC.List
-        AOC.Monad
-        AOC.Number
-        AOC.Prelude
-        AOC.Parser
-        AOC.Search
-        AOC.Tuple
-        AOC.Util
-        AOC.V2
-        AOC.V3
-        AOC.V4
-
+common aoc
     default-language: GHC2021
     
     default-extensions:
@@ -36,10 +18,32 @@ library aoclib
                     TypeFamilies
 
     ghc-options:
+              -O2
               -Wall
               -Wcompat
               -Wincomplete-uni-patterns
               -Wredundant-constraints
+
+library aoclib
+    import: aoc
+    hs-source-dirs: libraries
+    exposed-modules:
+        AOC
+        AOC.Area
+        AOC.Debug
+        AOC.Interval
+        AOC.List
+        AOC.Monad
+        AOC.Number
+        AOC.Prelude
+        AOC.Parser
+        AOC.Graph
+        AOC.Tuple
+        AOC.Util
+        AOC.V2
+        AOC.V3
+        AOC.V4
+
     build-depends: base >= 4.15 && < 5
                    , containers
                    , massiv
@@ -51,6 +55,7 @@ library aoclib
                    , vector
 
 common aoc-exe
+    import: aoc
     default-language: GHC2021
     default-extensions: BlockArguments LambdaCase MultiWayIf NoImplicitPrelude OverloadedStrings RecordWildCards TemplateHaskell TypeFamilies
     ghc-options: -O2 -Wall -Wcompat -Wincomplete-uni-patterns -Wredundant-constraints

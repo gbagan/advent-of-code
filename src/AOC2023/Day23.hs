@@ -5,7 +5,7 @@ import           AOC (aoc)
 import           Data.Massiv.Array (Matrix, (!), (!?), makeArray, fromLists', size, B, Comp(Seq), Sz(..), Ix2(..))
 import           AOC.Parser (Parser, sepEndBy1, eol, some, choice)
 import           AOC.V2 (V2(..), adjacent, toIx2)
-import           AOC.Search (longestPath)
+import           AOC.Graph (longestPath)
 
 data Tile = Path | Forest | North | South | West | East deriving (Eq)
 type Grid = Matrix B Tile

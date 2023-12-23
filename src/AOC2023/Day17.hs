@@ -7,7 +7,7 @@ import qualified Data.Massiv.Array as A
 import           AOC (aoc)
 import           AOC.V2 (V2(..), toIx2)
 import           AOC.Parser (Parser, sepEndBy1, eol, digitChar, some)
-import           AOC.Search (dijkstra')  
+import           AOC.Graph (dijkstra')  
 
 type Grid = Matrix U Int
 type Position = V2 Int

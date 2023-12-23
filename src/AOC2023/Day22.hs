@@ -10,7 +10,7 @@ import           AOC.Parser (Parser, decimal, eol, sepEndBy1)
 import           AOC.V2 (V2(..))
 import           AOC.V3 (V3(..), _z)
 import           Lens.Micro.Extras (view)
-import           AOC.Search (reachableFrom')
+import           AOC.Graph (reachableFrom')
 
 data Brick = Brick { _begin :: !(V3 Int), _end :: !(V3 Int) }
 type Cube = V3 Int

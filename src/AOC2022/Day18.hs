@@ -6,7 +6,7 @@ import qualified Data.HashSet as Set
 import           AOC.V3 (V3(..))
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
-import           AOC.Search (dfsM)
+import           AOC.Graph (dfsM)
 import           AOC.List (count)
 
 type Point = V3 Int

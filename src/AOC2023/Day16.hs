@@ -9,7 +9,7 @@ import qualified Data.Massiv.Array as A
 import           AOC (aoc)
 import           AOC.V2 (V2(..), toIx2)
 import           AOC.Parser (Parser, sepEndBy1, eol, choice, some)
-import           AOC.Search (reachableFrom)
+import           AOC.Graph (reachableFrom)
 
 data Tile = Empty | Horizontal | Vertical | Slash | Antislash
 type Position = V2 Int
