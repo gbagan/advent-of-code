@@ -1,7 +1,7 @@
 module Z3Helpers where
 
 import           AOC.Prelude
-import           Z3.Monad
+import           Z3.Monad (Z3, AST, mkInteger, mkAdd, mkMul, mkEq, mkGe, mkLe, withModel, evalInt)
 
 class ToZ3 a where
     toZ3 :: a -> Z3 AST
@@ -57,3 +57,6 @@ getIntResults :: [AST] -> Z3 (Maybe [Integer])
 getIntResults asts =
     fmap snd . withModel $ \m ->
         catMaybes <$> mapM (evalInt m) asts
+
+
+

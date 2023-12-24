@@ -11,14 +11,17 @@ common aoc
     
     default-extensions:
         BlockArguments
+        DeriveDataTypeable
         LambdaCase
         MultiWayIf
         MonadComprehensions
         NoImplicitPrelude
         OverloadedStrings
+        QuasiQuotes
         RecordWildCards
         TemplateHaskell
         TypeFamilies
+
 
     ghc-options:
         -O2
@@ -61,9 +64,12 @@ library z3helper
     import: aoc
     hs-source-dirs: libraries/z3
     exposed-modules:
-        Z3Helpers
+        Z3Helpers Z3Parser Z3Quote
     build-depends: base >= 4.15 && < 5
                    , aoclib
+                   , megaparsec
+                   , parser-combinators
+                   , template-haskell
                    , z3
 
 common aoc-exe
