@@ -18,45 +18,40 @@ instance ToZ3 Int where
 instance ToZ3 Integer where
     toZ3 = mkInteger
 
-(+&) :: (ToZ3 a, ToZ3 b) => a -> b -> Z3 AST
-a +& b = do
+z3int :: Integer -> Z3 AST
+z3int = mkInteger
+
+z3add :: (ToZ3 a, ToZ3 b) => a -> b -> Z3 AST
+z3add a b = do
     x <- toZ3 a
     y <- toZ3 b
     mkAdd [x, y]
-infixl 6 +&
 
-(*&) :: (ToZ3 a, ToZ3 b) => a -> b -> Z3 AST
-a *& b = do
+z3mul :: (ToZ3 a, ToZ3 b) => a -> b -> Z3 AST
+z3mul a b = do
     x <- toZ3 a
     y <- toZ3 b
     mkMul [x, y]
-infixl 7 *&
 
-(==&) :: (ToZ3 a, ToZ3 b) => a -> b -> Z3 AST
-a ==& b = do
+z3eq :: (ToZ3 a, ToZ3 b) => a -> b -> Z3 AST
+z3eq a b = do
     x <- toZ3 a
     y <- toZ3 b
     mkEq x y
-infixl 5 ==&
 
-(>=&) :: (ToZ3 a, ToZ3 b) => a -> b -> Z3 AST
-a >=& b = do
+z3ge :: (ToZ3 a, ToZ3 b) => a -> b -> Z3 AST
+z3ge a b = do
     x <- toZ3 a
     y <- toZ3 b
     mkGe x y
-infixl 5 >=&
 
-(<=&) :: (ToZ3 a, ToZ3 b) => a -> b -> Z3 AST
-a <=& b = do
+z3le :: (ToZ3 a, ToZ3 b) => a -> b -> Z3 AST
+z3le a b = do
     x <- toZ3 a
     y <- toZ3 b
-    mkLe x y
-infixl 5 <=&
+    mkGe x y
 
 getIntResults :: [AST] -> Z3 (Maybe [Integer])
 getIntResults asts =
     fmap snd . withModel $ \m ->
         catMaybes <$> mapM (evalInt m) asts
-
-
-

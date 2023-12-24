@@ -8,7 +8,8 @@ import           AOC.Number (toFrac)
 import           AOC.V2 (V2(..))
 import           AOC.V3 (V3(..))
 import           Z3.Monad
-import           Z3Helpers ((+&), (*&), (==&), (>=&), getIntResults)
+import           Z3Helpers
+import           Z3Quote (expr)
 import           System.IO.Unsafe (unsafePerformIO)
 
 type Position = V3 Integer
@@ -66,10 +67,10 @@ script hailstones = do
     vz <- mkFreshRealVar "vz"
     forM_ (zip [(0::Int)..] hailstones) \(i, Hailstone (V3 pxi pyi pzi) (V3 vxi vyi vzi)) -> do
         ti <- mkFreshRealVar ("t" <> show i)
-        assert =<< ti >=& (0 :: Int)
-        assert =<< px +& ti *& vx ==& pxi +& ti *& vxi
-        assert =<< py +& ti *& vy ==& pyi +& ti *& vyi
-        assert =<< pz +& ti *& vz ==& pzi +& ti *& vzi
+        assert =<< [expr| ti >= 0 |]
+        assert =<< [expr| px + ti * vx == pxi + ti * vxi |]
+        assert =<< [expr| py + ti * vy == pyi + ti * vyi |]
+        assert =<< [expr| pz + ti * vz == pzi + ti * vzi |]
     getIntResults [px,py,pz]
 
 part2 :: [Hailstone] -> Maybe Integer
