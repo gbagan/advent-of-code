@@ -31,6 +31,10 @@ minimumDef def [] = def
 minimumDef _ l = minimum l
 {-# INLINE minimumDef #-}
 
+groupOn :: Eq k => (a -> k) -> [a] -> [[a]]
+groupOn f = groupBy ((==) `on2` f)
+    where (.*.) `on2` g = \x -> let fx = f x in \y -> fx .*. g y
+
 drop1 :: [a] -> [a]
 drop1 [] = []
 drop1 (_:xs) = xs

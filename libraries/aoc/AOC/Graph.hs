@@ -4,12 +4,12 @@ import           AOC.Prelude hiding (init)
 import           Data.Sequence (Seq(..), (><))
 import qualified Data.Sequence as Seq
 import qualified Data.HashSet as Set
--- import qualified Data.HashMap.Strict as Map
+import qualified Data.HashMap.Strict as Map
 import qualified Data.HashPSQ as Q
 -- import qualified Data.Vector as V
 -- import qualified Data.Vector.Mutable as MV
 -- import           AOC.Monad (findM)
-import           AOC.List (minimumOn, maximumDef)
+import           AOC.List (groupOn, minimumOn, maximumDef)
 
 bfs :: Hashable a => (a -> [a]) -> a -> [(Int, a)]
 bfs nborFunc start = go Set.empty (Seq.singleton (0, start)) where
@@ -18,7 +18,7 @@ bfs nborFunc start = go Set.empty (Seq.singleton (0, start)) where
         | v `Set.member` visited = go visited queue
         | otherwise = (d, v) : go
                         (Set.insert v visited)
-                        (queue >< Seq.fromList [(d+1, u) | u <- nborFunc v])
+                        (queue >< Seq.fromList [ (d+1, u) | u <- nborFunc v])
 
 {-# INLINE bfs #-}
 
@@ -40,7 +40,7 @@ reachableFrom' nborFunc start = go Set.empty [start] where
         | v `Set.member` visited = go visited queue
         | otherwise =
             let visited' = Set.insert v visited
-                nbors = nborFunc v visited' 
+                nbors = nborFunc v visited'
             in go visited' (nbors ++ queue)
 
 {-# INLINE reachableFrom' #-}
@@ -68,7 +68,7 @@ dijkstra nborFunc targetFunc source = dijkstra' nborFunc targetFunc [source]
 
 dijkstra' :: (Hashable v, Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> [v] -> Maybe w
 dijkstra' nbors targetFunc sources = go Set.empty initialQueue where
-    initialQueue = Q.fromList [(s,0,()) | s <- sources]
+    initialQueue = Q.fromList [ (s,0,()) | s <- sources]
     go !visited !queue = case Q.minView queue of
         Nothing -> Nothing
         Just (v, cost, _, queue')
@@ -76,7 +76,7 @@ dijkstra' nbors targetFunc sources = go Set.empty initialQueue where
             | otherwise -> go
                             (Set.insert v visited)
                             (foldl' insert queue'
-                                [(v', cost+w') | (v', w') <- nbors v, not (v' `Set.member` visited)]
+                                [ (v', cost+w') | (v', w') <- nbors v, not (v' `Set.member` visited)]
                             )
     insert queue (u, w) = case Q.lookup u queue of
         Just (w', _) | w' < w -> queue
@@ -86,7 +86,7 @@ dijkstra' nbors targetFunc sources = go Set.empty initialQueue where
 
 longestPath :: Hashable a => (a -> [(a, Int)]) -> a -> a -> Int
 longestPath neighbors start dest = go Set.empty 0 start where
-    go visited len pos 
+    go visited len pos
         | pos == dest = len
         | otherwise = maximumDef 0 [ go (Set.insert pos visited) (len+len') next
                                    | (next, len') <- neighbors pos
@@ -101,9 +101,27 @@ perfectMatchings = go . map (second Set.fromList) where
     go g = do
         let (v, nbors) = minimumOn (Set.size . snd) g
         u <- Set.toList nbors
-        ((v, u) :) <$> go [(w, Set.delete u nbors')  | (w, nbors') <- g, v /= w] 
+        ((v, u) :) <$> go [ (w, Set.delete u nbors')  | (w, nbors') <- g, v /= w]
 
 {-# INLINE perfectMatchings #-}
+
+connectedComponents :: Hashable a => HashMap a (HashSet a) -> [[a]]
+connectedComponents g = map (map fst) . groupOn snd . sortOn snd $ Map.toList a
+    where
+    a = fst $ foldl' go (Map.empty, 0::Int) (Map.toList g)
+    go (mapped, idx) (v, _)
+        | v `Map.member` mapped = (mapped, idx)
+        | otherwise =
+            ( Map.union
+                mapped
+                (Map.fromList . map (,idx)
+                    . Set.toList $ reachableFrom (Set.toList . (g Map.!)) v
+                )
+            , idx+1
+            )
+
+-- _minimumCutPhase :: Hashable a => HashMap a (HashSet a) -> [(a, a)]
+
 
 {-
 

@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveAnyClass #-}
-
 module Z3Parser where
 
 import           AOC.Prelude
@@ -21,8 +19,9 @@ data BinOp  =  AddOp
             | LeOp
     deriving(Show, Typeable)
 
-expr :: Parsec Void String Expr
-expr = makeExprParser term table where
+exprParser :: Parsec Void String Expr
+exprParser = expr where
+    expr = makeExprParser term table
     term = parens expr <|> IntExpr <$> lex decimal <|> antiExpr
     parens = between (lex "(") (lex ")")
     lex = lexeme hspace
@@ -48,17 +47,6 @@ parseExpr _ s =
   where
     p = do
         hspace
-        e <- expr
+        e <- exprParser
         eof
         return e
-
-{-
-eval :: Expr -> Z3 AST
-eval (IntExpr n) = mkInteger n
-eval (Z3Ast ast) = pure ast
-eval (BinopExpr op e1 e2) = evalOp op (eval e1) (eval e2)
-    where
-    evalOp AddOp = z3Add
-    evalOp MulOp = z3Mul
-eval _ = error "cannot happen"
--}
