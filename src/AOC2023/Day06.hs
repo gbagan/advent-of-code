@@ -3,6 +3,7 @@ module Day06 (solve) where
 import           AOC.Prelude
 import           Prelude (read)
 import           AOC (aoc)
+import           AOC.Number (toDouble)
 import           AOC.Parser (Parser, sepEndBy1, eol, hspace, decimal)
 
 type Input = ([Int], [Int]) -- time limits, distances
@@ -14,8 +15,8 @@ parser = (,) <$> ("Time:" *> list) <*> (eol *> "Distance:" *> list) where
 solveFor :: (Input -> [(Int, Int)]) -> Input -> Int
 solveFor toRaces = product . map solveForRace . toRaces where
     solveForRace (time, distance) = max 0 (ceiling root2 - floor root1 - 1) where
-        t = fromIntegral time :: Double
-        d = fromIntegral distance :: Double
+        t = toDouble time
+        d = toDouble distance
         delta = sqrt $ max 0 (t*t - 4*d)
         root1 = (t - delta) / 2
         root2 = (t + delta) / 2

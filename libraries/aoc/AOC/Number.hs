@@ -2,6 +2,15 @@ module AOC.Number where
 
 import AOC.Prelude
 
+toInteger :: Integral a => a -> Integer
+toInteger = fromIntegral
+
+toDouble :: Integral a => a -> Double
+toDouble = fromIntegral
+
+toFrac :: Integral a => a-> Rational
+toFrac = fromIntegral
+
 -- Return (g, x, y) such that g is the gcd of a and b
 -- and ax + by = gcd(a,b)
 extgcd :: Integral a => a -> a -> (a, a, a)

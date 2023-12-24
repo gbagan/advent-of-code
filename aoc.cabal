@@ -15,6 +15,7 @@ common aoc
         MultiWayIf
         NoImplicitPrelude
         OverloadedStrings
+        RecordWildCards
         TemplateHaskell
         TypeFamilies
 
@@ -27,7 +28,7 @@ common aoc
 
 library aoclib
     import: aoc
-    hs-source-dirs: libraries
+    hs-source-dirs: libraries/aoc
     exposed-modules:
         AOC
         AOC.Area
@@ -45,7 +46,6 @@ library aoclib
         AOC.V2
         AOC.V3
         AOC.V4
-
     build-depends: base >= 4.15 && < 5
                    , containers
                    , massiv
@@ -55,6 +55,15 @@ library aoclib
                    , relude
                    , text
                    , vector
+
+library z3helper
+    import: aoc
+    hs-source-dirs: libraries/z3
+    exposed-modules:
+        Z3Helpers
+    build-depends: base >= 4.15 && < 5
+                   , aoclib
+                   , z3
 
 common aoc-exe
     import: aoc
@@ -98,4 +107,4 @@ executable aoc2023
     hs-source-dirs:      src/AOC2023
     main-is:             Main.hs
     other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13 Day14 Day15 Day16 Day17 Day18 Day19 Day20 Day21 Day22 Day23 Day24
-    build-depends: z3
+    build-depends: z3, z3helper

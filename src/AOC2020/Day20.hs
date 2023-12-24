@@ -9,6 +9,7 @@ import qualified Data.Massiv.Array as A
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal, some)
 import           AOC.List (count, freqs')
+import           AOC.Number (toDouble)
 import           AOC.Tuple (thd3)
 import           AOC.Util (binToInt)
 
@@ -16,7 +17,7 @@ type Grid = [[Bool]]
 type Input = [(Int, Grid)]
 
 intSqrt :: Int -> Int
-intSqrt = floor . sqrt @Double . fromIntegral
+intSqrt = floor . sqrt . toDouble
 
 borderHash :: [Bool] -> Int
 borderHash xs = 10000000 * min x y + max x y where
