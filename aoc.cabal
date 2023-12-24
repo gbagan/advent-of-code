@@ -13,6 +13,7 @@ common aoc
         BlockArguments
         LambdaCase
         MultiWayIf
+        MonadComprehensions
         NoImplicitPrelude
         OverloadedStrings
         RecordWildCards
@@ -33,14 +34,14 @@ library aoclib
         AOC
         AOC.Area
         AOC.Debug
-        AOC.Interval
+        AOC.Graph
+        AOC.HashSet
         AOC.List
         AOC.Monad
         AOC.Number
         AOC.Prelude
         AOC.Parser
-        AOC.Graph
-        AOC.HashSet
+        AOC.Range
         AOC.Tuple
         AOC.Util
         AOC.V2

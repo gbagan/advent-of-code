@@ -8,7 +8,7 @@ import           AOC.Number (toFrac)
 import           AOC.V2 (V2(..))
 import           AOC.V3 (V3(..))
 import           Z3.Monad
-import           Z3Helpers ((+&), (*&), (==&), getIntResults)
+import           Z3Helpers ((+&), (*&), (==&), (>=&), getIntResults)
 import           System.IO.Unsafe (unsafePerformIO)
 
 type Position = V3 Integer
@@ -41,12 +41,14 @@ cross (Hailstone (V3 px1 py1 _) (V3 vx1 vy1 _)) (Hailstone (V3 px2 py2 _) (V3 vx
     y = q2 / d
 
 crossesInsideTestArea :: Int -> Int -> Hailstone -> Hailstone -> Bool
-crossesInsideTestArea  start end h1@(Hailstone (V3 px1 _ _) (V3 vx1 _ _)) 
-                                 h2@(Hailstone (V3 px2 _ _) (V3 vx2 _ _)) =
+crossesInsideTestArea  start end h1@(Hailstone (V3 px1 py1 _) (V3 vx1 vy1 _)) 
+                                 h2@(Hailstone (V3 px2 py2 _) (V3 vx2 vy2 _)) =
     fromMaybe False do
         V2 x y <- cross h1 h2
         guard $ toFrac vx1 * (x - toFrac px1) >= 0
         guard $ toFrac vx2 * (x - toFrac px2) >= 0
+        guard $ toFrac vy1 * (x - toFrac py1) >= 0
+        guard $ toFrac vy2 * (x - toFrac py2) >= 0
         let start' = toFrac start
         let end' = toFrac end
         pure $ x >= start' && y >= start' && x <= end' && y <= end'
@@ -64,6 +66,7 @@ script hailstones = do
     vz <- mkFreshRealVar "vz"
     forM_ (zip [(0::Int)..] hailstones) \(i, Hailstone (V3 pxi pyi pzi) (V3 vxi vyi vzi)) -> do
         ti <- mkFreshRealVar ("t" <> show i)
+        assert =<< ti >=& (0 :: Int)
         assert =<< px +& ti *& vx ==& pxi +& ti *& vxi
         assert =<< py +& ti *& vy ==& pyi +& ti *& vyi
         assert =<< pz +& ti *& vz ==& pzi +& ti *& vzi

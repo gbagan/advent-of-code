@@ -39,6 +39,20 @@ a ==& b = do
     mkEq x y
 infixl 5 ==&
 
+(>=&) :: (ToZ3 a, ToZ3 b) => a -> b -> Z3 AST
+a >=& b = do
+    x <- toZ3 a
+    y <- toZ3 b
+    mkGe x y
+infixl 5 >=&
+
+(<=&) :: (ToZ3 a, ToZ3 b) => a -> b -> Z3 AST
+a <=& b = do
+    x <- toZ3 a
+    y <- toZ3 b
+    mkLe x y
+infixl 5 <=&
+
 getIntResults :: [AST] -> Z3 (Maybe [Integer])
 getIntResults asts =
     fmap snd . withModel $ \m ->

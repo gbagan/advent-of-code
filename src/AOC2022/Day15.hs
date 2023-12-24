@@ -4,7 +4,7 @@ import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.V2 (V2(..), manhattan)
 import           AOC.Parser (Parser, eol, sepEndBy1, signedDecimal)
-import           AOC.Interval (Interval(..), toDisjointUnion')
+import           AOC.Range (Range(..), toDisjointUnion)
 
 type Coords = V2 Integer
 data Scan = Scan !Coords !Coords !Integer
@@ -21,20 +21,20 @@ parser = line `sepEndBy1` eol where
         pure $ Scan sensor beacon (manhattan sensor beacon)
 
 -- | interval between a ball (w.r.t. Manhattan distance) and a row
-intersectionBallWithRow :: Coords -> Integer -> Integer -> Maybe (Interval Integer)
+intersectionBallWithRow :: Coords -> Integer -> Integer -> Maybe (Range Integer)
 intersectionBallWithRow (V2 cx cy) radius row
     | dx < 0 = Nothing
-    | otherwise = Just $ Interval (cx - dx) (cx + dx)
+    | otherwise = Just $ Range (cx - dx) (cx + dx)
     where dx = radius - abs (cy - row)
 
 -- | number of points on the interval
-itvLength :: Interval Integer -> Integer
-itvLength (Interval a b) = b - a + 1
+itvLength :: Range Integer -> Integer
+itvLength (Range a b) = b - a + 1
 
 -- | union of disjoint intervals that does not cointain non detected beacons
-intervalsWithoutBeacons :: Integer -> [Scan] -> [Interval Integer]
+intervalsWithoutBeacons :: Integer -> [Scan] -> [Range Integer]
 intervalsWithoutBeacons y =
-        toDisjointUnion'
+        toDisjointUnion
         . mapMaybe (\(Scan sensor _ dist) -> intersectionBallWithRow sensor dist y)
 
 part1 :: [Scan] -> Integer

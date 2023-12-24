@@ -22,7 +22,7 @@ parser = brick `sepEndBy1` eol where
     coord = V3 <$> decimal <* "," <*> decimal <* "," <*> decimal
 
 sortBricks :: [Brick] -> [Brick]
-sortBricks = sortOn (view _z . _begin) 
+sortBricks = sortOn (view _z . _begin)
             . map (\(Brick p1 p2) -> Brick (min p1 p2) (max p1 p2))
 
 cubesOf :: Brick -> [Cube]

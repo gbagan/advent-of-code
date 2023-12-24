@@ -4,14 +4,14 @@ import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
 import           AOC.List (count)
-import           AOC.Interval (Interval(..), isSubsetOf, overlaps)
+import           AOC.Range (Range(..), isSubsetOf, overlaps)
 
-type Input = [(Interval Int, Interval Int)]
+type Input = [(Range Int, Range Int)]
 
 parser :: Parser Input
 parser = pair `sepEndBy1` eol where
     pair = (,) <$> assignment <* "," <*> assignment
-    assignment = Interval <$> decimal <* "-" <*> decimal 
+    assignment = Range <$> decimal <* "-" <*> decimal 
 
 part1 :: Input -> Int
 part1 = count fullyContains where

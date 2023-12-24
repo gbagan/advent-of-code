@@ -3,11 +3,11 @@ module Day16 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, some, letterChar, char, sepBy1, sepEndBy1, eol, decimal, hspace)
-import           AOC.Interval (Interval(..))
-import qualified AOC.Interval as I
+import           AOC.Range (Range(..))
+import qualified AOC.Range as R
 import           AOC.Graph (perfectMatchings)
 
-data Field = Field { _name :: String, _ranges :: [Interval Int] }
+data Field = Field { _name :: String, _ranges :: [Range Int] }
 data Input = Input [Field] [Int] [[Int]]
 
 parser :: Parser Input
@@ -19,16 +19,16 @@ parser = do
     where
     intlist = decimal `sepBy1` ","
     field = Field <$> some (letterChar <|> char ' ') <* ":" <* hspace <*> interval `sepBy1` " or "
-    interval = Interval <$> decimal <* "-" <*> decimal
+    interval = Range <$> decimal <* "-" <*> decimal
 
 part1 :: Input -> Int
-part1 (Input fields _ nearbyTickets) = sum [n | n <- nearby, all (I.notMember n) itvs]
+part1 (Input fields _ nearbyTickets) = sum [n | n <- nearby, all (R.notMember n) itvs]
     where
     itvs = concatMap _ranges fields
     nearby = concat nearbyTickets
 
 match :: Int -> Field -> Bool
-match x (Field _ ranges) = any (I.member x) ranges
+match x (Field _ ranges) = any (R.member x) ranges
 
 matchedFields :: [Field] -> [Int] -> [String]
 matchedFields fields col = [_name field | field <- fields, all (`match` field) col]
