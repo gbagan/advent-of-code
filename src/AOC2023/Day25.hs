@@ -12,7 +12,7 @@ type Network = [(Text, [Text])]
 
 parser :: Parser Network
 parser = row `sepEndBy1` eol where
-    row = (,) <$> label <* ": " <*> (fromList <$> label `sepEndBy1` hspace)
+    row = (,) <$> label <* ": " <*> label `sepEndBy1` hspace
     label = Text.pack <$> some lowerChar 
 
 part1 :: Network -> Int
