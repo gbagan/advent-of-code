@@ -5,6 +5,7 @@ import           Data.List (head, tail)
 import qualified Data.HashSet as Set
 import qualified Data.HashMap.Strict as Map
 import qualified Data.HashPSQ as Q
+import           AOC.List (minimumOn)
 import           AOC.Tuple (fst3, snd3, thd3)
 import           AOC.Graph (Graph, WeightedGraph, toWeightedGraph)
 
@@ -52,13 +53,11 @@ minimumCutStep start graph = go (Q.singleton start 0 ()) [start] (Set.singleton 
 _minimumCut :: (Ord a, Hashable a, Real w) => CGraph a e w -> ([e], w)
 _minimumCut g | Map.size g <= 1 = ([], 0)
               | null (g Map.! a) = ([], 0)
-              | otherwise = if weight > weight' 
-                                then (cutset', weight')
-                                else (cutset, weight)
+              | otherwise = minimumOn snd [cutset', (cutset, weight)]
             where
             a = head (Map.keys g)
             (cutset, weight, u, v) = minimumCutStep a g
-            (cutset', weight') = _minimumCut (mergeVertices u v g) 
+            cutset' = _minimumCut (mergeVertices u v g) 
 
 {-# INLINE _minimumCut #-}
 
