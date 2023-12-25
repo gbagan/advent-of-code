@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2023/day/25
 module Day25 (solve) where
-import           AOC.Prelude hiding (head, last)
+import           AOC.Prelude
 import           AOC (aoc)
 import qualified Data.Text as Text
 import qualified Data.HashMap.Strict as Map
