@@ -5,7 +5,7 @@ import qualified Data.Sequence as Seq
 import qualified Data.HashSet as Set
 import qualified Data.HashMap.Strict as Map
 import qualified Data.HashPSQ as Q
-import           AOC.List (groupOn, minimumOn, maximumDef)
+import           AOC.List (groupOn, maximumDef)
 import           AOC.Graph.Base (Graph)
 
 bfs :: Hashable a => (a -> [a]) -> a -> [(Int, a)]

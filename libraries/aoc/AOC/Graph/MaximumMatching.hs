@@ -1,4 +1,4 @@
-module AOC.Graph.MaximumMatching where
+module AOC.Graph.MaximumMatching (maximumMatching) where
 import           AOC.Prelude hiding (head, tail, init)
 import           Control.Monad.ST (ST, runST)
 import qualified Data.HashSet as Set

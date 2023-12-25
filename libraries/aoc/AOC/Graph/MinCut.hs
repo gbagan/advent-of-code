@@ -1,4 +1,4 @@
-module AOC.Graph.MinCut where
+module AOC.Graph.MinCut (minimumCut) where
 
 import           AOC.Prelude hiding (head, tail, last)
 import           Data.List (head, tail)

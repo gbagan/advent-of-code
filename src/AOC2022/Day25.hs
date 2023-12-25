@@ -22,7 +22,5 @@ part1 = reverse . encode . sum . map decode where
     encodeDigit (-1) = '-'
     encodeDigit _ = '='
 
-
-
 solve :: Text -> IO ()
 solve = aoc parser part1 (const (0::Int))
