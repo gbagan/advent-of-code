@@ -17,7 +17,7 @@ import           Text.Megaparsec.Char.Lexer as L (decimal, lexeme)
 type Parser = Parsec Void Text
 type BinParser = P.Parsec Void [Bool]
 
-signedDecimal :: (Num a) => Parser a
+signedDecimal :: Num a => Parser a
 signedDecimal = L.decimal <|> C.char '-' *> (negate <$> L.decimal)
 
 bitP :: Parser Bool

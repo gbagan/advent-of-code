@@ -14,7 +14,7 @@ aocMain year solutions = do
     solveProblem name = case Map.lookup name solutions of
         Just solve -> do
             putStrLn $ "Solve day " <> name
-            bytes <- readFileBS ("./data/" ++ year ++ "/data" ++ name)
+            bytes <- readFileBS ("./inputs/" ++ year ++ "/data" ++ name)
             solve $ decodeASCII bytes
         Nothing -> putStrLn $ "Day not implemented: " <> name
 

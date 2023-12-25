@@ -4,7 +4,7 @@ import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
 import qualified Data.HashSet as Set 
-import qualified Data.HashMap.Strict as Map
+import qualified AOC.HashMap as Map
 import           AOC.Util (times, listTo2dSet)
 import           AOC.V2 (V2(..))
 import           AOC.V3 (V3(..))
@@ -14,17 +14,14 @@ import qualified AOC.V4 as V4
 
 type Grid2 = HashSet (V2 Int)
 
-unionsWith :: Hashable a => (b -> b -> b) -> [HashMap a b] -> HashMap a b
-unionsWith f = foldl' (Map.unionWith f) Map.empty
-
-test :: Hashable a => HashSet a -> a -> Int -> Bool
-test grid pos val = val == 3 || val == 2 && Set.member pos grid
+rule :: Hashable a => HashSet a -> a -> Int -> Bool
+rule grid pos val = val == 3 || val == 2 && Set.member pos grid
 
 step :: Hashable a => (a -> [a]) -> HashSet a -> HashSet a
 step nbor grid = 
     Map.keysSet
-    . Map.filterWithKey (test grid)
-    . unionsWith (+)
+    . Map.filterWithKey (rule grid)
+    . Map.unionsWith (+)
     . map (Map.fromList . map (,1) . nbor)
     $ Set.toList grid
 
