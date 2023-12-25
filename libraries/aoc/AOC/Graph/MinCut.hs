@@ -10,7 +10,7 @@ import           AOC.Graph (Graph, WeightedGraph, toWeightedGraph)
 
 type CGraph a e w = HashMap a [(e, w, a)]
 
-mergeVertices :: Hashable a => a -> a -> CGraph a w e -> CGraph a w e
+mergeVertices :: Hashable a => a -> a -> CGraph a e w -> CGraph a e w
 mergeVertices u v graph = foldl' go graph' nborV 
     where
     go g (_, _, x) = Map.adjust (map (\(e, w, y) -> (e, w, if y == v then u else y))) x g
