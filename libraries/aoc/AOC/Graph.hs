@@ -105,6 +105,10 @@ perfectMatchings = go . map (second Set.fromList) where
 {-# INLINE perfectMatchings #-}
 
 type Graph a = HashMap a (HashSet a)
+type WeightedGraph a w = HashMap a [(a, w)]
+
+toWeightedGraph :: Graph a -> WeightedGraph a Int
+toWeightedGraph = Map.map (map (,1) . Set.toList)
 
 addEdge :: Hashable a => a -> a -> Graph a -> Graph a
 addEdge u v = Map.alter (addToNbors u) v . Map.alter (addToNbors v) u where
