@@ -5,6 +5,7 @@ import           AOC (aoc)
 import qualified Data.Text as Text
 import qualified Data.HashMap.Strict as Map
 import           AOC.Parser (Parser, sepEndBy1, some, lowerChar, eol, hspace)
+import           AOC.Graph.MinCut (removeVertex, minimumCutPhase)
 
 type Network = HashMap Text [Text]
 
@@ -14,7 +15,9 @@ parser = Map.fromList <$> row `sepEndBy1` eol where
     label = Text.pack <$> some lowerChar 
 
 part1 :: Network -> Int
-part1 _ = 0
+part1 _ = traceShow (removeVertex 1 g) 0 where
+    g :: HashMap Int [(Int, Int)] 
+    g = Map.fromList [(0, [(0, 1), (0, 2)]), (1, [(1, 0), (1, 2)]), (2, [(2, 0), (2, 1)])]
 
 part2 :: Network -> Int
 part2 _ = 0

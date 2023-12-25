@@ -49,7 +49,7 @@ z3le :: (ToZ3 a, ToZ3 b) => a -> b -> Z3 AST
 z3le a b = do
     x <- toZ3 a
     y <- toZ3 b
-    mkGe x y
+    mkLe x y
 
 getIntResults :: [AST] -> Z3 (Maybe [Integer])
 getIntResults asts =

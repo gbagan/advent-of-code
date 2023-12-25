@@ -1,7 +1,7 @@
 module Z3Parser where
 
 import           AOC.Prelude
-import           Text.Megaparsec (Parsec, runParser, between, some, many, eof)
+import           Text.Megaparsec (Parsec, runParser, between, many, eof)
 import           Text.Megaparsec.Char (char,  lowerChar, upperChar, digitChar, hspace)
 import           Text.Megaparsec.Char.Lexer (decimal, lexeme)
 import           Control.Monad.Combinators.Expr (Operator(..), makeExprParser)

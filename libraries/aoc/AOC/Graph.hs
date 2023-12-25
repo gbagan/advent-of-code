@@ -1,6 +1,5 @@
 module AOC.Graph where
-import           AOC.Prelude hiding (init)
--- import           Control.Monad.ST (ST, runST)
+import           AOC.Prelude hiding (head, tail, init)
 import           Data.Sequence (Seq(..), (><))
 import qualified Data.Sequence as Seq
 import qualified Data.HashSet as Set
@@ -105,7 +104,19 @@ perfectMatchings = go . map (second Set.fromList) where
 
 {-# INLINE perfectMatchings #-}
 
-connectedComponents :: Hashable a => HashMap a (HashSet a) -> [[a]]
+type Graph a = HashMap a (HashSet a)
+
+{-
+removeVertex :: Hashable a => a -> Graph a -> Graph a
+removeVertex v graph = case graph Map.!? v of
+    Nothing -> graph
+    Just nbor -> foldl'
+                    (\g u -> Map.adjust (Set.delete v) u g)
+                    (Map.delete v graph)
+                    (Set.toList nbor)
+-}
+
+connectedComponents :: Hashable a => Graph a -> [[a]]
 connectedComponents g = map (map fst) . groupOn snd . sortOn snd $ Map.toList a
     where
     a = fst $ foldl' go (Map.empty, 0::Int) (Map.toList g)
@@ -119,9 +130,6 @@ connectedComponents g = map (map fst) . groupOn snd . sortOn snd $ Map.toList a
                 )
             , idx+1
             )
-
--- _minimumCutPhase :: Hashable a => HashMap a (HashSet a) -> [(a, a)]
-
 
 {-
 

@@ -38,6 +38,7 @@ library aoclib
         AOC.Area
         AOC.Debug
         AOC.Graph
+        AOC.Graph.MinCut
         AOC.HashSet
         AOC.List
         AOC.Monad
