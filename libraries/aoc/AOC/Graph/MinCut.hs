@@ -6,7 +6,7 @@ import qualified Data.HashSet as Set
 import qualified Data.HashMap.Strict as Map
 import qualified Data.HashPSQ as Q
 import           AOC.List (minimumOn)
-import           AOC.Tuple (fst3, snd3, thd3)
+import           AOC.Tuple (fst3, snd3, thd3, third3)
 import           AOC.Graph (Graph, WeightedGraph, toWeightedGraph)
 
 type CGraph a e w = HashMap a [(e, w, a)]
@@ -14,7 +14,7 @@ type CGraph a e w = HashMap a [(e, w, a)]
 mergeVertices :: Hashable a => a -> a -> CGraph a e w -> CGraph a e w
 mergeVertices u v graph = foldl' go graph' nborV 
     where
-    go g (_, _, x) = Map.adjust (map (\(e, w, y) -> (e, w, if y == v then u else y))) x g
+    go g (_, _, x) = Map.adjust (map (third3 \y -> if y == v then u else y)) x g
     graph' = Map.adjust (\nborU -> filter ((`notElem` [u, v]) . thd3) (nborU ++ nborV)) u
             $ Map.delete v graph
     nborV = graph Map.! v
