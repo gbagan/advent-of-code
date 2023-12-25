@@ -9,6 +9,8 @@ import           AOC.List (minimumOn)
 import           AOC.Tuple (fst3, snd3, thd3, third3)
 import           AOC.Graph (Graph, WeightedGraph, toWeightedGraph)
 
+-- a CGraph is a weighted graph where we store an edge label in the neighborhood list
+-- It is useful to remember what are orinal edge extremities after some vertex meges.
 type CGraph a e w = HashMap a [(e, w, a)]
 
 mergeVertices :: Hashable a => a -> a -> CGraph a e w -> CGraph a e w
@@ -38,13 +40,10 @@ minimumCutStep start graph = go (Q.singleton start 0 ()) [start] (Set.singleton 
                                 then q
                                 else Q.insert
                                     u 
-                                    (case Q.lookup u q of
-                                        Nothing -> -w
-                                        Just (p, _) -> p - w 
-                                    )
+                                    (maybe (-w) (\(p, _) -> p - w) (Q.lookup u q))
                                     ()
                                     q
-                        ) 
+                        )
                         queue'
                         (graph Map.! v)
 
@@ -53,6 +52,7 @@ minimumCutStep start graph = go (Q.singleton start 0 ()) [start] (Set.singleton 
 _minimumCut :: (Ord a, Hashable a, Real w) => CGraph a e w -> ([e], w)
 _minimumCut g | Map.size g <= 1 = ([], 0)
               | null (g Map.! a) = ([], 0)
+              | Map.size g == 2 = (cutset, weight)
               | otherwise = minimumOn snd [cutset', (cutset, weight)]
             where
             a = head (Map.keys g)
@@ -61,8 +61,13 @@ _minimumCut g | Map.size g <= 1 = ([], 0)
 
 {-# INLINE _minimumCut #-}
 
+toCGraph :: WeightedGraph a w -> CGraph a (a, a) w
+toCGraph = Map.mapWithKey \u nbor -> [((u, v), w, v) | (v, w) <- nbor]
+
+{-# INLINE toCGraph #-}
+
 minimumCut' :: (Ord a, Hashable a, Real w) => WeightedGraph a w -> ([(a, a)], w)
-minimumCut' = _minimumCut . Map.mapWithKey \u nbor -> [((u, v), w, v) | (v, w) <- nbor]
+minimumCut' = _minimumCut . toCGraph
 
 {-# INLINE  minimumCut' #-}
 
