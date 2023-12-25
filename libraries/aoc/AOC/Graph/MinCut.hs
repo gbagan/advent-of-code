@@ -7,7 +7,7 @@ import qualified Data.HashMap.Strict as Map
 import qualified Data.HashPSQ as Q
 import           AOC.List (minimumOn)
 import           AOC.Tuple (fst3, snd3, thd3, third3)
-import           AOC.Graph (Graph, WeightedGraph, toWeightedGraph)
+import           AOC.Graph.Base (Graph, WeightedGraph, toWeightedGraph)
 
 -- a CGraph is a weighted graph where we store an edge label in the neighborhood list
 -- It is useful to remember what are orinal edge extremities after some vertex meges.

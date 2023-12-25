@@ -38,7 +38,10 @@ library aoclib
         AOC.Area
         AOC.Debug
         AOC.Graph
+        AOC.Graph.Base
+        AOC.Graph.MaximumMatching
         AOC.Graph.MinCut
+        AOC.Graph.Search
         AOC.HashSet
         AOC.List
         AOC.Monad
