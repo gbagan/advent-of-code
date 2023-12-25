@@ -5,22 +5,23 @@ import           AOC (aoc)
 import qualified Data.Text as Text
 import qualified Data.HashMap.Strict as Map
 import           AOC.Parser (Parser, sepEndBy1, some, lowerChar, eol, hspace)
-import           AOC.Graph.MinCut (removeVertex, minimumCutPhase)
+import           AOC.Graph (addEdge, removeEdge, connectedComponents)
+import           AOC.Graph.MinCut (minimumCut)
 
-type Network = HashMap Text [Text]
+type Network = [(Text, [Text])] 
 
 parser :: Parser Network
-parser = Map.fromList <$> row `sepEndBy1` eol where
-    row = (,) <$> label <* ": " <*> label `sepEndBy1` hspace 
+parser = row `sepEndBy1` eol where
+    row = (,) <$> label <* ": " <*> (fromList <$> label `sepEndBy1` hspace)
     label = Text.pack <$> some lowerChar 
 
 part1 :: Network -> Int
-part1 _ = traceShow (removeVertex 1 g) 0 where
-    g :: HashMap Int [(Int, Int)] 
-    g = Map.fromList [(0, [(0, 1), (0, 2)]), (1, [(1, 0), (1, 2)]), (2, [(2, 0), (2, 1)])]
-
-part2 :: Network -> Int
-part2 _ = 0
+part1 network = product (map length components) where
+    graph = foldl' (\g (u, v) -> addEdge u v g) Map.empty
+                [(u, v) | (u, nbor) <- network, v <- nbor]
+    cutset = minimumCut graph
+    graph' = foldl' (\g (u, v) -> removeEdge u v g) graph cutset
+    components = connectedComponents graph'
 
 solve :: Text -> IO ()
-solve = aoc parser part1 part2
+solve = aoc parser part1 (const (0 :: Int))
