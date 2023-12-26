@@ -11,8 +11,8 @@ parser = some (digitToInt <$> digitChar)
 
 step :: [Int] -> [Int]
 step [] = []
-step (x:xs) = length ys : x : step zs where
-    (ys, zs) = span(==x) (x:xs)
+step (x:xs) = 1 + length ys : x : step zs where
+    (ys, zs) = span (==x) xs
 
 solveFor :: Int -> [Int] -> Int
 solveFor n = length . times n step
