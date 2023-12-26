@@ -1,6 +1,7 @@
 module AOC.Number where
 
-import AOC.Prelude
+import           AOC.Prelude
+import qualified Data.HashMap.Strict as Map
 
 toInteger :: Integral a => a -> Integer
 toInteger = fromIntegral
@@ -11,6 +12,34 @@ toDouble = fromIntegral
 toFrac :: Integral a => a-> Rational
 toFrac = fromIntegral
 
+power :: Integral b => (a -> a -> a) -> a -> b -> a
+power mul x n
+    | n <= 0 = error "power: exponent must be positive"
+    | otherwise = go n
+    where
+    square y = y `mul` y
+    go i
+        | 1 == i    = x
+        | even i    = square (go (i `quot` 2))
+        | otherwise = square (go (i `quot` 2)) `mul` x
+
+{-# INLINE power #-}
+
+discreteLogarithm :: Integer -> Integer -> Integer -> Maybe Integer
+discreteLogarithm base modulo m = res
+    where
+    n = ceiling . sqrt $ toDouble modulo
+    mul x y = x * y `rem` modulo
+    table = Map.fromList $ zip (iterate' (mul base) 1) [0..n]
+    c = power mul base (n * (modulo - 2))
+    res = listToMaybe $ mapMaybe (\(i, y) ->
+        case Map.lookup y table of
+            Nothing -> Nothing
+            Just z -> Just $ i * n + z
+        ) (zip [0..n] (iterate' (mul c) m))
+
+{-# INLINE discreteLogarithm #-}
+
 -- Return (g, x, y) such that g is the gcd of a and b
 -- and ax + by = gcd(a,b)
 extgcd :: Integral a => a -> a -> (a, a, a)
@@ -20,7 +49,7 @@ extgcd a b = (g, y, x-q*y) where
     (q,r) = a `divMod` b
     (g, x, y) = extgcd b r
 
-{-# SPECIALISE extgcd :: Integer -> Integer -> (Integer, Integer, Integer) #-}
+{-# INLINE extgcd #-}
 
 -- Return the modular inverse of a mod n.
 modularInverse :: Integral a => a -> a -> Maybe a
@@ -29,7 +58,7 @@ modularInverse a n
     | otherwise = Nothing
     where (g, x, _) = extgcd a n
 
-{-# SPECIALISE modularInverse :: Integer -> Integer -> Maybe Integer #-}
+{-# INLINE modularInverse #-}
 
 -- Given a list of (ri, mi)
 -- returns a tuple (q, m) where {q + j m | j in Z} is the set of solutions
@@ -45,4 +74,4 @@ chineseRemainder = foldlM go (0, 1) where
         let m' = (m * n) `div` g
         return (x `mod` m', m')
 
-{-# SPECIALISE chineseRemainder :: [(Integer, Integer)] -> Maybe (Integer, Integer) #-}
+{-# INLINE chineseRemainder #-}
