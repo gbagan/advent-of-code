@@ -3,7 +3,7 @@ module Day13 (solve) where
 import           AOC.Prelude
 import           Data.List (minimum, maximum)
 import           AOC (aoc')
-import           AOC.Parser (Parser, decimal, some, eol, hspace, letterChar, sepEndBy1)
+import           AOC.Parser (Parser, decimal, some, eol, letterChar, sepEndBy1, format)
 import qualified Data.HashMap.Strict as Map
 import qualified Data.Text as Text
 import           AOC.Tuple (fst3, snd3)
@@ -14,10 +14,8 @@ type Input = ([Text], Network)
 parser :: Parser [(Text, Text, Int)]
 parser = row `sepEndBy1` eol where
     row = do
-        name1 <- name <* " would "
-        s <- sign <* hspace
-        happiness <- decimal <* " happiness units by sitting next to "
-        name2 <- name <* "."
+        (name1, s, happiness, name2) <- 
+            [format|{name} would {sign} {decimal} happiness units by sitting next to {name}.|]
         pure (name1, name2, s * happiness)
     name = Text.pack <$> some letterChar
     sign = 1 <$ "gain" <|> (-1) <$ "lose"
