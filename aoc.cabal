@@ -93,30 +93,37 @@ common aoc-exe
                    , unordered-containers
                    , vector
 
+executable aoc2015
+    import: aoc-exe
+    hs-source-dirs:      src/2015
+    main-is:             Main.hs
+    other-modules: Day01 Day02 Day03 Day04
+    build-depends: base16-bytestring, cryptohash-md5
+
 executable aoc2020
     import: aoc-exe
-    hs-source-dirs:      src/AOC2020
+    hs-source-dirs:      src/2020
     main-is:             Main.hs
     other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13 Day14 Day15 Day16 Day17 Day18 Day19 Day20 Day21 Day22 Day23 Day24 Day25
     build-depends: parser-combinators
 
 executable aoc2021
     import: aoc-exe         
-    hs-source-dirs:      src/AOC2021
+    hs-source-dirs:      src/2021
     main-is:             Main.hs
     other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13 Day14 Day15 Day16 Day17 Day18 Day19 Day20 Day21 Day22 Day23 Day24 Day25
     build-depends: vector-instances
 
 executable aoc2022
     import: aoc-exe
-    hs-source-dirs:      src/AOC2022
+    hs-source-dirs:      src/2022
     main-is:             Main.hs
     other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13 Day14 Day15 Day16 Day17 Day18 Day19 Day20 Day21 Day22 Day23 Day24 Day25
     build-depends: hashtables, rosezipper, streams
 
 executable aoc2023
     import: aoc-exe
-    hs-source-dirs:      src/AOC2023
+    hs-source-dirs:      src/2023
     main-is:             Main.hs
     other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13 Day14 Day15 Day16 Day17 Day18 Day19 Day20 Day21 Day22 Day23 Day24 Day25
     build-depends: z3, z3helper

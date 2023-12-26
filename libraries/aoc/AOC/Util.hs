@@ -1,5 +1,6 @@
 module AOC.Util where
 import           AOC.Prelude
+import           Data.Char (digitToInt, isDigit)
 import           AOC.List (count)
 import           Data.List ((!!))
 import qualified Data.HashMap.Strict as HMap
@@ -54,6 +55,12 @@ listTo2dSet l =
 
 binToInt :: [Bool] -> Int
 binToInt = foldl' (\acc x -> acc * 2 + fromEnum x) 0
+
+hexToInt :: String -> Int
+hexToInt = foldl' (\acc x -> acc * 16 + hexDigitToInt x) 0
+   where hexDigitToInt x
+          | isDigit x = digitToInt x
+          | otherwise = ord x - ord 'a' + 10
 
 -- return the double of the polygon area
 shoelaceFormula :: Num a => [V2 a] -> a

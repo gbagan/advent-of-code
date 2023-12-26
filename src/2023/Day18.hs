@@ -5,16 +5,10 @@ import           Data.Char (isDigit, digitToInt)
 import           AOC (aoc)
 import           AOC.Parser (Parser, choice, sepEndBy1, eol, count, decimal, hexDigitChar)
 import           AOC.V2 (V2(..))
-import           AOC.Util (shoelaceFormula)
+import           AOC.Util (hexToInt, shoelaceFormula)
 
 data Direction = Up | Down | Left | Right
 data Instr = Instr !Direction !Int
-
-hexToInt :: String -> Int
-hexToInt = foldl' (\acc x -> acc * 16 + hexDigitToInt x) 0
-   where hexDigitToInt x
-          | isDigit x = digitToInt x
-          | otherwise = ord x - ord 'a' + 10
 
 parser :: Parser [(Instr, Instr)]
 parser = instr `sepEndBy1` eol where
