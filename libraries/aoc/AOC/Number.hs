@@ -18,25 +18,23 @@ power mul x n
     | otherwise = go n
     where
     square y = y `mul` y
-    go i
-        | 1 == i    = x
-        | even i    = square (go (i `quot` 2))
-        | otherwise = square (go (i `quot` 2)) `mul` x
+    go 1             = x
+    go i | even i    = square (go (i `quot` 2))
+         | otherwise = square (go (i `quot` 2)) `mul` x
 
 {-# INLINE power #-}
 
+-- return an integer x such that m = base ^ x % modulo
+-- assume that modulo is prime
 discreteLogarithm :: Integer -> Integer -> Integer -> Maybe Integer
-discreteLogarithm base modulo m = res
-    where
-    n = ceiling . sqrt $ toDouble modulo
-    mul x y = x * y `rem` modulo
-    table = Map.fromList $ zip (iterate' (mul base) 1) [0..n]
-    c = power mul base (n * (modulo - 2))
-    res = listToMaybe $ mapMaybe (\(i, y) ->
-        case Map.lookup y table of
-            Nothing -> Nothing
-            Just z -> Just $ i * n + z
-        ) (zip [0..n] (iterate' (mul c) m))
+discreteLogarithm base modulo m =
+    let n = ceiling . sqrt $ toDouble modulo
+        mul x y = x * y `rem` modulo
+        table = Map.fromList $ zip (iterate' (mul base) 1) [0..n-1]
+        c = power mul base (n * (modulo - 2))
+    in listToMaybe $ mapMaybe (\(i, y) ->
+        [i * n + z | z <- Map.lookup y table]
+        ) (zip [0..n-1] (iterate' (mul c) m))
 
 {-# INLINE discreteLogarithm #-}
 
