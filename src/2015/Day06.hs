@@ -50,5 +50,3 @@ part2 instructions = sum . toList $ createArrayST_ @U (Sz2 1000 1000) \arr -> do
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
-
--- 17325717 too low

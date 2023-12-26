@@ -5,8 +5,7 @@ import           AOC (aoc)
 import qualified Data.Text as Text
 import qualified Data.HashMap.Strict as Map
 import           AOC.Parser (Parser, sepEndBy1, some, lowerChar, eol, hspace)
-import           AOC.Graph (addEdge, removeEdge, connectedComponents)
-import           AOC.Graph.MinCut (minimumCut)
+import           AOC.Graph (addEdge, removeEdge, connectedComponents, minimumCut)
 
 type Network = [(Text, [Text])] 
 

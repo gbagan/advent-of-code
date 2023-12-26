@@ -1,7 +1,6 @@
 -- https://adventofcode.com/2023/day/18
 module Day18 (solve) where
 import           AOC.Prelude hiding (Down, Left, Right)
-import           Data.Char (isDigit, digitToInt)
 import           AOC (aoc)
 import           AOC.Parser (Parser, choice, sepEndBy1, eol, count, decimal, hexDigitChar)
 import           AOC.V2 (V2(..))
