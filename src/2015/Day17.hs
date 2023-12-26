@@ -11,7 +11,7 @@ parser = decimal `sepEndBy1` eol
 
 subsetSizes :: Int -> [Int] -> [Int]
 subsetSizes n [] = [0 | n == 0]
-subsetSizes n (x:xs) | n < 0 = []
+subsetSizes n (x:xs)  | n < 0 = []
                       | otherwise = subsetSizes n xs ++ map (+1) (subsetSizes (n-x) xs)
 
 part1 :: [Int] -> Int
