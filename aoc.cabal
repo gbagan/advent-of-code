@@ -97,7 +97,7 @@ executable aoc2015
     import: aoc-exe
     hs-source-dirs:      src/2015
     main-is:             Main.hs
-    other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07
+    other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09
     build-depends: base16-bytestring, cryptohash-md5
 
 executable aoc2020
