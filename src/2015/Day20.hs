@@ -3,7 +3,7 @@ module Day20 (solve) where
 import           AOC.Prelude hiding (head)
 import           Data.List (head)
 import           AOC (aoc)
-import           AOC.Parser (Parser, decimal)
+import           AOC.Parser (decimal)
 
 primeDecomposition :: Int -> [(Int, Int)]
 primeDecomposition = map (\n -> (head n, length n)) . group . aux 2 where
