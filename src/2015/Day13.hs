@@ -1,6 +1,7 @@
 -- https://adventofcode.com/2015/day/1
 module Day13 (solve) where
 import           AOC.Prelude
+import           Data.List (minimum, maximum)
 import           AOC (aoc')
 import           AOC.Parser (Parser, decimal, some, eol, hspace, letterChar, sepEndBy1)
 import qualified Data.HashMap.Strict as Map
@@ -14,23 +15,32 @@ parser :: Parser [(Text, Text, Int)]
 parser = row `sepEndBy1` eol where
     row = do
         name1 <- name <* " would "
-        sign <- (1 <$ "gain" <|> (-1) <$ "lose") <* hspace
+        s <- sign <* hspace
         happiness <- decimal <* " happiness units by sitting next to "
         name2 <- name <* "."
-        pure (name1, name2, sign * happiness)
+        pure (name1, name2, s * happiness)
     name = Text.pack <$> some letterChar
+    sign = 1 <$ "gain" <|> (-1) <$ "lose"
 
 precomp :: [(Text, Text, Int)] -> Input
 precomp rows = (names, network) where
     names = ordNub (map fst3 rows ++ map snd3 rows) 
-    network = foldl' (flip go) Map.empty rows
-    go (name1, name2, happiness) = Map.insert (name1, name2) happiness . Map.insert (name2, name1) happiness
+    network = Map.fromListWith (+) 
+                $ concatMap (\(n1, n2, h) -> [((n1, n2), h), ((n2, n1), h)])
+                rows
 
-part1 :: [Int] -> Int
-part1 = sum
+solveFor :: ([Int] -> Int) -> Input -> Int
+solveFor happinessFunc (name:names, network) = maximum 
+                                            . map (happiness name) 
+                                            $ permutations names
+    where happiness x xs = happinessFunc [ network Map.! (y, z) 
+                                         | (y, z) <- zip (x:xs) (xs++[x])
+                                         ]
+solveFor _ _ = error "solveFor: empty name list"
 
-part2 :: [Int] -> Maybe Int
-part2 = findIndex (<0) . scanl' (+) 0
+happinessFunc1, happinessFunc2 :: [Int] -> Int
+happinessFunc1 = sum
+happinessFunc2 xs = sum xs - minimum xs
 
 solve :: Text -> IO ()
-solve = aoc' parser precomp part1 part2
+solve = aoc' parser (pure . precomp) (solveFor happinessFunc1) (solveFor happinessFunc2)

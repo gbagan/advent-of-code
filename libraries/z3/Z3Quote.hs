@@ -14,21 +14,16 @@ quoteExprExp s =  do  loc <- TH.location
                       exprToExpQ expr'                    
 
 exprToExpQ :: Expr -> TH.ExpQ
-exprToExpQ (IntExpr n) = TH.appE 
-                            (TH.varE (TH.mkName "z3int"))
-                            (TH.litE (TH.integerL n)) 
+exprToExpQ (IntExpr n) = [| z3int $(TH.litE (TH.integerL n)) |]
 exprToExpQ (AntiExpr v) = TH.varE (TH.mkName v)
-exprToExpQ (BinopExpr op e1 e2) = TH.appE (TH.appE 
-                                    (opExprToExpQ op)
-                                    (exprToExpQ e1)
-                                    ) (exprToExpQ e2)
+exprToExpQ (BinopExpr op e1 e2) = [| $(opExprToExpQ op) $(exprToExpQ e1) $(exprToExpQ e2) |]
 
 opExprToExpQ :: BinOp -> TH.ExpQ
-opExprToExpQ AddOp = TH.varE (TH.mkName "z3add")
-opExprToExpQ MulOp = TH.varE (TH.mkName "z3mul")
-opExprToExpQ EqOp = TH.varE (TH.mkName "z3eq")
-opExprToExpQ LeOp = TH.varE (TH.mkName "z3le")
-opExprToExpQ GeOp = TH.varE (TH.mkName "z3ge")
+opExprToExpQ AddOp = [| z3add |]
+opExprToExpQ MulOp = [| z3mul |]
+opExprToExpQ EqOp = [| z3eq |]
+opExprToExpQ LeOp = [| z3le |]
+opExprToExpQ GeOp = [| z3ge |]
 
 expr  :: QuasiQuoter
 expr  =  QuasiQuoter { quoteExp = quoteExprExp
