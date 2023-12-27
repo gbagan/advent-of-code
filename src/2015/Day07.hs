@@ -21,8 +21,8 @@ parser = Map.fromList <$> instr `sepEndBy1` eol where
         <|> try (Gate2 <$> wire <*> op <*> wire)
         <|> ConstGate <$> wire
     wire = Signal <$> decimal <|> Wire <$> label
-    op =  And <$ " AND " 
-        <|> Or <$ " OR " 
+    op =  And <$ " AND "
+        <|> Or <$ " OR "
         <|> LShift <$ " LSHIFT "
         <|> RShift <$ " RSHIFT "
 

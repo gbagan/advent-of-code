@@ -21,7 +21,6 @@ parser = instruction `sepEndBy1` eol where
         y2 <- "," *> decimal
         pure $ Instruction cmd x1 y1 x2 y2
 
-
 runInstruction :: MArray r U Ix2 Bool -> Instruction -> ST r ()
 runInstruction arr (Instruction cmd x1 y1 x2 y2) = do
     for_ [x1..x2] \i ->
