@@ -4,40 +4,49 @@ import AOC.Prelude hiding (Op)
 import           AOC (aoc)
 import qualified Data.Text as Text
 import qualified Data.HashMap.Strict as Map
-import            Data.Bits ((.&.), (.|.), shift)
+import qualified Data.HashMap.Lazy as LMap
+import            Data.Bits ((.&.), (.|.), complement, shiftL, shiftR)
 import           AOC.Parser (Parser, some, decimal, lowerChar, sepEndBy1, eol, try)
 
-data Op = And | Or
-data ShiftOp = LShift | RShift
-data Term = Int !Int 
-            | BinOp !Text !Op !Text | ShiftOp !Text !ShiftOp !Int | Not !Text
-type Instr = (Term, Text)
+data Op = And | Or | LShift | RShift
+data Term = Signal !Word16 | Wire !Text
+data Gate = ConstGate !Term | Gate2 !Term !Op !Term | Not !Term
+type Circuit = HashMap Text Gate
 
-parser :: Parser [Instr]
-parser = instr `sepEndBy1` eol where
-    instr = (,) <$> term <* " -> " <*> label
+parser :: Parser Circuit
+parser = Map.fromList <$> instr `sepEndBy1` eol where
+    instr = flip (,) <$> expr <* " -> " <*> label
     label = Text.pack <$> some lowerChar
-    term = Int <$> decimal
-        <|> Not <$> ("NOT " *> label)
-        <|> try (BinOp <$> label <*> op <*> label)
-        <|> ShiftOp <$> label <*> shiftOp <*> decimal
-    op =  And <$ " AND " <|> Or <$ " OR "
-    shiftOp = LShift <$ " LSHIFT " <|> RShift <$ " RSHIFT "
+    expr = Not <$> ("NOT " *> wire)
+        <|> try (Gate2 <$> wire <*> op <*> wire)
+        <|> ConstGate <$> wire
+    wire = Signal <$> decimal <|> Wire <$> label
+    op =  And <$ " AND " 
+        <|> Or <$ " OR " 
+        <|> LShift <$ " LSHIFT "
+        <|> RShift <$ " RSHIFT "
 
-part1 :: [Instr] -> Int
-part1 instrs = 0 where
-    vars = foldl' go Map.empty instrs
-    go vs (term, var) =
-        let res = case term of
-                    Int n -> n 
-                    BinOp var1 And var2 -> vs Map.! var1 .&. vs Map.! var2
-                    BinOp var1 Or var2 -> vs Map.! var1 .|. vs Map.! var2
-                    ShiftOp var1 LShift n -> vs Map.! var1 `shift` n
-                    ShiftOp var1 RShift n -> vs Map.! var1 `shift` (-n)
-                    Not var1 -> todo
-        in Map.insert var res vs
-part2 :: [Instr] -> Int
-part2 _ = 0
+evalCircuit :: Circuit -> HashMap Text Word16
+evalCircuit circuit = eval where
+    eval = circuit & LMap.map \case
+        ConstGate wire        -> evalWire wire
+        Gate2 wire1 op wire2 -> evalOp op (evalWire wire1) (evalWire wire2)
+        Not wire              -> complement (evalWire wire)
+    evalWire (Signal n) = n
+    evalWire (Wire v) = eval Map.! v
+    evalOp And n m = n .&. m
+    evalOp Or n m = n .|. m
+    evalOp LShift n m = n `shiftL` fromIntegral m
+    evalOp RShift n m = n `shiftR` fromIntegral m
+
+part1 :: Circuit -> Maybe Word16
+part1 = (Map.!? "a") . evalCircuit
+
+part2 :: Circuit -> Maybe Word16
+part2 circuit = do
+    evalA <- evalCircuit circuit Map.!? "a"
+    let circuit' = Map.insert "b" (ConstGate (Signal evalA)) circuit
+    evalCircuit circuit' Map.!? "a"
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
