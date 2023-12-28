@@ -12,8 +12,7 @@ parser :: Parser Boss
 parser = do
     hp <- [format| Hit Points: {decimal}|] <* eol
     damage <- [format| Damage: {decimal}|] <* eol
-    armor <- [format| Armor: {decimal}|]
-    pure $ Boss hp damage armor
+    Boss hp damage <$> [format| Armor: {decimal}|]
 
 weapons, armors, rings :: [Item]
 
@@ -46,7 +45,7 @@ noItem :: Item
 noItem = Item 0 0 0
 
 gears :: [[Item]]
-gears = 
+gears =
     [ [weapon, armor, ring1, ring2]
     | weapon <- weapons
     , armor <- noItem : armors
@@ -64,8 +63,8 @@ playerWins gear (Boss bossHp bossDamage bossArmor) =
     in playerDamage > 0 && (bossDamage' <= 0 || nbTurnsToWin <= nbTurnsToLose)
 
 part1, part2 :: Boss -> Int
-part1 boss = minimum [sum (map _cost gear) | gear <- gears, playerWins gear boss]
-part2 boss = maximum [sum (map _cost gear) | gear <- gears, not(playerWins gear boss)]
+part1 boss = minimum [ sum (map _cost gear) | gear <- gears, playerWins gear boss]
+part2 boss = maximum [ sum (map _cost gear) | gear <- gears, not (playerWins gear boss)]
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
