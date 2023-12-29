@@ -58,11 +58,31 @@ perp :: Num a => V2 a -> V2 a
 perp (V2 a b) = V2 (negate b) a
 {-# INLINE perp #-}
 
+origin, north, south, east, west :: Num a => V2 a
+origin = V2 0 0
+north = V2 (-1) 0
+south = V2 1 0
+west = V2 0 (1)
+east = V2 0 1
+{-# INLINE origin #-}
+{-# INLINE north #-}
+{-# INLINE south #-}
+{-# INLINE west #-}
+{-# INLINE east #-}
+
+turnLeft, turnRight :: Num a => V2 a -> V2 a
+turnLeft  (V2 y x) = V2 (-x) y
+turnRight (V2 y x) = V2 x (-y)
+{-# INLINE turnLeft #-}
+{-# INLINE turnRight #-}
+
 manhattan :: Num a => V2 a -> V2 a -> a
 manhattan (V2 x1 y1) (V2 x2 y2) = abs (x1 - x2) + abs (y1 - y2)
+{-# INLINE manhattan #-}
 
 adjacent :: Integral a => V2 a -> [V2 a]
 adjacent (V2 x y) = [V2 (x-1) y, V2 (x+1) y, V2 x (y-1), V2 x (y+1)]
+{-# INLINE adjacent #-}
 
 surrounding :: Integral a => V2 a -> [V2 a]
 surrounding (V2 x y) = adjacent (V2 x y) ++ [ V2 (x-1) (y-1)
@@ -73,3 +93,4 @@ surrounding (V2 x y) = adjacent (V2 x y) ++ [ V2 (x-1) (y-1)
 
 toIx2 :: V2 Int -> Ix2
 toIx2 (V2 x y) = Ix2 x y
+{-# INLINE toIx2 #-}

@@ -16,6 +16,7 @@ common aoc
         MultiWayIf
         MonadComprehensions
         NoImplicitPrelude
+        OverloadedRecordDot
         OverloadedStrings
         QuasiQuotes
         RecordWildCards

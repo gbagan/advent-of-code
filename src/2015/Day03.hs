@@ -4,21 +4,21 @@ import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, choice, some)
 import           AOC.List (grouped)
-import           AOC.V2 (V2(..))
+import           AOC.V2 (V2(..), origin, north, south, west, east)
 
 parser :: Parser [V2 Int]
 parser = some direction where
-    direction = choice [ V2 1 0    <$ "^"
-                       , V2 (-1) 0 <$ "v"
-                       , V2 0 (-1) <$ "<"
-                       , V2 0 1    <$ ">"
+    direction = choice [ north <$ "^"
+                       , south <$ "v"
+                       , west  <$ "<"
+                       , east  <$ ">"
                        ]
 
 part1 :: [V2 Int] -> Int
-part1 = length . ordNub . scanl' (+) (V2 0 0)
+part1 = length . ordNub . scanl' (+) origin
 
 part2 :: [V2 Int] -> Int
-part2 = length . ordNub . concatMap (scanl' (+) (V2 0 0)) . transpose . grouped 2
+part2 = length . ordNub . concatMap (scanl' (+) origin) . transpose . grouped 2
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
