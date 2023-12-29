@@ -11,12 +11,12 @@ aocMain year solutions = do
     args <- getArgs
     traverse_ solveProblem if null args then Map.keys solutions else args
     where
-    solveProblem name = case Map.lookup name solutions of
+    solveProblem day = case Map.lookup day solutions of
         Just solve -> do
-            putStrLn $ "Solve day " <> name
-            bytes <- readFileBS ("./inputs/" ++ year ++ "/data" ++ name)
+            putStrLn $ "Solve day " <> day
+            bytes <- readFileBS ("./inputs/" ++ year ++ "/" ++ day)
             solve $ decodeASCII bytes
-        Nothing -> putStrLn $ "Day not implemented: " <> name
+        Nothing -> putStrLn $ "Day not implemented: " <> day
 
 
 -- templates
