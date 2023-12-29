@@ -52,6 +52,28 @@ quoteExprExp s =  do  loc <- TH.location
                       expr' <- parseExpr pos s
                       exprToExpQ expr'                    
 
+{-
+exprToExpQ :: [(String, Bool)] -> TH.ExpQ
+exprToExpQ [] = [| pure () |]
+exprToExpQ xs = case (ys, zs) of
+    ([], [])               -> [| pure () |] 
+    ((y,_):ys', [])        -> foldl' apply0 (str y) ys'
+    ([], (z,_):zs')            -> foldl' applyN [| $tup <$> $(var z) |] zs'
+    ((y,_):ys', (z,_):zs') -> let g = foldl' apply0 (str y) ys' in
+                                if n == 1
+                                    then foldl' apply1 [| $g *> $(var z) |] zs'
+                                    else foldl' applyN [| $tup <$> ($g *> $(var z)) |] zs'
+    where
+    (ys, zs) = break snd xs
+    tup = TH.conE (TH.tupleDataName n)
+    n = L.count snd xs
+    apply0 l (s,_) = [| $l *> $(var s) |]
+    apply1 l (s, b') = if b' then [| $l  *> $(var s) |] else [| $l <* $(str s) |]
+    applyN l (s, b') = if b' then [| $l <*> $(var s) |] else [| $l <* $(str s) |]
+    var y = TH.varE (TH.mkName y)
+    str y = TH.litE (TH.stringL y)
+-}
+
 exprToExpQ :: [(String, Bool)] -> TH.ExpQ
 exprToExpQ [] = [| pure () |]
 exprToExpQ xxs@((x, b) : xs) 

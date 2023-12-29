@@ -28,7 +28,7 @@ clues = Map.fromList
     ]
 
 solveFor :: (Text -> Int -> Int -> Bool) -> [(Int, HashMap Text Int)] -> Maybe Int
-solveFor f = fmap fst . find (and . Map.intersectionWithKey f clues . snd) where
+solveFor f = fmap fst . find (and . Map.intersectionWithKey f clues . snd)
 
 check1, check2 :: Text -> Int -> Int -> Bool
 check1 _ = (==)
