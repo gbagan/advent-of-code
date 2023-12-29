@@ -22,7 +22,7 @@ parser :: Parser [[Item]]
 parser = row `sepEndBy1` eol where
     row = snd <$> [format|The {nth} floor contains {components}.|]
     nth = "first" <|> "second" <|> "third" <|> "fourth"
-    components = [] <$"nothing relevant"
+    components = [] <$ "nothing relevant"
                 <|> component `sepBy1` (", and " <|> ", ")
     component = Item <$> ("a " *> label) <*> itemtype
     itemtype = Generator <$ " generator" <|> Microchip <$ "-compatible microchip"
@@ -75,8 +75,9 @@ isGoal :: State -> Bool
 isGoal (State _ items) = all (==3) (V.toList items)
 
 part1 :: [[Item]] -> Maybe Int
-part1 items =  distance neighbors isGoal (initialState items)
-    -- astar (initialState items) isDest (map (,1) . neighbors) heuristic
+part1 items = distance neighbors isGoal (initialState items)
+    -- astar (initialState items) isGoal (map (,1) . neighbors) heuristic
+    -- bfs is faster than a*
 
 part2 :: [[Item]] -> Maybe Int
 part2 items = distance neighbors isGoal (initialState2 items)
