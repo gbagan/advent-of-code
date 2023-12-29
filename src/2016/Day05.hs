@@ -12,10 +12,10 @@ import           Crypto.Hash.MD5 (hash)
 
 generateHashes :: Text -> [ByteString]
 generateHashes text = [ hashed
-                     | i <- [(0::Int)..]
-                     , let hashed = B16.encode (hash (bs <> show i))
-                     , "00000" `BS.isPrefixOf` hashed
-                     ]
+                      | i <- [(0::Int)..]
+                      , let hashed = B16.encode (hash (bs <> show i))
+                      , "00000" `BS.isPrefixOf` hashed
+                      ]
     where bs = TSE.encodeUtf8 text      
 
 part1 :: Text -> String

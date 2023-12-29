@@ -11,13 +11,15 @@ module AOC.Parser
     )
     where
 
-import           AOC.Prelude
+import           AOC.Prelude hiding (head)
+import           Data.List (head)
 import           Text.Megaparsec as P (Parsec, anySingle, anySingleBut, between, choice, count, many, manyTill, 
-                                        sepBy, sepBy1, sepEndBy1, optional, some, takeP, takeRest, takeWhileP, try)
+                                        sepBy, sepBy1, sepEndBy1, optional, some, takeP, takeRest, takeWhileP, takeWhile1P, try)
 import           Text.Megaparsec.Char as C (alphaNumChar, char, digitChar, eol, letterChar, space, hspace, hexDigitChar, lowerChar, numberChar, upperChar)
 import           Text.Megaparsec.Char.Lexer as L (decimal, lexeme)
 import qualified Language.Haskell.TH as TH
 import           Language.Haskell.TH.Quote
+import           Data.Char (isSpace, isUpper)
 import qualified AOC.List as L
 
 type Parser = Parsec Void Text
@@ -32,9 +34,15 @@ bitP = False <$ C.char '0' <|> True <$ C.char '1'
 skipLine :: Parser ()
 skipLine = void $ P.takeWhileP Nothing (/= '\n') *> C.eol
 
-parseExpr :: MonadFail m => (String, Int, Int) -> String -> m [(String, Bool)]
-parseExpr _ str = aux $ dropWhile (==' ') str
+parseExpr :: MonadFail m => (String, Int, Int) -> String -> m (Maybe String, [(String, Bool)])
+parseExpr _ str =
+    case str' of
+        ('$':xs) -> 
+            let (ys,zs) = break isSpace xs in
+            (Just ys,) <$> aux (dropWhile (==' ') zs)
+        _ -> (Nothing,) <$> aux str'
     where
+    str' = dropWhile (==' ') str
     aux s =
         case span (/='{') s of
             (xs, []) -> pure [(xs, False)]
@@ -52,42 +60,25 @@ quoteExprExp s =  do  loc <- TH.location
                       expr' <- parseExpr pos s
                       exprToExpQ expr'                    
 
-{-
-exprToExpQ :: [(String, Bool)] -> TH.ExpQ
-exprToExpQ [] = [| pure () |]
-exprToExpQ xs = case (ys, zs) of
-    ([], [])               -> [| pure () |] 
-    ((y,_):ys', [])        -> foldl' apply0 (str y) ys'
-    ([], (z,_):zs')            -> foldl' applyN [| $tup <$> $(var z) |] zs'
-    ((y,_):ys', (z,_):zs') -> let g = foldl' apply0 (str y) ys' in
-                                if n == 1
-                                    then foldl' apply1 [| $g *> $(var z) |] zs'
-                                    else foldl' applyN [| $tup <$> ($g *> $(var z)) |] zs'
+exprToExpQ :: (Maybe String, [(String, Bool)]) -> TH.ExpQ
+exprToExpQ = \case 
+    (_, []) -> [| pure () |]
+    (Nothing, xxs@((x, b) : xs))
+        | n == 0    -> foldl' apply0 (str x) xs
+        | n == 1    -> foldl' apply1 (if b then var x else str x) xs
+        | b         -> foldl' applyN [| $tup <$> $(var x) |] xs
+        | otherwise -> foldl' applyN [| $tup <$  $(str x) |] xs
+        where
+        tup = TH.conE (TH.tupleDataName n)
+        n = L.count snd xxs
+    (Just fn, (x, b) : xs)
+        | b         -> foldl' applyN [| $(var fn) <$> $(var x) |] xs
+        | otherwise -> foldl' applyN [| $(var fn) <$  $(str x) |] xs
     where
-    (ys, zs) = break snd xs
-    tup = TH.conE (TH.tupleDataName n)
-    n = L.count snd xs
     apply0 l (s,_) = [| $l *> $(var s) |]
     apply1 l (s, b') = if b' then [| $l  *> $(var s) |] else [| $l <* $(str s) |]
     applyN l (s, b') = if b' then [| $l <*> $(var s) |] else [| $l <* $(str s) |]
-    var y = TH.varE (TH.mkName y)
-    str y = TH.litE (TH.stringL y)
--}
-
-exprToExpQ :: [(String, Bool)] -> TH.ExpQ
-exprToExpQ [] = [| pure () |]
-exprToExpQ xxs@((x, b) : xs) 
-    | n == 0    = foldl' apply0 (str x) xs
-    | n == 1    = foldl' apply1 (if b then var x else str x) xs
-    | b         = foldl' applyN [| $tup <$> $(var x) |] xs
-    | otherwise = foldl' applyN [| $tup <$  $(str x) |] xs
-    where
-    tup = TH.conE (TH.tupleDataName n)
-    n = L.count snd xxs
-    apply0 l (s,_) = [| $l *> $(var s) |]
-    apply1 l (s, b') = if b' then [| $l  *> $(var s) |] else [| $l <* $(str s) |]
-    applyN l (s, b') = if b' then [| $l <*> $(var s) |] else [| $l <* $(str s) |]
-    var y = TH.varE (TH.mkName y)
+    var y = if isUpper (head y) then TH.conE (TH.mkName y) else TH.varE (TH.mkName y)
     str y = TH.litE (TH.stringL y)
 
 format :: QuasiQuoter

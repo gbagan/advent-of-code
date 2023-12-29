@@ -10,9 +10,7 @@ data Room = Room { _name :: ![String], sectorId :: !Int,  _checksum :: !String }
 
 parser :: Parser [Room]
 parser = room `sepEndBy1` eol where
-    room = do
-        (n, i, cs) <- [format|{name}{decimal}[{checksum}]|]
-        pure $ Room n i cs
+    room = [format|$Room {name}{decimal}[{checksum}]|]
     name = some lowerChar `sepEndBy1` "-"
     checksum = some lowerChar
 
