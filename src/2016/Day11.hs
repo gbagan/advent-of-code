@@ -13,11 +13,10 @@ data ItemType = Generator | Microchip deriving (Eq, Ord, Show)
 data Item = Item !Text !ItemType  deriving (Eq, Ord, Show)
 
 data State = State Int (V.Vector Int) deriving (Eq, Show)
+    -- elevator floor, pairs of generator, microchip positions
 
 instance Hashable State where
     hashWithSalt s (State x xs) = s `hashWithSalt` x `hashWithSalt` xs
-
-    -- human floor, pairs of generator, microchip positions
 
 subsets2 :: [a] -> [[a]]
 subsets2 xs = [[]] ++ map pure xs ++ pairwise (\x y -> [x, y]) xs
@@ -41,17 +40,17 @@ isValid (State _ items) = all isValid' indexed where
     indexed = zip [(0::Int)..] . grouped2 $ V.toList items
 
 atSameFloor :: State -> [Int]
-atSameFloor (State human items) = [ i | (i, f) <- zip [0..] (V.toList items), f==human]
+atSameFloor (State elevator items) = [ i | (i, f) <- zip [0..] (V.toList items), f==elevator]
 
 neighbors :: State -> [State]
-neighbors state@(State human items) = states where
+neighbors state@(State elevator items) = states where
     states =
         [ state' 
         | direction <- [1, - 1]
-        , let human' = human + direction
+        , let elevator' = elevator + direction
         , c <- subsets2 (atSameFloor state)
-        , let items' = items V.// map (, human') c
-        , let state' = State (human + direction) items'
+        , let items' = items V.// map (, elevator') c
+        , let state' = State elevator' items'
         , isValid state'
         ]
 
@@ -73,8 +72,3 @@ part2 items = distance neighbors isDest (startingState items)
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
-
--- The first floor contains a strontium generator, a strontium-compatible microchip, a plutonium generator, and a plutonium-compatible microchip.
--- The second floor contains a thulium generator, a ruthenium generator, a ruthenium-compatible microchip, a curium generator, and a curium-compatible microchip.
--- The third floor contains a thulium-compatible microchip.
--- The fourth floor contains nothing relevant.
