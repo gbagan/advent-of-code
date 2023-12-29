@@ -81,38 +81,30 @@ dijkstra' nbors targetFunc sources = aux Set.empty initialQueue where
 
 {-# INLINE dijkstra' #-}
 
-astar :: (Eq a, Ord a, Hashable a) => a -> (a -> Bool) -> (a -> [(a, Int)]) -> (a -> Int) -> Maybe (Int, [a])
-astar startNode isGoalNode nextNodeFn heuristic =
-        astarAux
-            (Q.singleton startNode (heuristic startNode) 0)
-            Set.empty
-            (Map.singleton startNode 0)
-            Map.empty
+astar :: (Ord a, Hashable a) => a -> (a -> Bool) -> (a -> [(a, Int)]) -> (a -> Int) -> Maybe Int
+astar startNode isGoal nextNodeFn heuristic =
+    astarAux
+        (Q.singleton startNode (heuristic startNode) 0)
+        Set.empty
+        (Map.singleton startNode 0)
     where
-    astarAux :: Q.HashPSQ a Int Int -> HashSet a -> HashMap a Int -> HashMap a a -> Maybe (Int, [a])
-    astarAux pq seen gscore tracks = case Q.minView pq of
+    astarAux pq seen gscore = case Q.minView pq of
         Nothing -> Nothing
         Just (node, _, gcost, pq')
-            | isGoalNode node      -> Just (gcost, reverse (findPath tracks node))
-            | Set.member node seen -> astarAux pq' seen gscore tracks
-            | otherwise            -> astarAux pq'' seen' gscore' tracks'
+            | isGoal node      -> Just gcost
+            | Set.member node seen -> astarAux pq' seen gscore
+            | otherwise            -> astarAux pq'' seen' gscore'
             where
-            seen' :: HashSet a
-            seen'       = Set.insert node seen
-            successors :: [(a, Int, Int)]
-            successors  = 
-                filter (\(s, g, _) -> not (Set.member s seen') &&
-                    (not (s `Map.member` gscore) || g < (gscore Map.! s)))
+            seen'      = Set.insert node seen
+            successors = 
+                filter (\(s, g, _) -> -- not (Set.member s seen') &&
+                    not (s `Map.member` gscore) || g < (gscore Map.! s))
                 $ successorsAndCosts node gcost
             pq''    = foldl' (\q (s, g, h) -> Q.insert s (g + h) g q) pq' successors
             gscore' = foldl' (\m (s, g, _) -> Map.insert s g m) gscore successors
-            tracks' = foldl' (\m (s, _, _) -> Map.insert s node m) tracks successors
-    successorsAndCosts :: a -> Int -> [(a, Int, Int)]
     successorsAndCosts v gcost = [(u, gcost + g, heuristic u) | (u, g) <- nextNodeFn v]
-    findPath tracks node =
-        case tracks Map.!? node of
-            Nothing -> [node]
-            Just s ->  node : findPath tracks s
+
+{-# INLINE astar #-}
 
 connectedComponents :: Hashable a => Graph a -> [[a]]
 connectedComponents g = map (map fst) . groupOn snd . sortOn snd $ Map.toList a
