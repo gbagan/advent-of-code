@@ -62,7 +62,7 @@ origin, north, south, east, west :: Num a => V2 a
 origin = V2 0 0
 north = V2 (-1) 0
 south = V2 1 0
-west = V2 0 (1)
+west = V2 0 (-1)
 east = V2 0 1
 {-# INLINE origin #-}
 {-# INLINE north #-}
@@ -70,9 +70,17 @@ east = V2 0 1
 {-# INLINE west #-}
 {-# INLINE east #-}
 
-turnLeft, turnRight :: Num a => V2 a -> V2 a
+up, down, left, right, turnLeft, turnRight :: Num a => V2 a -> V2 a
+left  (V2 y x) = V2 y (x-1)
+right (V2 y x) = V2 y (x+1)
+up    (V2 y x) = V2 (y-1) x
+down  (V2 y x) = V2 (y+1) x
 turnLeft  (V2 y x) = V2 (-x) y
 turnRight (V2 y x) = V2 x (-y)
+{-# INLINE left #-}
+{-# INLINE right #-}
+{-# INLINE up #-}
+{-# INLINE down #-}
 {-# INLINE turnLeft #-}
 {-# INLINE turnRight #-}
 
@@ -81,7 +89,7 @@ manhattan (V2 x1 y1) (V2 x2 y2) = abs (x1 - x2) + abs (y1 - y2)
 {-# INLINE manhattan #-}
 
 adjacent :: Integral a => V2 a -> [V2 a]
-adjacent (V2 x y) = [V2 (x-1) y, V2 (x+1) y, V2 x (y-1), V2 x (y+1)]
+adjacent p = [up p, down p, left p, right p]
 {-# INLINE adjacent #-}
 
 surrounding :: Integral a => V2 a -> [V2 a]

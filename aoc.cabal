@@ -106,7 +106,7 @@ executable aoc2016
     import: aoc-exe
     hs-source-dirs:      src/2016
     main-is:             Main.hs
-    other-modules: Day01
+    other-modules: Day01 Day02 Day03
 
 executable aoc2020
     import: aoc-exe

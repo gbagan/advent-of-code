@@ -3,7 +3,7 @@ module Day15 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.V2 (V2(..), manhattan)
-import           AOC.Parser (Parser, eol, sepEndBy1, signedDecimal)
+import           AOC.Parser (Parser, eol, sepEndBy1, signedDecimal, format)
 import           AOC.Range (Range(..), toDisjointUnion)
 
 type Coords = V2 Integer
@@ -11,11 +11,9 @@ data Scan = Scan !Coords !Coords !Integer
 
 parser :: Parser [Scan]
 parser = line `sepEndBy1` eol where
+    d = signedDecimal
     line = do
-        x1 <- "Sensor at x=" *> signedDecimal
-        y1 <- ", y=" *> signedDecimal
-        x2 <- ": closest beacon is at x=" *> signedDecimal
-        y2 <- ", y=" *> signedDecimal
+        (x1, y1, x2, y2) <- [format|Sensor at x={d}, y={d}: closest beacon is at x={d}, y={d}|]
         let sensor = V2 x1 y1
         let beacon = V2 x2 y2
         pure $ Scan sensor beacon (manhattan sensor beacon)
