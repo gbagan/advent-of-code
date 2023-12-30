@@ -64,13 +64,13 @@ dijkstra nborFunc targetFunc source = dijkstra' nborFunc targetFunc [source]
 {-# INLINE dijkstra #-}
 
 dijkstra' :: (Hashable v, Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> [v] -> Maybe w
-dijkstra' nbors targetFunc sources = go Set.empty initialQueue where
+dijkstra' nbors targetFunc sources = aux Set.empty initialQueue where
     initialQueue = Q.fromList [ (s,0,()) | s <- sources]
-    go !visited !queue = case Q.minView queue of
+    aux visited queue = case Q.minView queue of
         Nothing -> Nothing
         Just (v, cost, _, queue')
             | targetFunc v -> Just $! cost
-            | otherwise -> go
+            | otherwise -> aux
                             (Set.insert v visited)
                             (foldl' insert queue'
                                 [ (v', cost+w') | (v', w') <- nbors v, not (v' `Set.member` visited)]
@@ -80,6 +80,39 @@ dijkstra' nbors targetFunc sources = go Set.empty initialQueue where
         _ -> Q.insert u w () queue
 
 {-# INLINE dijkstra' #-}
+
+astar :: (Eq a, Ord a, Hashable a) => a -> (a -> Bool) -> (a -> [(a, Int)]) -> (a -> Int) -> Maybe (Int, [a])
+astar startNode isGoalNode nextNodeFn heuristic =
+        astarAux
+            (Q.singleton startNode (heuristic startNode) 0)
+            Set.empty
+            (Map.singleton startNode 0)
+            Map.empty
+    where
+    astarAux :: Q.HashPSQ a Int Int -> HashSet a -> HashMap a Int -> HashMap a a -> Maybe (Int, [a])
+    astarAux pq seen gscore tracks = case Q.minView pq of
+        Nothing -> Nothing
+        Just (node, _, gcost, pq')
+            | isGoalNode node      -> Just (gcost, reverse (findPath tracks node))
+            | Set.member node seen -> astarAux pq' seen gscore tracks
+            | otherwise            -> astarAux pq'' seen' gscore' tracks'
+            where
+            seen' :: HashSet a
+            seen'       = Set.insert node seen
+            successors :: [(a, Int, Int)]
+            successors  = 
+                filter (\(s, g, _) -> not (Set.member s seen') &&
+                    (not (s `Map.member` gscore) || g < (gscore Map.! s)))
+                $ successorsAndCosts node gcost
+            pq''    = foldl' (\q (s, g, h) -> Q.insert s (g + h) g q) pq' successors
+            gscore' = foldl' (\m (s, g, _) -> Map.insert s g m) gscore successors
+            tracks' = foldl' (\m (s, _, _) -> Map.insert s node m) tracks successors
+    successorsAndCosts :: a -> Int -> [(a, Int, Int)]
+    successorsAndCosts v gcost = [(u, gcost + g, heuristic u) | (u, g) <- nextNodeFn v]
+    findPath tracks node =
+        case tracks Map.!? node of
+            Nothing -> [node]
+            Just s ->  node : findPath tracks s
 
 connectedComponents :: Hashable a => Graph a -> [[a]]
 connectedComponents g = map (map fst) . groupOn snd . sortOn snd $ Map.toList a

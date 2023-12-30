@@ -32,12 +32,13 @@ parser = row `sepEndBy1` eol where
     label = Text.pack <$> some letterChar
 
 isValid :: State -> Bool
-isValid (State _ items) = all isValid' indexed where
-    isValid' (idx, (gen, chip)) = 0 <= gen && gen <= 3 && 0 <= chip && chip <= 3
+isValid s@(State elevator items) = if all isValid' indexed then traceShow s True else False where
+    isValid' (idx::Int, (gen, chip)) = 0 <= elevator && elevator <= 3
+                        && 0 <= gen && gen <= 3 && 0 <= chip && chip <= 3
                         && (gen == chip
                             || all (\(idx', (gen', _)) -> idx == idx' || chip /= gen') indexed
                            )
-    indexed = zip [(0::Int)..] . grouped2 $ V.toList items
+    indexed = zip [0..] . grouped2 $ V.toList items
 
 atSameFloor :: State -> [Int]
 atSameFloor (State elevator items) = [ i | (i, f) <- zip [0..] (V.toList items), f==elevator]
@@ -64,11 +65,12 @@ startingState items = State 0 items'' where
 isDest :: State -> Bool
 isDest (State _ items) = all (==3) (V.toList items)
 
-part1 :: [[Item]] -> Int
-part1 items = traceShow (startingState items) 0
+part1 :: [[Item]] -> Maybe Int
+part1 items = traceShow (startingState items) $
+                distance neighbors isDest (startingState items)
 
 part2 :: [[Item]] -> Maybe Int
-part2 items = distance neighbors isDest (startingState items)
+part2 items = Just 0
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
