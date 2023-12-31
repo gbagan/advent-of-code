@@ -3,6 +3,7 @@ module Day18 (solve) where
 import           AOC.Prelude hiding (get, toList)
 import           AOC (aoc)
 import           Data.Massiv.Array hiding (elem)
+import           Data.Massiv.Array.Unsafe (makeUnsafeStencil)
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
 import           AOC.List (count)
 import           AOC.Util (times)
@@ -14,7 +15,7 @@ parser = fromLists' Seq <$> some bit `sepEndBy1` eol where
     bit = 0 <$ "." <|> 1 <$ "#"
 
 stencil :: Stencil Ix2 Int Int
-stencil = makeStencil (Sz2 3 3) (0 :. 0) \get ->
+stencil = makeUnsafeStencil (Sz2 3 3) (0 :. 0) \_ get ->
     let n = count (/=0) [get (i :. j) | i <- [-1..1], j <- [-1..1]]
         v = get (0 :. 0)
     in if | v == 2 -> 2
