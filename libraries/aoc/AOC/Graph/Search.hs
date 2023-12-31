@@ -82,7 +82,7 @@ dijkstra' nbors targetFunc sources = aux Set.empty initialQueue where
 {-# INLINE dijkstra' #-}
 
 astar :: (Ord a, Hashable a) => a -> (a -> Bool) -> (a -> [(a, Int)]) -> (a -> Int) -> Maybe Int
-astar startNode isGoal nextNodeFn heuristic =
+astar startNode isGoal neighbors heuristic =
     astarAux
         (Q.singleton startNode (heuristic startNode) 0)
         Set.empty
@@ -97,12 +97,13 @@ astar startNode isGoal nextNodeFn heuristic =
             where
             seen'      = Set.insert node seen
             successors = 
-                filter (\(s, g, _) -> -- not (Set.member s seen') &&
-                    not (s `Map.member` gscore) || g < (gscore Map.! s))
-                $ successorsAndCosts node gcost
+                [ (u, g', heuristic u) 
+                | (u, g) <- neighbors node
+                , let g' = gcost + g
+                , not (u `Map.member` gscore) || g' < (gscore Map.! u)
+                ]
             pq''    = foldl' (\q (s, g, h) -> Q.insert s (g + h) g q) pq' successors
             gscore' = foldl' (\m (s, g, _) -> Map.insert s g m) gscore successors
-    successorsAndCosts v gcost = [(u, gcost + g, heuristic u) | (u, g) <- nextNodeFn v]
 
 {-# INLINE astar #-}
 
