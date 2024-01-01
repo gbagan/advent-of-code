@@ -11,4 +11,4 @@ findM :: Monad m => (a -> m Bool) -> [a] -> m (Maybe a)
 findM _ [] = pure Nothing
 findM p (x:xs) = do
     b <- p x
-    if b then pure (Just x) else findM p xs 
+    if b then pure (Just x) else findM p xs

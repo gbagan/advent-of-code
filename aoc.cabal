@@ -45,6 +45,7 @@ library aoclib
         AOC.Graph.Search
         AOC.HashSet
         AOC.HashMap
+        AOC.LinearAlgebra
         AOC.List
         AOC.Monad
         AOC.Number
