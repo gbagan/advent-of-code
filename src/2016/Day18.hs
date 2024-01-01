@@ -7,7 +7,6 @@ import           Data.Massiv.Array.Unsafe (makeUnsafeStencil)
 import           AOC.Parser (Parser, some)
 import           AOC.List (count)
 
-
 type Row = Array U Ix1 Bool -- False -> Safe, True -> Trapped
 
 parser :: Parser Row

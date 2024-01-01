@@ -26,7 +26,7 @@ parser = operation `sepEndBy1` eol where
     d = decimal
 
 doOperation :: String -> Operation -> String
-doOperation s = traceShow s \case
+doOperation s = \case
     SwapLetter c1 c2 -> map f s where
         f c | c == c1   = c2
             |  c == c2  = c1
@@ -37,9 +37,7 @@ doOperation s = traceShow s \case
                 | otherwise = c
         c1 = s !! p1
         c2 = s !! p2
-    RotateLeft n -> ys ++ xs where
-        n' = n `mod` length s
-        (xs,ys) = splitAt n' s
+    RotateLeft n -> doOperation s $ RotateRight (-n)
     RotateRight n -> ys ++ xs where
         m = length s
         n' = m - (n `mod` m)
@@ -56,19 +54,22 @@ doOperation s = traceShow s \case
             let (ys, zs) = splitAt p2 (xs++xs') in
             ys ++ [x] ++ zs
 
-reverseOperation :: String -> Operation -> String
-reverseOperation s op = doOperation s case op of
+undoOperation :: String -> Operation -> String
+undoOperation s op = doOperation s case op of
     RotateLeft n -> RotateRight n
     RotateRight n -> RotateLeft n
-    RotatePosition c -> error "todo"
+    RotatePosition c -> case elemIndex c s of
+        Nothing -> error "reverseOperation: cannot happen"
+        Just idx -> let n = idx `div` 2 + if odd idx || idx == 0 then 1 else 5
+                    in RotateLeft n
     Move p1 p2 -> Move p2 p1
     _ -> op
 
 part1 :: [Operation] -> String
 part1 = foldl' doOperation "abcdefgh"
 
-part2 :: [Operation] -> Int
-part2 _ = 0
+part2 :: [Operation] -> String
+part2 = foldl' undoOperation "fbgdceah". reverse
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
