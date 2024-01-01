@@ -3,7 +3,6 @@ module Day19 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (decimal)
-
 import           Data.Bits
 
 -- https://en.wikipedia.org/wiki/Josephus_problem
