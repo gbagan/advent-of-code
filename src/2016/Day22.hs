@@ -1,19 +1,21 @@
 -- https://adventofcode.com/2016/day/22
 module Day22 (solve) where
-import           AOC.Prelude hiding (State)
+import           AOC.Prelude hiding (State, head)
+import           Data.List (head)
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, eol, format, hspace, sepEndBy1, skipLine)
 import           AOC.List (groupOn)
-import           AOC.V2 (V2(..), manhattan, origin, adjacent)
-import           Data.Massiv.Array hiding (map, dropWhile)
-import           AOC.Area (Area)
-import qualified AOC.Area as Area
-impor            AOC.Search (astar)
+import           AOC.V2 (V2(..), manhattan, origin, adjacent, toIx2)
+import           Data.Massiv.Array hiding (map, dropWhile, toIx2)
+import           AOC.Graph (astar)
 
 data Node = Node { _used, _avail :: !Int}
 type Input = [(V2 Int, Node)]
 
-data State = State { _goal, _hole :: !(V2 Int) }
+data State = State { _goal, _hole :: !(V2 Int) } deriving (Eq, Ord, Show)
+instance Hashable State where
+    hashWithSalt s (State goal hole) = s `hashWithSalt` goal `hashWithSalt` hole
+
 
 parser :: Parser Input
 parser = skipLine *> skipLine *> node `sepEndBy1` eol where
@@ -32,22 +34,34 @@ part1 nodes = aux useds avails len 0 where
     aux (u:us) (a:as) l total | u <= a    = aux us (a:as) l $! total + l 
                               | otherwise = aux (u:us) as (l-1) $! total 
 
-inputToMat :: Input -> Matrix B Node
-inputToMat input = fromLists' Seq . map (map snd) $ groupOn (\(V2 x _, _) -> x) input       
 
-neighbors :: Area Int -> State -> [(State, Int)]
-neighbors area (State goal hole) = 
+findHole :: Input -> V2 Int
+findHole input = head [ p | (p,node) <- input, _used node == 0 ]
+
+inputToMat :: Input -> Matrix B Bool
+inputToMat input = fromLists' Seq . map (map \(_, Node used avail) -> used + avail <= 120) 
+                        $ groupOn (\(V2 x _, _) -> x) input       
+
+neighbors :: Matrix B Bool -> State -> [(State, Int)]
+neighbors grid (State goal hole) =
     [ (State goal' hole', 1)
     | hole' <- adjacent hole
-    , hole' `Area.elem` area
-    , let goal' = if hole' == goal then goal' else goal
+    , (grid !? toIx2 hole') == Just True
+    , let goal' = if hole' == goal then hole else goal
     ]
 
 heuristic :: State -> Int
-heuristic (State goal hole) = manhattan goal origin + manhattan goal hole - 1
+heuristic (State goal hole) = 5 * (manhattan goal origin - 1) + manhattan goal hole
 
-part2 :: Input -> Int
-part2 input = 0
+isDest :: State -> Bool
+isDest (State goal _) = goal == origin
+
+part2 :: Input -> Maybe Int
+part2 input = astar (State goal hole) isDest (neighbors mat) heuristic where
+    mat = inputToMat input
+    Sz2 w _ = size mat
+    goal = V2 (w-1) 0
+    hole = findHole input
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
