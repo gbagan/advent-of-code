@@ -1,16 +1,14 @@
 -- https://adventofcode.com/2023/day/24
 module Day24 (solve) where
-import           AOC.Prelude
+import           AOC.Prelude hiding (init, last)
+import           Data.List (init, last)
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, hspace, signedDecimal)
 import           AOC.List (count, pairwise)
 import           AOC.Number (toFrac)
 import           AOC.V2 (V2(..))
 import           AOC.V3 (V3(..))
-import           Z3.Monad
-import           Z3Helpers
-import           Z3Quote (expr)
-import           System.IO.Unsafe (unsafePerformIO)
+import           AOC.LinearAlgebra (solveLinearSystem)
 
 type Position = V3 Integer
 type Velocity = V3 Integer
@@ -57,27 +55,30 @@ crossesInsideTestArea  start end h1@(Hailstone (V3 px1 py1 _) (V3 vx1 vy1 _))
 part1 :: [Hailstone] -> Int
 part1 = count id . pairwise (crossesInsideTestArea 200_000_000_000_000 400_000_000_000_000)
 
-script :: [Hailstone] -> Z3 (Maybe [Integer])
-script hailstones = do
-    px <- mkFreshRealVar "px"
-    py <- mkFreshRealVar "py"
-    pz <- mkFreshRealVar "pz"
-    vx <- mkFreshRealVar "vy"
-    vy <- mkFreshRealVar "vy"
-    vz <- mkFreshRealVar "vz"
-    forM_ (zip [(0::Int)..] hailstones) \(i, Hailstone (V3 pxi pyi pzi) (V3 vxi vyi vzi)) -> do
-        ti <- mkFreshRealVar ("t" <> show i)
-        assert =<< [expr| ti >= 0 |]
-        assert =<< [expr| px + ti * vx == pxi + ti * vxi |]
-        assert =<< [expr| py + ti * vy == pyi + ti * vyi |]
-        assert =<< [expr| pz + ti * vz == pzi + ti * vzi |]
-    getIntResults [px,py,pz]
+buildEquations :: Hailstone -> Hailstone -> [[Rational]]
+buildEquations hs1 hs2 = map (map toFrac)
+    [ [ vy2 - vy1, vx1 - vx2, 0, py1 - py2, px2 - px1, 0
+      , px2 * vy2 - py2 * vx2 - px1 * vy1 + py1 * vx1
+      ]
+    , [ vz2 - vz1, 0, vx1 - vx2, pz1 - pz2, 0, px2 - px1
+      , px2 * vz2 - pz2 * vx2 - px1 * vz1 + pz1 * vx1
+      ]
+    , [ 0, vz2 - vz1, vy1 - vy2, 0, pz1 - pz2, py2 - py1
+      , py2 * vz2 - pz2 * vy2 - py1 * vz1 + pz1 * vy1
+      ]
+    ]
+    where
+    Hailstone (V3 px1 py1 pz1) (V3 vx1 vy1 vz1) = hs1 
+    Hailstone (V3 px2 py2 pz2) (V3 vx2 vy2 vz2) = hs2 
 
 part2 :: [Hailstone] -> Maybe Integer
-part2 hailstones =
-    unsafePerformIO do
-        sol <- evalZ3 (script hailstones)
-        pure $ sum <$> sol
+part2 (hs1 : hs2 :  hs3 : _) = do
+    let equations = buildEquations hs1 hs2 ++ buildEquations hs1 hs3 ++ buildEquations hs2 hs3
+    let mat = map init equations
+    let vec = map last equations
+    sol <- solveLinearSystem mat vec
+    pure . floor . sum $ take 3 sol
+part2 _ = error "cannot happen"
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2

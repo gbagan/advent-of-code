@@ -5,7 +5,8 @@ import           Data.List (head, init, last)
 import           AOC.Monad (findM)
 import           Control.Monad (foldM)
 import           Control.Monad.ST (ST, runST)
-import           Data.Massiv.Array hiding (all, any, init, map, replicate, zipWith)
+import           Data.Massiv.Array (Matrix, MArray, B, Ix2, Comp(Seq), Sz(..), Ix2(..), 
+                                    fromLists', toLists, size, thawS, readM, modify_, swapM, sizeOfMArray)
 import           Data.Massiv.Array.Unsafe (unsafeFreeze)
 
 gaussJordanStep :: (Eq a, Fractional a) => MArray s B Ix2 a -> (Int, a) -> Int -> ST s (Int, a)
