@@ -42,23 +42,18 @@ gaussJordan m = runST do
 
 {-# INLINE gaussJordan #-}
 
-solveLinearSystem :: (Eq a, Fractional a) => [[a]] -> [a] -> Maybe [a]
-solveLinearSystem mat vec =
+solveLinearSystem :: (Eq a, Fractional a) => [[a]] -> Maybe [a]
+solveLinearSystem mat =
     if all (==0) (init (last echelon)) then
         Nothing
     else
         let indicesAndValues =
-                map ( \row ->
-                    -- k is the column of the leading one of the row i, k always exists
-                    -- and the sequence of k is increasing
-                    let k = fromJust (elemIndex 1 row)
-                    in (k, last row)
-                ) echelon
-
+                map (\row -> (fromJust (elemIndex 1 row), last row)) echelon
+                -- search, for each row, the column of the leading one.
+                -- It always exists and the sequence is increasing
         in Just (getSolution indicesAndValues 0 (length (head mat)))
     where
-    augmented = fromLists' Seq $ zipWith (\row v -> row ++ [v]) mat vec
-    echelon = removeZeroRows . toLists . fst $ gaussJordan augmented
+    echelon = removeZeroRows . toLists . fst . gaussJordan $ fromLists' Seq mat
     removeZeroRows = filter (any (/=0))
     getSolution _ i n           | i == n = []
     getSolution ((j, v):xs) i n | j == i = v : getSolution xs (i+1) n

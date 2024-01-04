@@ -1,7 +1,6 @@
 -- https://adventofcode.com/2023/day/24
 module Day24 (solve) where
-import           AOC.Prelude hiding (init, last)
-import           Data.List (init, last)
+import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, hspace, signedDecimal)
 import           AOC.List (count, pairwise)
@@ -70,9 +69,7 @@ part2 (hs1 : hs2 :  hs3 : _) = do
         eqs3 = buildEquations hs3
         (.-) = zipWith (zipWith (-))
         equations =  eqs1 .- eqs2 ++ eqs2 .- eqs3
-        mat = map init equations
-        vec = map last equations
-    sol <- solveLinearSystem mat vec
+    sol <- solveLinearSystem equations
     pure . floor . sum $ take 3 sol
 part2 _ = error "cannot happen"
 

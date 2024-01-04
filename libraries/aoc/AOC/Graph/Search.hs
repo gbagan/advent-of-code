@@ -125,10 +125,10 @@ connectedComponents g = map (map fst) . groupOn snd . sortOn snd $ Map.toList a
 {-# INLINE connectedComponents #-}
 
 longestPath :: Hashable a => (a -> [(a, Int)]) -> a -> a -> Int
-longestPath neighbors start dest = go Set.empty 0 start where
-    go visited len pos
+longestPath neighbors start dest = go Set.empty start 0 where
+    go visited pos len
         | pos == dest = len
-        | otherwise = maximumDef 0 [ go (Set.insert pos visited) (len+len') next
+        | otherwise = maximumDef 0 [ go (Set.insert pos visited) next $! len+len'
                                    | (next, len') <- neighbors pos
                                    , not $ next `Set.member` visited
                                    ]
