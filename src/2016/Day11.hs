@@ -2,7 +2,7 @@
 module Day11 (solve) where
 import           AOC.Prelude hiding (State, state)
 import           AOC (aoc)
-import           AOC.Parser (Parser, eol, sepEndBy1, sepBy1, some, letterChar, format)
+import           AOC.Parser (Parser, eol, sepEndBy1, sepBy1, some, letterChar, scanf)
 import qualified Data.Text as Text
 import qualified Data.Vector.Unboxed as V
 import qualified Data.Vector.Instances ()
@@ -20,7 +20,7 @@ instance Hashable State where
 
 parser :: Parser [[Item]]
 parser = row `sepEndBy1` eol where
-    row = snd <$> [format|The {nth} floor contains {components}.|]
+    row = snd <$> [scanf|The {nth} floor contains {components}.|]
     nth = "first" <|> "second" <|> "third" <|> "fourth"
     components = [] <$ "nothing relevant"
                 <|> component `sepBy1` (", and " <|> ", ")

@@ -2,14 +2,14 @@
 module Day15 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
-import           AOC.Parser (Parser, decimal, eol, sepEndBy1, format)
+import           AOC.Parser (Parser, decimal, eol, sepEndBy1, scanf)
 import           AOC.Number (chineseRemainder)
 
 type Input = [(Integer, Integer, Integer, Integer)]
 
 parser :: Parser Input
 parser = row `sepEndBy1` eol where
-    row = [format|Disc #{decimal} has {decimal} positions; at time={decimal}, it is at position {decimal}.|]
+    row = [scanf|Disc #{decimal} has {decimal} positions; at time={decimal}, it is at position {decimal}.|]
 
 part1, part2 :: Input -> Maybe Integer
 part1 discs = fst <$> chineseRemainder [(t-p-i, m) | (i, m, t, p) <- discs]

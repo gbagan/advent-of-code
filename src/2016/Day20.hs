@@ -3,12 +3,12 @@ module Day20 (solve) where
 import           AOC.Prelude hiding (head, length)
 import           Data.List (head)
 import           AOC (aoc)
-import           AOC.Parser (Parser, decimal, sepEndBy1, eol, format)
+import           AOC.Parser (Parser, decimal, sepEndBy1, eol, scanf)
 import           AOC.Range (Range(..), length, toDisjointUnion)
 
 parser :: Parser [Range Int]
 parser = range `sepEndBy1` eol where
-    range = [format|$Range {decimal}-{decimal}|]
+    range = [scanf|$Range {decimal}-{decimal}|]
 
 part1 :: [Range Int] -> Int
 part1 = (+1) . _upper . head . toDisjointUnion

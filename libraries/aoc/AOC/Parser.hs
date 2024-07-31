@@ -7,7 +7,7 @@ module AOC.Parser
     , signedDecimal
     , bitP
     , skipLine
-    , format
+    , scanf
     )
     where
 
@@ -81,8 +81,8 @@ exprToExpQ = \case
     var y = if isUpper (head y) then TH.conE (TH.mkName y) else TH.varE (TH.mkName y)
     str y = TH.litE (TH.stringL y)
 
-format :: QuasiQuoter
-format = QuasiQuoter { quoteExp = quoteExprExp
+scanf :: QuasiQuoter
+scanf = QuasiQuoter { quoteExp = quoteExprExp
                      , quotePat = \_ -> error "quotePat: not implemented"
                      , quoteType = \_ -> error "quoteType: not implemented"
                      , quoteDec = \_ -> error "quoteDec: not implemented"

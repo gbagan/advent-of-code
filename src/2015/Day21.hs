@@ -3,16 +3,16 @@ module Day21 (solve) where
 import           AOC.Prelude
 import           Data.List (maximum, minimum)
 import           AOC (aoc)
-import           AOC.Parser (Parser, eol, format, decimal)
+import           AOC.Parser (Parser, eol, scanf, decimal)
 
 data Boss = Boss { _hp, _damage, _armor :: Int }
 data Item = Item { _cost, _itemDamage, _itemArmor :: Int }
 
 parser :: Parser Boss
 parser = do
-    hp <- [format| Hit Points: {decimal}|] <* eol
-    damage <- [format| Damage: {decimal}|] <* eol
-    Boss hp damage <$> [format| Armor: {decimal}|]
+    hp <- [scanf| Hit Points: {decimal}|] <* eol
+    damage <- [scanf| Damage: {decimal}|] <* eol
+    Boss hp damage <$> [scanf| Armor: {decimal}|]
 
 weapons, armors, rings :: [Item]
 

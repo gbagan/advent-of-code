@@ -3,12 +3,12 @@ module Day16 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import qualified Data.HashMap.Strict as Map
-import           AOC.Parser (Parser, eol, letterChar, sepBy1, sepEndBy1,some, decimal, format)
+import           AOC.Parser (Parser, eol, letterChar, sepBy1, sepEndBy1,some, decimal, scanf)
 import qualified Data.Text as Text
 
 parser :: Parser [(Int, HashMap Text Int)]
 parser = sue `sepEndBy1` eol where
-    sue = [format|Sue {decimal}: {things}|]
+    sue = [scanf|Sue {decimal}: {things}|]
     things = Map.fromList <$> thing `sepBy1` ", "
     thing = (,) <$> label <* ": " <*> decimal
     label = Text.pack <$> some letterChar

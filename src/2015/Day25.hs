@@ -2,11 +2,11 @@
 module Day25 (solve) where
 import           AOC.Prelude hiding (mod, exp)
 import           AOC (aoc)
-import           AOC.Parser (Parser, format, decimal)
+import           AOC.Parser (Parser, scanf, decimal)
 import           AOC.Number (power)
 
 parser :: Parser (Int, Int)
-parser = [format| To continue, please consult the code grid in the manual.  Enter the code at row {decimal}, column {decimal}.|]
+parser = [scanf| To continue, please consult the code grid in the manual.  Enter the code at row {decimal}, column {decimal}.|]
 
 part1 :: (Int, Int) -> Int
 part1 (row, col) = firstCode `mul` power mul base exp where

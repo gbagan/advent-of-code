@@ -3,7 +3,7 @@ module Day14 (solve) where
 import           AOC.Prelude hiding (max, tail)
 import           Data.List (maximum, tail)
 import           AOC (aoc)
-import           AOC.Parser (Parser, decimal, eol, letterChar, some, sepEndBy1, format)
+import           AOC.Parser (Parser, decimal, eol, letterChar, some, sepEndBy1, scanf)
 
 type Reindeer = (Int, Int, Int) -- speed, duration, rest time
 
@@ -12,7 +12,7 @@ parser = row `sepEndBy1` eol where
     name = some letterChar
     row = do
         (_, speed, duration, rest) <-
-            [format|{name} can fly {decimal} km/s for {decimal} seconds, but then must rest for {decimal} seconds.|]
+            [scanf|{name} can fly {decimal} km/s for {decimal} seconds, but then must rest for {decimal} seconds.|]
         pure (speed, duration, rest)
 
 distance :: Int -> Reindeer -> Int

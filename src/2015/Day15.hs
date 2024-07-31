@@ -3,7 +3,7 @@ module Day15 (solve) where
 import           AOC.Prelude
 import           Data.List (maximum)
 import           AOC (aoc)
-import           AOC.Parser (Parser, letterChar, sepEndBy1, signedDecimal, some, eol, format)
+import           AOC.Parser (Parser, letterChar, sepEndBy1, signedDecimal, some, eol, scanf)
 
 type Properties = ([Int], Int) -- [capacity, durability, flavor, texture], calories
 
@@ -11,7 +11,7 @@ parser :: Parser [Properties]
 parser = properties `sepEndBy1` eol where
     properties= do
         (_, a,b, c, d', e) <- 
-            [format|{name}: capacity {d}, durability {d}, flavor {d}, texture {d}, calories {d}|]
+            [scanf|{name}: capacity {d}, durability {d}, flavor {d}, texture {d}, calories {d}|]
         pure ([a, b, c, d'], e)
     d = signedDecimal
     name = some letterChar

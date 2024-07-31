@@ -2,7 +2,7 @@
 module Day23 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
-import           AOC.Parser (Parser, eol, sepEndBy1, signedDecimal, lowerChar, format)
+import           AOC.Parser (Parser, eol, sepEndBy1, signedDecimal, lowerChar, scanf)
 import qualified Data.HashMap.Strict as Map
 import qualified Data.Vector as V
 import           Lens.Micro (ix)
@@ -19,11 +19,11 @@ makeLenses ''PState
 
 parser :: Parser (Vector Instr)
 parser = V.fromList <$> instr `sepEndBy1` eol where
-    instr = [format|$Cpy cpy {val} {val}|]
-        <|> [format|$Inc inc {c}|]
-        <|> [format|$Dec dec {c}|]
-        <|> [format|$Tgl tgl {c}|]
-        <|> [format|$Jnz jnz {val} {val}|]
+    instr = [scanf|$Cpy cpy {val} {val}|]
+        <|> [scanf|$Inc inc {c}|]
+        <|> [scanf|$Dec dec {c}|]
+        <|> [scanf|$Tgl tgl {c}|]
+        <|> [scanf|$Jnz jnz {val} {val}|]
     c = lowerChar
     val = Register <$> c <|> Constant <$> signedDecimal
 

@@ -3,7 +3,7 @@ module Day22 (solve) where
 import           AOC.Prelude hiding (State, head)
 import           Data.List (head)
 import           AOC (aoc)
-import           AOC.Parser (Parser, decimal, eol, format, hspace, sepEndBy1, skipLine)
+import           AOC.Parser (Parser, decimal, eol, scanf, hspace, sepEndBy1, skipLine)
 import           AOC.List (groupOn)
 import           AOC.V2 (V2(..), manhattan, origin, adjacent, toIx2)
 import           Data.Massiv.Array hiding (map, dropWhile, toIx2)
@@ -20,7 +20,7 @@ instance Hashable State where
 parser :: Parser Input
 parser = skipLine *> skipLine *> node `sepEndBy1` eol where
     node = do
-        (x, y, _, used, avail, _) <- [format|/dev/grid/node-x{d}-y{d}{d}T{d}T{d}T{d}%|]
+        (x, y, _, used, avail, _) <- [scanf|/dev/grid/node-x{d}-y{d}{d}T{d}T{d}T{d}%|]
         pure (V2 x y, Node used avail)
     d = hspace *> decimal
 

@@ -3,7 +3,7 @@ module Day21 (solve) where
 import           AOC.Prelude
 import           Data.List ((!!))
 import           AOC (aoc)
-import           AOC.Parser (Parser, decimal, letterChar, sepEndBy1, eol, format, optional)
+import           AOC.Parser (Parser, decimal, letterChar, sepEndBy1, eol, scanf, optional)
 
 data Operation = SwapLetter Char Char
                | SwapPosition Int Int
@@ -15,13 +15,13 @@ data Operation = SwapLetter Char Char
 
 parser :: Parser [Operation]
 parser = operation `sepEndBy1` eol where
-    operation = [format|$SwapPosition swap position {d} with position {d}|]
-            <|> [format|$SwapLetter swap letter {c} with letter {c}|]
-            <|> [format|$RotateLeft rotate left {d} step|] <* optional "s"
-            <|> [format|$RotateRight rotate right {d} step|] <* optional "s"
-            <|> [format|$RotatePosition rotate based on position of letter {c}|]
-            <|> [format|$Reverse reverse positions {d} through {d}|]
-            <|> [format|$Move move position {d} to position {d}|]
+    operation = [scanf|$SwapPosition swap position {d} with position {d}|]
+            <|> [scanf|$SwapLetter swap letter {c} with letter {c}|]
+            <|> [scanf|$RotateLeft rotate left {d} step|] <* optional "s"
+            <|> [scanf|$RotateRight rotate right {d} step|] <* optional "s"
+            <|> [scanf|$RotatePosition rotate based on position of letter {c}|]
+            <|> [scanf|$Reverse reverse positions {d} through {d}|]
+            <|> [scanf|$Move move position {d} to position {d}|]
     c = letterChar
     d = decimal
 

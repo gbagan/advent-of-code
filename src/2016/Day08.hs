@@ -4,7 +4,7 @@ import           AOC.Prelude hiding (toList)
 import           AOC (aoc)
 import           Control.Monad.ST (ST)
 import           Data.Massiv.Array hiding (map)
-import           AOC.Parser (Parser, eol, sepEndBy1, decimal, format)
+import           AOC.Parser (Parser, eol, sepEndBy1, decimal, scanf)
 import           System.IO.Unsafe (unsafePerformIO)
 import           AOC.List (count)
 
@@ -12,9 +12,9 @@ data Instr = Rect !Int !Int | RotateRow !Int !Int | RotateCol !Int !Int
 
 parser :: Parser [Instr]
 parser = instr `sepEndBy1` eol where
-    instr = [format|$Rect rect {decimal}x{decimal}|]
-        <|> [format|$RotateRow rotate row y={decimal} by {decimal}|]
-        <|> [format|$RotateCol rotate column x={decimal} by {decimal}|]
+    instr = [scanf|$Rect rect {decimal}x{decimal}|]
+        <|> [scanf|$RotateRow rotate row y={decimal} by {decimal}|]
+        <|> [scanf|$RotateCol rotate column x={decimal} by {decimal}|]
 
 runInstr :: MArray r U Ix2 Bool -> Instr -> ST r ()
 runInstr mat = \case 

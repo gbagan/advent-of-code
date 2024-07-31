@@ -3,14 +3,14 @@ module Day09 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           Text.Megaparsec (parseMaybe)
-import           AOC.Parser (Parser, decimal, eol, letterChar, some, takeP, takeRest, format)
+import           AOC.Parser (Parser, decimal, eol, letterChar, some, takeP, takeRest, scanf)
 import qualified Data.Text as Text
 
 parserWith :: (Text -> Int) -> Parser Int
 parserWith f = sum <$> some (marker  <|> plain <|> 0 <$ eol) where
     plain = length <$> some letterChar
     marker = do
-        (len, times) <- [format|({decimal}x{decimal})|]
+        (len, times) <- [scanf|({decimal}x{decimal})|]
         chunk <- takeP Nothing len
         pure $ times * f chunk
 

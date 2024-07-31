@@ -3,14 +3,14 @@ module Day04 (solve) where
 import           AOC.Prelude hiding (unwords)
 import           Data.List (isInfixOf, unwords)
 import           AOC (aoc)
-import           AOC.Parser (Parser, decimal, eol, sepEndBy1, some, lowerChar, format)
+import           AOC.Parser (Parser, decimal, eol, sepEndBy1, some, lowerChar, scanf)
 import           AOC.List (freqs)
 
 data Room = Room { _name :: ![String], sectorId :: !Int,  _checksum :: !String }
 
 parser :: Parser [Room]
 parser = room `sepEndBy1` eol where
-    room = [format|$Room {name}{decimal}[{checksum}]|]
+    room = [scanf|$Room {name}{decimal}[{checksum}]|]
     name = some lowerChar `sepEndBy1` "-"
     checksum = some lowerChar
 

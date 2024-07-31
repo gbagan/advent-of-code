@@ -2,7 +2,7 @@
 module Day12 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
-import           AOC.Parser (Parser, eol, sepEndBy1, signedDecimal, lowerChar, format)
+import           AOC.Parser (Parser, eol, sepEndBy1, signedDecimal, lowerChar, scanf)
 import qualified Data.HashMap.Strict as Map
 import qualified Data.Vector as V
 
@@ -11,10 +11,10 @@ data Instr = Cpy Value Char | Inc Char | Dec Char | Jnz Value Int
 
 parser :: Parser (Vector Instr)
 parser = V.fromList <$> instr `sepEndBy1` eol where
-    instr = [format|$Cpy cpy {val} {c}|]
-        <|> [format|$Inc inc {c}|]
-        <|> [format|$Dec dec {c}|]
-        <|> [format|$Jnz jnz {val} {d}|]
+    instr = [scanf|$Cpy cpy {val} {c}|]
+        <|> [scanf|$Inc inc {c}|]
+        <|> [scanf|$Dec dec {c}|]
+        <|> [scanf|$Jnz jnz {val} {d}|]
     c = lowerChar
     d = signedDecimal
     val = Register <$> c <|> Constant <$> d

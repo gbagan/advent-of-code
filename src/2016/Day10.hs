@@ -4,7 +4,7 @@ import           AOC.Prelude hiding (last)
 import           Data.List (last)
 import qualified Data.IntMap.Strict as Map
 import           AOC (aoc')
-import           AOC.Parser (Parser, decimal, eol, sepEndBy1, format)
+import           AOC.Parser (Parser, decimal, eol, sepEndBy1, scanf)
 
 data BinType = Bot | Output
 data Bin = Bin !BinType !Int
@@ -16,8 +16,8 @@ type Input = (Rules, IntMap [Int]) -- rules, bots
 
 parser :: Parser [Instr]
 parser = (goes <|> give) `sepEndBy1` eol where
-    goes = [format| $Goes value {decimal} goes to bot {decimal}|]
-    give = [format| $giveF bot {decimal} gives low to {bin} {decimal} and high to {bin} {decimal}|]
+    goes = [scanf| $Goes value {decimal} goes to bot {decimal}|]
+    give = [scanf| $giveF bot {decimal} gives low to {bin} {decimal} and high to {bin} {decimal}|]
     bin = Bot <$ "bot" <|> Output <$ "output"
     giveF giver lowBin lowInt highBin highInt = Gives giver (Bin lowBin lowInt) (Bin highBin highInt)
 

@@ -6,7 +6,7 @@
 module Day22 (solve) where
 import           AOC.Prelude hiding (State, state)
 import           AOC (aoc)
-import           AOC.Parser (Parser, decimal, eol, format)
+import           AOC.Parser (Parser, decimal, eol, scanf)
 
 data State = State { playerHP, bossHP, bossDamage, consumedMana, currentMana
                    , poison, recharge, shield :: !Int, hardMode :: !Bool
@@ -22,8 +22,8 @@ min' (Just x) (Just y) | x <= y = Just x
 
 parser :: Parser (Int, Int)
 parser = do
-    hp <- [format|Hit Points: {decimal}|] <* eol
-    damage <- [format|Damage: {decimal}|]
+    hp <- [scanf|Hit Points: {decimal}|] <* eol
+    damage <- [scanf|Damage: {decimal}|]
     pure (hp, damage)
 
 spellCost :: Spell -> Int

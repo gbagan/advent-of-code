@@ -90,6 +90,10 @@ freqs' :: Hashable a => [a] -> HashMap a Int
 freqs' = HMap.fromListWith (+) . map (,1)
 {-# INLINE freqs' #-}
 
+mostCommon :: Hashable a => [a] -> Maybe a
+mostCommon [] = Nothing
+mostCommon xs = Just . fst . maximumOn snd $ freqs xs 
+
 slice :: Int -> Int -> [a] -> [a]
 slice start end = take (end - start + 1) . drop start
 {-# INLINE slice #-}
