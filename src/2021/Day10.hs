@@ -2,7 +2,7 @@ module Day10 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, char, eol, sepEndBy1, some)
-import           AOC.Util (median)
+import           AOC.List (median)
 
 parser :: Parser [String]
 parser = line `sepEndBy1` eol where

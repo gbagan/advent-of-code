@@ -1,7 +1,7 @@
 module AOC.List where
 
 import           AOC.Prelude
-import           Data.List (maximum, minimum, maximumBy, minimumBy)
+import           Data.List ((!!), maximum, minimum, maximumBy, minimumBy)
 import qualified Data.HashMap.Strict as HMap
 
 allUnique :: Ord a => [a] -> Bool
@@ -100,6 +100,9 @@ slice start end = take (end - start + 1) . drop start
 
 average :: [Int] -> Double
 average xs = realToFrac (sum xs) / genericLength xs
+
+median :: Ord a => [a] -> a
+median l = sort l !! (length l `div` 2)
 
 flattenWithIndex :: [[a]] -> [(Int, Int, a)]
 flattenWithIndex l =

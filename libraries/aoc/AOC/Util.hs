@@ -30,9 +30,6 @@ timesM_ n f
 majority :: (a -> Bool) -> [a] -> Bool
 majority f l = 2 * count f l >= length l
 
-median :: Ord a => [a] -> a
-median l = sort l !! (length l `div` 2)
-
 clamp :: Ord a => (a, a) -> a -> a
 clamp (l, u) = max l . min u
 {-# INLINE clamp #-}
