@@ -1,4 +1,4 @@
--- https://adventofcode.com/2018/day/1
+-- https://adventofcode.com/2018/day/2
 module Day02 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)

@@ -16,7 +16,7 @@ parser :: Parser [Line]
 parser = sepEndBy1 line eol where
     segment = (\c -> ord c - ord 'a') <$> lowerChar
     digits = (IS.fromList <$> some segment) `sepEndBy1` hspace
-    line = Line <$> (Set.fromList <$> digits) <* "| " <*> digits
+    line = Line . Set.fromList <$> digits <* "| " <*> digits
 
 part1 :: [Line] -> Int
 part1 xs = length $ xs >>= \(Line _ r) -> filter (\w -> IS.size w `elem` [2, 3, 4, 7]) r
