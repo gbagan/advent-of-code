@@ -114,7 +114,7 @@ executable aoc2018
     import: aoc-exe
     hs-source-dirs:      src/2018
     main-is:             Main.hs
-    other-modules: Day01 Day02 Day03 Day04
+    other-modules: Day01 Day02 Day03 Day04 Day05
     build-depends:
 
 executable aoc2020
