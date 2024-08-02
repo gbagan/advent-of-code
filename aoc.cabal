@@ -38,6 +38,7 @@ library aoclib
         AOC
         AOC.Area
         AOC.Debug
+        AOC.Draw
         AOC.Graph
         AOC.Graph.Base
         AOC.Graph.MaximumMatching
@@ -115,7 +116,7 @@ executable aoc2018
     import: aoc-exe
     hs-source-dirs:      src/2018
     main-is:             Main.hs
-    other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09
+    other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13
     build-depends:
 
 executable aoc2020

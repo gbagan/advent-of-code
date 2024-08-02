@@ -2,7 +2,6 @@ module AOC.Util where
 import           AOC.Prelude
 import           Data.Char (digitToInt, isDigit)
 import           AOC.List (count)
-import           Data.List ((!!))
 import qualified Data.HashMap.Strict as HMap
 import qualified Data.HashSet as HSet
 import           AOC.V2 (V2(..))

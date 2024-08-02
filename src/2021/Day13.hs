@@ -1,8 +1,7 @@
 {-# OPTIONS_GHC -Wno-deprecations #-}
 module Day13 (solve) where
 import           AOC.Prelude hiding (fold, head)
-import           Data.List (head)
-import           Data.List (maximum)
+import           Data.List (head, maximum)
 import qualified Data.Set as Set
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, eol, sepEndBy1, some)
