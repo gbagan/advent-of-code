@@ -5,17 +5,29 @@ import qualified Data.IntMap.Strict as Map
 
 type Program = IntMap Int
 
+data Machine = Machine { program :: Program, offset :: Int, relative :: Int } 
+
+newMachine :: [Int] -> Machine
+newMachine pgm = Machine (Map.fromList (zip [0..] pgm)) 0 0
+
 -- return the output
 runProgram :: [Int] -> [Int] -> [Int]
-runProgram = runProgram' (const []) (:)
+runProgram input = go input . newMachine where
+    go input' = runWithCallbacks (const []) (onInput input') (:)
+    onInput input' f = case input' of
+        [] -> error "empty input"
+        (i:is) -> go is (f i)
 
 -- return the program
-runProgram_ :: [Int] -> [Int] -> [Int]
-runProgram_ = runProgram' Map.elems \_ x -> x
+runProgram_ :: [Int] -> [Int]
+runProgram_ = go . newMachine where
+    go = runWithCallbacks onHalt onInput \_ x -> x
+    onHalt machine = Map.elems machine.program
+    onInput _ = error "no input"
 
-runProgram' :: (Program -> a) ->  (Int -> a -> a) ->  [Int] -> [Int] -> a
-runProgram' onHalt onOutput initialInput pgmList = go' (Map.fromList (zip [0..] pgmList)) initialInput 0 0 where 
-    go' pgm input relative idx =
+runWithCallbacks :: (Machine -> a) -> ((Int -> Machine) -> a) -> (Int -> a -> a) -> Machine -> a
+runWithCallbacks onHalt onInput onOutput = go' where 
+    go' machine@(Machine pgm idx relative) =
         let instr = pgm Map.! idx
             opcode = instr `rem` 100
             mode1 = (instr `quot` 100) `rem` 10
@@ -26,46 +38,45 @@ runProgram' onHalt onOutput initialInput pgmList = go' (Map.fromList (zip [0..] 
                 let val1 = read relative (idx+1) mode1 pgm
                     val2 = read relative (idx+2) mode2 pgm
                     pgm' = write relative (idx+3) (val1+val2) mode3 pgm
-                in go' pgm' input relative (idx+4)
+                in go' machine{program = pgm', offset = idx+4}
             2 ->
                 let val1 = read relative (idx+1) mode1 pgm
                     val2 = read relative (idx+2) mode2 pgm
                     pgm' = write relative (idx+3) (val1*val2) mode3 pgm
-                in go' pgm' input relative (idx+4)
-            3 -> case input of
-                [] -> error "empty input"
-                (i:is) ->
+                in go' machine{program = pgm', offset = idx+4}
+            3 -> onInput (\i ->
                     let pgm' = write relative (idx+1) i mode1 pgm
-                    in go' pgm' is relative (idx+2)
+                    in machine{program = pgm', offset = idx+2}
+                )
             4 ->
                 let o = read relative (idx+1) mode1 pgm in
-                onOutput o (go' pgm input relative (idx+2))
+                onOutput o (go' machine{offset = idx+2})
             5 ->
                 let val1 = read relative (idx+1) mode1 pgm
                     val2 = read relative (idx+2) mode2 pgm
                 in if val1 /= 0
-                    then go' pgm input relative val2 
-                    else go' pgm input relative (idx+3)
+                    then go' machine{offset = val2} 
+                    else go' machine{offset = idx+3}
             6 ->
                 let val1 = read relative (idx+1) mode1 pgm
                     val2 = read relative (idx+2) mode2 pgm
                 in if val1 == 0
-                    then go' pgm input relative val2 
-                    else go' pgm input relative (idx+3)
+                    then go' machine{offset = val2} 
+                    else go' machine{offset = idx+3}
             7 ->
                 let val1 = read relative (idx+1) mode1 pgm
                     val2 = read relative (idx+2) mode2 pgm
                     pgm' = write relative (idx+3) (fromEnum (val1 < val2)) mode3 pgm
-                in go' pgm' input relative (idx+4)
+                in go' machine{program=pgm',offset = idx+4}
             8 ->
                 let val1 = read relative (idx+1) mode1 pgm
                     val2 = read relative (idx+2) mode2 pgm
                     pgm' = write relative (idx+3) (fromEnum (val1 == val2)) mode3 pgm
-                in go' pgm' input relative (idx+4)
+                in go' machine{program=pgm',offset = idx+4}
             9 ->
                 let val = read relative (idx+1) mode1 pgm
-                in go' pgm input (relative+val) (idx+2)
-            99 -> onHalt pgm
+                in go' machine{relative=relative+val, offset = idx+2}
+            99 -> onHalt machine
             x -> error $ "run: invalid instruction: " <> show x
 
 read :: Int -> Int -> Int -> Program -> Int

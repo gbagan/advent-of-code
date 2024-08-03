@@ -10,7 +10,7 @@ parser :: Parser [Int]
 parser = decimal `sepEndBy1` ","
 
 run :: Int -> Int -> [Int] -> Int 
-run noun verb pgm = head $ runProgram_ [] pgm' where
+run noun verb pgm = head $ runProgram_ pgm' where
     x = head pgm
     pgm' = x : noun : verb : drop 3 pgm
 
