@@ -46,6 +46,7 @@ library aoclib
         AOC.Graph.Search
         AOC.HashSet
         AOC.HashMap
+        AOC.IntCode
         AOC.LinearAlgebra
         AOC.List
         AOC.Monad
@@ -123,7 +124,7 @@ executable aoc2019
     import: aoc-exe
     hs-source-dirs:      src/2019
     main-is:             Main.hs
-    other-modules: Day01 Day02 Day03 Day04
+    other-modules: Day01 Day02 Day03 Day04 Day05 Day06
     build-depends:
 
 executable aoc2020

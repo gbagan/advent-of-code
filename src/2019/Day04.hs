@@ -12,8 +12,8 @@ nonDecreasing :: String -> Bool
 nonDecreasing s = and $ zipWith (<=) s (drop 1 s)
 
 twoAdjacent, twoAdjacent' :: String -> Bool
-twoAdjacent = any (> 1) . map length . group
-twoAdjacent' = elem 2 . map length . group
+twoAdjacent = any ((> 1) . length) . group
+twoAdjacent' = any ((==2) . length) . group
 
 solveWith :: (String -> Bool) -> (Int, Int) -> Int
 solveWith check (min_, max_) = count (\txt -> nonDecreasing txt && check txt) . map show $ [min_..max_]
