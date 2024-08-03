@@ -1,22 +1,23 @@
 -- https://adventofcode.com/2019/day/2
 module Day02 (solve) where
-import           AOC.Prelude
+import           AOC.Prelude hiding (head)
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, sepEndBy1)
-import qualified Data.Vector.Unboxed as V
-import           AOC.IntCode (runProgram)
+import           AOC.IntCode (runProgram_)
+import           Data.List (head)
 
-parser :: Parser (V.Vector Int)
-parser = V.fromList <$> decimal `sepEndBy1` ","
+parser :: Parser [Int]
+parser = decimal `sepEndBy1` ","
 
-run :: Int -> Int -> V.Vector Int -> Int 
-run noun verb pgm = pgm' V.! 0 where 
-    (pgm', _) = runProgram [] (pgm V.// [(1, noun), (2, verb)])
+run :: Int -> Int -> [Int] -> Int 
+run noun verb pgm = head $ runProgram_ [] pgm' where
+    x = head pgm
+    pgm' = x : noun : verb : drop 3 pgm
 
-part1 :: V.Vector Int -> Int 
+part1 :: [Int] -> Int 
 part1 = run 12 2 
 
-part2 :: V.Vector Int -> Maybe Int 
+part2 :: [Int] -> Maybe Int 
 part2 pgm = listToMaybe [ 100 * noun + verb
                         | noun <- [0..99]
                         , verb <- [0..99]

@@ -1,80 +1,83 @@
 module AOC.IntCode where
 
 import           AOC.Prelude
-import           Control.Monad.ST (ST, runST)
-import qualified Data.Vector.Unboxed as V
-import           Data.Vector.Unboxed.Mutable (MVector, read, write)
+import qualified Data.IntMap.Strict as Map
 
-readData :: MVector s Int -> Int -> Int -> ST s Int
-readData pgm idx mode = do
-    val <- read pgm idx
-    if mode /= 0
-        then pure val
-        else read pgm val
+type Program = IntMap Int
 
-writeData :: MVector s Int -> Int -> Int -> Int -> ST s ()
-writeData pgm idx val mode = do
-    if mode /= 0 
-        then write pgm idx val
-        else do
-            idx' <- read pgm idx
-            write pgm idx' val
+-- return the output
+runProgram :: [Int] -> [Int] -> [Int]
+runProgram = runProgram' (const []) (:)
 
-runProgram :: [Int] -> V.Vector Int -> (V.Vector Int, [Int])
-runProgram input v = runST do
-    pgm <- V.thaw v
-    go pgm input [] 0
+-- return the program
+runProgram_ :: [Int] -> [Int] -> [Int]
+runProgram_ = runProgram' Map.elems \_ x -> x
 
-go :: MVector s Int -> [Int] -> [Int] -> Int -> ST s (V.Vector Int, [Int])
-go pgm input output idx = do
-        instr <- read pgm idx
-        let opcode = instr `rem` 100
-        let mode1 = (instr `quot` 100) `rem` 10
-        let mode2 = (instr `quot` 1000) `rem` 10
-        let mode3 = (instr `quot` 10000) `rem` 10
-        case opcode of
-            1 -> do
-                val1 <- readData pgm (idx+1) mode1
-                val2 <- readData pgm (idx+2) mode2
-                writeData pgm (idx+3) (val1+val2) mode3
-                go pgm input output (idx+4)
-            2 -> do
-                val1 <- readData pgm (idx+1) mode1
-                val2 <- readData pgm (idx+2) mode2
-                writeData pgm (idx+3) (val1*val2) mode3
-                go pgm input output (idx+4)
-            3 -> do
-                case input of
-                    [] -> error "no input"
-                    (i:is) -> do
-                        writeData pgm (idx+1) i mode1
-                        go pgm is output (idx+2)
-            4 -> do
-                o <- readData pgm (idx+1) mode1
-                go pgm input (o:output) (idx+2)
-            5 -> do
-                val1 <- readData pgm (idx+1) mode1
-                val2 <- readData pgm (idx+2) mode2
-                if val1 /= 0
-                    then go pgm input output val2
-                    else go pgm input output (idx+3)
-            6 -> do
-                val1 <- readData pgm (idx+1) mode1
-                val2 <- readData pgm (idx+2) mode2
-                if val1 == 0
-                    then go pgm input output val2
-                    else go pgm input output (idx+3)
-            7 -> do
-                val1 <- readData pgm (idx+1) mode1
-                val2 <- readData pgm  (idx+2) mode2
-                writeData pgm (idx+3) (fromEnum (val1 < val2)) mode3
-                go pgm input output (idx+4)
-            8 -> do
-                val1 <- readData pgm (idx+1) mode1
-                val2 <- readData pgm (idx+2) mode2
-                writeData pgm (idx+3) (fromEnum (val1 == val2)) mode3
-                go pgm input output (idx+4)
-            99 -> do
-                pgm' <- V.freeze pgm
-                pure (pgm', output)
+runProgram' :: (Program -> a) ->  (Int -> a -> a) ->  [Int] -> [Int] -> a
+runProgram' onHalt onOutput initialInput pgmList = go' (Map.fromList (zip [0..] pgmList)) initialInput 0 0 where 
+    go' pgm input relative idx =
+        let instr = pgm Map.! idx
+            opcode = instr `rem` 100
+            mode1 = (instr `quot` 100) `rem` 10
+            mode2 = (instr `quot` 1000) `rem` 10
+            mode3 = (instr `quot` 10000) `rem` 10
+        in case opcode of
+            1 ->
+                let val1 = read relative (idx+1) mode1 pgm
+                    val2 = read relative (idx+2) mode2 pgm
+                    pgm' = write relative (idx+3) (val1+val2) mode3 pgm
+                in go' pgm' input relative (idx+4)
+            2 ->
+                let val1 = read relative (idx+1) mode1 pgm
+                    val2 = read relative (idx+2) mode2 pgm
+                    pgm' = write relative (idx+3) (val1*val2) mode3 pgm
+                in go' pgm' input relative (idx+4)
+            3 -> case input of
+                [] -> error "empty input"
+                (i:is) ->
+                    let pgm' = write relative (idx+1) i mode1 pgm
+                    in go' pgm' is relative (idx+2)
+            4 ->
+                let o = read relative (idx+1) mode1 pgm in
+                onOutput o (go' pgm input relative (idx+2))
+            5 ->
+                let val1 = read relative (idx+1) mode1 pgm
+                    val2 = read relative (idx+2) mode2 pgm
+                in if val1 /= 0
+                    then go' pgm input relative val2 
+                    else go' pgm input relative (idx+3)
+            6 ->
+                let val1 = read relative (idx+1) mode1 pgm
+                    val2 = read relative (idx+2) mode2 pgm
+                in if val1 == 0
+                    then go' pgm input relative val2 
+                    else go' pgm input relative (idx+3)
+            7 ->
+                let val1 = read relative (idx+1) mode1 pgm
+                    val2 = read relative (idx+2) mode2 pgm
+                    pgm' = write relative (idx+3) (fromEnum (val1 < val2)) mode3 pgm
+                in go' pgm' input relative (idx+4)
+            8 ->
+                let val1 = read relative (idx+1) mode1 pgm
+                    val2 = read relative (idx+2) mode2 pgm
+                    pgm' = write relative (idx+3) (fromEnum (val1 == val2)) mode3 pgm
+                in go' pgm' input relative (idx+4)
+            9 ->
+                let val = read relative (idx+1) mode1 pgm
+                in go' pgm input (relative+val) (idx+2)
+            99 -> onHalt pgm
             x -> error $ "run: invalid instruction: " <> show x
+
+read :: Int -> Int -> Int -> Program -> Int
+read relative idx mode pgm =
+    case mode of
+        0 -> pgm Map.! (pgm Map.! idx)
+        1 -> pgm Map.! idx
+        _ -> pgm Map.! (relative + pgm Map.! idx)
+
+write :: Int -> Int -> Int -> Int -> Program -> Program
+write relative idx val mode pgm =
+    case mode of
+        0 -> Map.insert (pgm Map.! idx) val pgm
+        1 -> Map.insert idx val pgm
+        _ -> Map.insert (relative + pgm Map.! idx) val pgm
