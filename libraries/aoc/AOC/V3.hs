@@ -66,3 +66,11 @@ _y = lens (\(V3 _ y _) -> y) (\(V3 x _ z) y -> V3 x y z)
 
 _z :: Lens' (V3 a) a
 _z = lens (\(V3 _ _ z) -> z) (\(V3 x y _) z -> V3 x y z)
+
+manhattan :: Num a => V3 a -> V3 a -> a
+manhattan (V3 x1 y1 z1) (V3 x2 y2 z2) = abs (x1 - x2) + abs (y1 - y2) + abs (z1 - z2)
+{-# INLINE manhattan #-}
+
+origin :: Num a => V3 a
+origin = V3 0 0 0
+{-# INLINE origin #-}
