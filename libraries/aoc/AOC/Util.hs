@@ -58,6 +58,22 @@ hexToInt = foldl' (\acc x -> acc * 16 + hexDigitToInt x) 0
           | isDigit x = digitToInt x
           | otherwise = ord x - ord 'a' + 10
 
+maxBinSearch :: Integral a => (a -> Bool) -> a -> a -> a
+maxBinSearch predicate a b
+    | a + 1 == b    = a
+    | predicate mid = maxBinSearch predicate mid b
+    | otherwise     = maxBinSearch predicate a mid
+    where
+    mid = a + (b - a) `div` 2
+{-# INLINE maxBinSearch #-}
+
+maxBinSearch' :: Integral a => (a -> Bool) -> a
+maxBinSearch' predicate = go 1 where
+    go n | predicate n  = go (n*2)
+         | otherwise = maxBinSearch predicate 1 n  
+{-# INLINE maxBinSearch' #-}
+
+
 -- return the double of the polygon area
 shoelaceFormula :: Num a => [V2 a] -> a
 shoelaceFormula points = abs . sum $ zipWith go points (drop 1 points ++ points)
