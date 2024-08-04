@@ -75,7 +75,7 @@ runEffect = go' where
             x -> error $ "run: invalid instruction: " <> show x
 
 get :: Int -> Machine -> Int
-get idx machine = machine.program Map.!? idx ?: 0
+get idx machine = Map.findWithDefault 0 idx machine.program
 
 set :: Int -> Int -> Machine -> Machine
 set idx val machine = machine{program = Map.insert idx val machine.program}
