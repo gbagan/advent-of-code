@@ -1,18 +1,19 @@
 -- https://adventofcode.com/2019/day/2
 module Day02 (solve) where
-import           AOC.Prelude hiding (head)
+import           AOC.Prelude hiding (head, get)
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, sepEndBy1)
-import           AOC.IntCode (runProgram_)
-import           Data.List (head)
+import           AOC.IntCode (Effect(..), runEffect, newMachine, get , set)
 
 parser :: Parser [Int]
 parser = decimal `sepEndBy1` ","
 
-run :: Int -> Int -> [Int] -> Int 
-run noun verb pgm = head $ runProgram_ pgm' where
-    x = head pgm
-    pgm' = x : noun : verb : drop 3 pgm
+run :: Int -> Int -> [Int] -> Int
+run noun verb = go . runEffect . set 2 verb . set 1 noun . newMachine where
+    go = \case
+        Halt machine -> get 0 machine
+        Input _ -> error "runProgram_ does not manage inputs"
+        Output _ _ -> error "runProgram_ does not manage outputs"
 
 part1 :: [Int] -> Int 
 part1 = run 12 2 

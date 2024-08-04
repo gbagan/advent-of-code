@@ -4,29 +4,24 @@ import           AOC.Prelude
 import qualified Data.IntMap.Strict as Map
 
 type Program = IntMap Int
+data Effect = Output !Int Effect  | Input (Int -> Effect)  | Halt Machine
 
 data Machine = Machine { program :: Program, offset :: Int, relative :: Int } 
 
 newMachine :: [Int] -> Machine
 newMachine pgm = Machine (Map.fromList (zip [0..] pgm)) 0 0
 
--- return the output
-runProgram :: [Int] -> [Int] -> [Int]
-runProgram input = go input . newMachine where
-    go input' = runWithCallbacks (const []) (onInput input') (:)
-    onInput input' f = case input' of
-        [] -> error "empty input"
-        (i:is) -> go is (f i)
+runProgram :: [Int] {- input -} -> [Int] {- program -} -> [Int] {- output -}
+runProgram input = go input . runEffect . newMachine where
+    go input' = \case
+        Halt _ -> []
+        Input f -> case input' of
+            [] -> error "empty input"
+            (i:is) -> go is (f i)
+        Output x eff -> x : go input' eff
 
--- return the program
-runProgram_ :: [Int] -> [Int]
-runProgram_ = go . newMachine where
-    go = runWithCallbacks onHalt onInput \_ x -> x
-    onHalt machine = Map.elems machine.program
-    onInput _ = error "no input"
-
-runWithCallbacks :: (Machine -> a) -> ((Int -> Machine) -> a) -> (Int -> a -> a) -> Machine -> a
-runWithCallbacks onHalt onInput onOutput = go' where 
+runEffect :: Machine -> Effect
+runEffect = go' where 
     go' machine@(Machine pgm idx relative) =
         let instr = pgm Map.! idx
             opcode = instr `rem` 100
@@ -44,13 +39,13 @@ runWithCallbacks onHalt onInput onOutput = go' where
                     val2 = read relative (idx+2) mode2 pgm
                     pgm' = write relative (idx+3) (val1*val2) mode3 pgm
                 in go' machine{program = pgm', offset = idx+4}
-            3 -> onInput (\i ->
+            3 -> Input (\i ->
                     let pgm' = write relative (idx+1) i mode1 pgm
-                    in machine{program = pgm', offset = idx+2}
+                    in go' machine{program = pgm', offset = idx+2}
                 )
             4 ->
                 let o = read relative (idx+1) mode1 pgm in
-                onOutput o (go' machine{offset = idx+2})
+                Output o $ go' machine{offset = idx+2}
             5 ->
                 let val1 = read relative (idx+1) mode1 pgm
                     val2 = read relative (idx+2) mode2 pgm
@@ -76,15 +71,21 @@ runWithCallbacks onHalt onInput onOutput = go' where
             9 ->
                 let val = read relative (idx+1) mode1 pgm
                 in go' machine{relative=relative+val, offset = idx+2}
-            99 -> onHalt machine
+            99 -> Halt machine
             x -> error $ "run: invalid instruction: " <> show x
+
+get :: Int -> Machine -> Int
+get idx machine = machine.program Map.!? idx ?: 0
+
+set :: Int -> Int -> Machine -> Machine
+set idx val machine = machine{program = Map.insert idx val machine.program}
 
 read :: Int -> Int -> Int -> Program -> Int
 read relative idx mode pgm =
     case mode of
-        0 -> pgm Map.! (pgm Map.! idx)
+        0 -> Map.findWithDefault 0 (pgm Map.! idx) pgm
         1 -> pgm Map.! idx
-        _ -> pgm Map.! (relative + pgm Map.! idx)
+        _ -> Map.findWithDefault 0 (relative + pgm Map.! idx) pgm
 
 write :: Int -> Int -> Int -> Int -> Program -> Program
 write relative idx val mode pgm =
