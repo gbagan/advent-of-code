@@ -27,7 +27,6 @@ initialGrid :: Grid
 initialGrid = [".#.", "..#", "###"]
 
 orientations :: Grid -> [Grid]
-
 orientations grid = [z | y <- [grid, reverse grid], z <- take 4 (iterate' rotate y)]
     where
     rotate = transpose . reverse
