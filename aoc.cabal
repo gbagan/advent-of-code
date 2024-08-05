@@ -117,7 +117,7 @@ executable aoc2017
     import: aoc-exe
     hs-source-dirs:      src/2017
     main-is:             Main.hs
-    other-modules: Day21 Day22 Day23 Day24
+    other-modules: Day21 Day22 Day23 Day24 Day25
     build-depends: 
 
 executable aoc2018
