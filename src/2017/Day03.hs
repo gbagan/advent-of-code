@@ -9,18 +9,17 @@ import qualified Data.HashMap.Strict as Map
 
 spiral :: [V2 Int]
 spiral = scanl' (+) origin $ go 1 where
-    go n = replicate n east 
-        ++ replicate n north 
-        ++ replicate (n+1) west 
-        ++ replicate (n+1) south 
+    go n = replicate n east
+        ++ replicate n north
+        ++ replicate (n+1) west
+        ++ replicate (n+1) south
         ++ go (n+2)
-
 
 spiral2 :: [Int]
 spiral2 = go Map.empty spiral where
     go _ [] = error "cannot happen since spiral is infinite"
     go prev (x:xs) = val : go prev' xs where
-        val = max 1 $ sum (mapMaybe (prev Map.!?) (surrounding x))
+        val = max 1 . sum $ mapMaybe (prev Map.!?) (surrounding x)
         prev' = Map.insert x val prev
 
 part1 :: Int -> Int

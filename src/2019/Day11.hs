@@ -1,14 +1,14 @@
 module Day11 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
-import           AOC.Parser (Parser, signedDecimal, sepEndBy1)
+import           AOC.Parser (Parser, signedDecimal, sepBy1)
 import           AOC.IntCode (Effect(..), newMachine, runEffect)
 import           AOC.V2 (V2(..), origin, north, turnLeft, turnRight)
 import           AOC.Draw (drawPicture)
 import qualified Data.HashMap.Strict as Map
 
 parser :: Parser [Int]
-parser = signedDecimal `sepEndBy1` ","
+parser = signedDecimal `sepBy1` ","
 
 simulate :: HashMap (V2 Int) Bool -> [Int] -> HashMap (V2 Int) Bool
 simulate initialPaint pgm = go initialPaint (runEffect (newMachine pgm)) origin north where

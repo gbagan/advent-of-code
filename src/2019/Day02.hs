@@ -2,11 +2,11 @@
 module Day02 (solve) where
 import           AOC.Prelude hiding (head, get)
 import           AOC (aoc)
-import           AOC.Parser (Parser, decimal, sepEndBy1)
+import           AOC.Parser (Parser, signedDecimal, sepBy1)
 import           AOC.IntCode (Effect(..), runEffect, newMachine, get , set)
 
 parser :: Parser [Int]
-parser = decimal `sepEndBy1` ","
+parser = signedDecimal `sepBy1` ","
 
 run :: Int -> Int -> [Int] -> Int
 run noun verb = go . runEffect . set 2 verb . set 1 noun . newMachine where

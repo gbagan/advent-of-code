@@ -8,6 +8,11 @@ allDistinct :: Ord a => [a] -> Bool
 allDistinct xs = length (ordNub xs) == length xs
 {-# INLINE allDistinct #-}
 
+lastMaybe :: [a] -> Maybe a
+lastMaybe [] = Nothing
+lastMaybe [x] = Just x
+lastMaybe (_:xs) = lastMaybe xs
+
 minimumOn :: (Foldable t, Ord b) => (a -> b) -> t a -> a
 minimumOn f = minimumBy (comparing f)
 {-# INLINE minimumOn #-}

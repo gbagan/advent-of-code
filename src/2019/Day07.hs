@@ -2,12 +2,12 @@
 module Day07 (solve) where
 import           AOC.Prelude hiding (head, last)
 import           AOC (aoc)
-import           AOC.Parser (Parser, signedDecimal, sepEndBy1)
+import           AOC.Parser (Parser, signedDecimal, sepBy1)
 import           AOC.IntCode (runProgram)
 import           Data.List (head, last, maximum, foldl)
 
 parser :: Parser [Int]
-parser = signedDecimal `sepEndBy1` ","
+parser = signedDecimal `sepBy1` ","
 
 run :: [Int] -> [Int] -> [Int]
 run phases pgm = output where

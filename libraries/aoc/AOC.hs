@@ -48,3 +48,16 @@ aoc' parser precomp part1 part2 input = do
                     putStrLn $ "  part 1: " ++ show res1 <> " in " ++ duration1
                     (duration2, !res2) <- duration (pure $ part2 p)
                     putStrLn $ "  part 2: " ++ show res2  <> " in " ++ duration2
+
+aoc_ :: (Show b, Show c) =>
+        Parser a -> (a -> Maybe (b, c)) -> Text -> IO ()
+aoc_ parser f input = do
+    case parse parser "" input of
+        Left err -> putStrLn $ errorBundlePretty err
+        Right parsed -> do
+                    (duration1, !mres) <- duration (pure $ f parsed)
+                    case mres of
+                        Nothing -> putStrLn "  program has failed"
+                        Just (res1, res2) -> do
+                            putStrLn $ "  part 1: " ++ show res1
+                            putStrLn $ "  part 2: " ++ show res2  <> ", total duration:  " ++ duration1

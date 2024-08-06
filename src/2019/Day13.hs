@@ -2,14 +2,14 @@
 module Day13 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
-import           AOC.Parser (Parser, signedDecimal, sepEndBy1)
+import           AOC.Parser (Parser, signedDecimal, sepBy1)
 import           AOC.IntCode (Effect(..), newMachine, runProgram, runEffect, set)
 import           AOC.List (count, grouped3)
 import           AOC.V2 (V2(..))
 import qualified Data.HashMap.Strict as Map
 
 parser :: Parser [Int]
-parser = signedDecimal `sepEndBy1` ","
+parser = signedDecimal `sepBy1` ","
 
 getScreen :: [Int] -> HashMap (V2 Int) Int
 getScreen = foldl' go Map.empty . grouped3 . runProgram [] where

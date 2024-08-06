@@ -8,15 +8,19 @@ import qualified Data.HashPSQ as Q
 import           AOC.List (groupOn, maximumDef)
 import           AOC.Graph.Base (Graph)
 
-bfs :: Hashable a => (a -> [a]) -> a -> [(Int, a)]
-bfs nborFunc start = go Set.empty (Seq.singleton (0, start)) where
+bfsOn :: Hashable r => (a -> r) -> (a -> [a]) -> a -> [(Int, a)]
+bfsOn rep nborFunc start = go Set.empty (Seq.singleton (0, start)) where
     go _ Empty = []
     go visited ((d, v) :<| queue)
-        | v `Set.member` visited = go visited queue
+        | r `Set.member` visited = go visited queue
         | otherwise = (d, v) : go
-                        (Set.insert v visited)
+                        (Set.insert r visited)
                         (queue >< Seq.fromList [ (d+1, u) | u <- nborFunc v])
+        where r = rep v
+{-# INLINE bfsOn #-}
 
+bfs :: Hashable a => (a -> [a]) -> a -> [(Int, a)]
+bfs = bfsOn id
 {-# INLINE bfs #-}
 
 distance :: Hashable a => (a -> [a]) -> (a -> Bool) -> a -> Maybe Int

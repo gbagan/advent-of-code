@@ -2,12 +2,12 @@
 module Day05 (solve) where
 import           AOC.Prelude hiding (last)
 import           AOC (aoc)
-import           AOC.Parser (Parser, signedDecimal, sepEndBy1)
+import           AOC.Parser (Parser, signedDecimal, sepBy1)
 import           AOC.IntCode (runProgram)
 import           Data.List (last)
 
 parser :: Parser [Int]
-parser = signedDecimal `sepEndBy1` ","
+parser = signedDecimal `sepBy1` ","
 
 solveWith :: Int -> [Int] -> Int
 solveWith input = last . runProgram [input]
