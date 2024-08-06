@@ -18,7 +18,6 @@ aocMain year solutions = do
             solve $ decodeASCII bytes
         Nothing -> putStrLn $ "Day not implemented: " <> day
 
-
 -- templates
 
 aoc :: (Show b, Show c) => Parser a -> (a -> b) -> (a -> c) -> Text -> IO ()

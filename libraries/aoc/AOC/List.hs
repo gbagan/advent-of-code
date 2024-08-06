@@ -4,9 +4,9 @@ import           AOC.Prelude
 import           Data.List ((!!), maximum, minimum, maximumBy, minimumBy)
 import qualified Data.HashMap.Strict as HMap
 
-allUnique :: Ord a => [a] -> Bool
-allUnique xs = length (ordNub xs) == length xs
-{-# INLINE allUnique #-}
+allDistinct :: Ord a => [a] -> Bool
+allDistinct xs = length (ordNub xs) == length xs
+{-# INLINE allDistinct #-}
 
 minimumOn :: (Foldable t, Ord b) => (a -> b) -> t a -> a
 minimumOn f = minimumBy (comparing f)
