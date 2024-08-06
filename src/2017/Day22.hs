@@ -16,8 +16,8 @@ parser = listTo2dMap <$> some node `sepEndBy1` eol where
 
 turn :: Node -> V2 Int -> V2 Int
 turn Clean    = turnLeft
-turn Weakened = id
 turn Infected = turnRight
+turn Weakened = id
 turn Flagged  = negate
 
 rule1 :: Node -> Node

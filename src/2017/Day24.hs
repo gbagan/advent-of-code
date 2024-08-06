@@ -26,10 +26,8 @@ otherExtremity :: Int -> (Int, Int) -> Int
 otherExtremity u (v, v') | u == v    = v'
                          | otherwise = v
 
-part1 :: HashSet (Int, Int) -> Int
+part1, part2 :: HashSet (Int, Int) -> Int
 part1 = maximum . map snd . bridges
-
-part2 :: HashSet (Int, Int) -> Int
 part2 = snd . maximumOn fst . bridges
 
 solve :: Text -> IO ()
