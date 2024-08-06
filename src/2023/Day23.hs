@@ -60,7 +60,7 @@ compressGrid neighbors grid = arr
             nbors = neighbors grid pos
         if pos == start || pos == dest || length nbors > 2 then do
             put (n+1, ix : junctions')
-            pure $ (n, catMaybes [followPath next pos 1 | next <- nbors])
+            pure (n, catMaybes [followPath next pos 1 | next <- nbors])
         else
             pure (0, [])
         ) grid
