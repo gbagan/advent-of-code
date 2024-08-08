@@ -2,6 +2,7 @@ module AOC.List where
 
 import           AOC.Prelude
 import           Data.List ((!!), maximum, minimum, maximumBy, minimumBy)
+import           Data.Maybe (fromJust)
 import qualified Data.HashMap.Strict as HMap
 
 allDistinct :: Ord a => [a] -> Bool
@@ -35,6 +36,10 @@ minimumDef :: Ord a => a -> [a] -> a
 minimumDef def [] = def
 minimumDef _ l = minimum l
 {-# INLINE minimumDef #-}
+
+findJust :: (a -> Bool) -> [a] -> a
+findJust f = fromJust . find f
+{-# INLINE findJust #-}
 
 groupOn :: Eq k => (a -> k) -> [a] -> [[a]]
 groupOn f = groupBy ((==) `on2` f)

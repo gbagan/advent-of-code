@@ -68,13 +68,13 @@ dijkstra nborFunc targetFunc source = dijkstra' nborFunc targetFunc [source]
 {-# INLINE dijkstra #-}
 
 dijkstra' :: (Hashable v, Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> [v] -> Maybe w
-dijkstra' nbors targetFunc sources = aux Set.empty initialQueue where
+dijkstra' nbors targetFunc sources = go Set.empty initialQueue where
     initialQueue = Q.fromList [ (s,0,()) | s <- sources]
-    aux visited queue = case Q.minView queue of
+    go visited queue = case Q.minView queue of
         Nothing -> Nothing
         Just (v, cost, _, queue')
             | targetFunc v -> Just $! cost
-            | otherwise -> aux
+            | otherwise -> go
                             (Set.insert v visited)
                             (foldl' insert queue'
                                 [ (v', cost+w') | (v', w') <- nbors v, not (v' `Set.member` visited)]
@@ -84,6 +84,30 @@ dijkstra' nbors targetFunc sources = aux Set.empty initialQueue where
         _ -> Q.insert u w () queue
 
 {-# INLINE dijkstra' #-}
+
+dijkstraPath :: (Hashable v, Ord v, Real w) => (v -> [(v, w)]) -> (v -> Bool) -> [v] -> Maybe (w, [v])
+dijkstraPath nbors targetFunc sources = mkPath <$> go Set.empty initialQueue Map.empty where
+    initialQueue = Q.fromList [ (s,0,s) | s <- sources]
+    go visited queue parents = case Q.minView queue of
+        Nothing -> Nothing
+        Just (v, cost, parent, queue')
+            | targetFunc v -> Just (cost, v, Map.insert v parent parents)
+            | otherwise -> go
+                            (Set.insert v visited)
+                            (foldl' (insert v) queue'
+                                [ (v', cost+w') | (v', w') <- nbors v, not (v' `Set.member` visited)]
+                            )
+                            (if v == parent then parents else Map.insert v parent parents)
+    insert parent queue (u, w) = case Q.lookup u queue of
+        Just (w', _) | w' < w -> queue
+        _ -> Q.insert u w parent queue
+    mkPath (dist, dest, parents) = (dist, reverse (go2 dest)) where
+        go2 v = case parents Map.!? v of
+            Nothing -> [v]
+            Just p -> v : go2 p
+
+{-# INLINE dijkstraPath #-}
+
 
 astar :: (Ord a, Hashable a) => a -> (a -> Bool) -> (a -> [(a, Int)]) -> (a -> Int) -> Maybe Int
 astar startNode isGoal neighbors heuristic =

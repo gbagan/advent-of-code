@@ -12,7 +12,10 @@ newMachine :: [Int] -> Machine
 newMachine pgm = Machine (Map.fromList (zip [0..] pgm)) 0 0
 
 runProgram :: [Int] {- input -} -> [Int] {- program -} -> [Int] {- output -}
-runProgram input = go input . runEffect . newMachine where
+runProgram input = runMachine input . newMachine
+
+runMachine :: [Int] {- input -} -> Machine {- machine -} -> [Int] {- output -}
+runMachine input = go input . runEffect where
     go input' = \case
         Halt _ -> []
         Input f -> case input' of
