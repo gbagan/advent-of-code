@@ -5,6 +5,7 @@ import           Control.Monad.ST (ST, runST)
 import qualified Data.HashMap.Strict as Map
 import           Data.Massiv.Array (Matrix, (!), (!?), iunfoldlPrimM, fromLists', size, B, U, Comp(Seq), Ix2(..), Sz(..))
 import           AOC (aoc')
+import           AOC.List (headMaybe)
 import           AOC.Parser (Parser, choice, char, upperChar, sepEndBy1, some, eol)
 import           AOC.V2 (V2(..), adjacent, origin, east, south, toIx2)
 import           AOC.Graph (bfs, dijkstra)
@@ -40,7 +41,7 @@ processInput grid = mkWarpGraph grid' warps where
 
     processLetter :: Ix2 -> Char -> Maybe (V2 Int, String)
     processLetter (Ix2 y x) c =
-        listToMaybe $ mapMaybe (\dir ->
+        headMaybe $ mapMaybe (\dir ->
             let pos = V2 y x in
             case (grid !? toIx2 (pos - dir), grid !? toIx2 (pos + dir)) of
                 (Just c', Just '.') -> Just (pos, if dir == east || dir == south then [c', c] else [c, c'])

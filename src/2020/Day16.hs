@@ -2,6 +2,7 @@
 module Day16 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
+import           AOC.List (headMaybe)
 import           AOC.Parser (Parser, some, letterChar, char, sepBy1, sepEndBy1, eol, decimal, hspace)
 import           AOC.Range (Range(..))
 import qualified AOC.Range as R
@@ -37,7 +38,7 @@ part2 :: Input -> Maybe Int
 part2 (Input fields myTicket nearbyTickets) = do
     let goodTickets = filter (all (\x -> any (match x) fields)) nearbyTickets
     let graph = zip myTicket [matchedFields fields col | col <- transpose goodTickets]
-    matching <- listToMaybe $ perfectMatchings graph 
+    matching <- headMaybe $ perfectMatchings graph 
     Just $! product [val | (val, name) <- matching, "departure" `isPrefixOf` name]
 
 solve :: Text -> IO ()

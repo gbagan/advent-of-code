@@ -4,7 +4,7 @@ import           Data.List (maximum)
 import           AOC.V3 (V3(..))
 import           AOC (aoc')
 import           AOC.Parser (Parser, eol, numberChar, sepEndBy1, some, signedDecimal)
-import           AOC.List (freqs)
+import           AOC.List (freqs, headMaybe)
 
 type Scan = [V3 Int]
 
@@ -31,7 +31,7 @@ alignAll (scan0:scans) = go [(scan0, V3 0 0 0)] [scan0] scans where
     go _ _ _ = Nothing
 
 align :: Scan -> Scan -> Maybe (Scan, V3 Int)
-align scan scan' = listToMaybe [(map (+ pos) rot, pos) | rot <- scanRotations scan', pos <- overlap scan rot]
+align scan scan' = headMaybe [(map (+ pos) rot, pos) | rot <- scanRotations scan', pos <- overlap scan rot]
 
 overlap :: Scan -> Scan -> [V3 Int]
 overlap scan scan' = [p | (p, freq) <- freqs $ (-) <$> scan <*> scan', freq >= 12] 

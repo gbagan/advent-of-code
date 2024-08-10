@@ -4,6 +4,7 @@ import           AOC.Prelude hiding (last)
 import           Data.List (last)
 import qualified Data.IntMap.Strict as Map
 import           AOC (aoc')
+import           AOC.List (headMaybe)
 import           AOC.Parser (Parser, decimal, eol, sepEndBy1, scanf)
 
 data BinType = Bot | Output
@@ -52,7 +53,7 @@ run (rules, bots) = go (bots, Map.empty) where
         Just bins' -> bins : go bins'
 
 part1 :: Input -> Maybe Int
-part1 input = listToMaybe
+part1 input = headMaybe
     [ k
     | (bots, _) <- run input
     , (k, v) <- Map.toList bots
@@ -62,8 +63,8 @@ part1 input = listToMaybe
 part2 :: Input -> Int
 part2 input = product 
         [ product (outputs Map.! i)
-        | i <- [0..2]
-        , let (_, outputs) = last (run input)
+        | let (_, outputs) = last (run input)
+        , i <- [0..2]
         ]
 
 solve :: Text -> IO ()

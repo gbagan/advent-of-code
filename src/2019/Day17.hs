@@ -4,7 +4,7 @@ import           AOC.Prelude hiding (last, lines, unlines)
 import           AOC (aoc_)
 import           AOC.Parser (Parser, signedDecimal, sepBy1) 
 import           Data.List (last, lines, unlines)
-import           AOC.List (count, flattenWithIndex)
+import           AOC.List (count, flattenWithIndex, headMaybe)
 import           AOC.IntCode (runProgram)
 import           Data.Massiv.Array (Matrix, (!?), fromLists', U, Comp(Seq))
 import           AOC.V2 (V2(..), adjacent, north, turnLeft, turnRight, toIx2)
@@ -19,7 +19,7 @@ part1and2 :: [Int] -> Maybe (Int, Int)
 part1and2 pgm = do
     let grid = filter (/= "") . lines . map chr $ runProgram [] pgm
     let tiles = [V2 i j | (i, j, '#') <- flattenWithIndex grid]
-    start <- listToMaybe [V2 i j | (i, j, '^') <- flattenWithIndex grid]
+    start <- headMaybe [V2 i j | (i, j, '^') <- flattenWithIndex grid]
     let grid' = fromLists' @U Seq grid
     let p1 = sum [x * y | p@(V2 y x) <- tiles, all (\p' -> (grid' !? toIx2 p') == Just '#') (adjacent p)]
     let instrs = map ord . codeToString . compress $ getWalk grid' start

@@ -1,6 +1,7 @@
 module AOC.Number where
 
 import           AOC.Prelude
+import           AOC.List (headMaybe)
 import qualified Data.HashMap.Strict as Map
 
 toInteger :: Integral a => a -> Integer
@@ -32,7 +33,7 @@ discreteLogarithm base modulo m =
         mul x y = x * y `rem` modulo
         table = Map.fromList $ zip (iterate' (mul base) 1) [0..n-1]
         c = power mul base (n * (modulo - 2))
-    in listToMaybe $ mapMaybe (\(i, y) ->
+    in headMaybe $ mapMaybe (\(i, y) ->
         [i * n + z | z <- Map.lookup y table]
         ) (zip [0..n-1] (iterate' (mul c) m))
 

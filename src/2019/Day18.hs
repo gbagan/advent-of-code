@@ -12,7 +12,7 @@ import qualified AOC.MassivArray as A
 import qualified Data.Vector as V
 import qualified Data.Vector.Instances ()
 import           AOC.V2 (V2(..), adjacent, surrounding, toIx2)
-import           AOC.List (flattenWithIndex)
+import           AOC.List (flattenWithIndex, headMaybe)
 import           AOC.Tuple (fst3)
 import           AOC.Graph (bfsOn, dijkstra)
 
@@ -91,9 +91,9 @@ neighbors2 graph (v, keys) = do
 part1 :: Matrix B Tile -> Maybe Int
 part1 grid = do
     let allKeys = (1 `shiftL` length [() | Key _ <- A.toList grid]) - 1
-    start <- listToMaybe [ V2 i j 
-                         | (i, j, Start) <- flattenWithIndex (A.toLists2 grid)
-                         ]
+    start <- headMaybe [ V2 i j 
+                       | (i, j, Start) <- flattenWithIndex (A.toLists2 grid)
+                       ]
     let graph = mkGraph grid start
     dijkstra (neighbors2 graph) (\(_, keys) -> keys == allKeys) (Start, 0)
 
@@ -109,9 +109,9 @@ neighbors3 graphs (SearchState tiles keys) =
 part2 :: Matrix B Tile -> Maybe Int
 part2 grid = do
     let allKeys = (1 `shiftL` length [() | Key _ <- A.toList grid]) - 1
-    start <- listToMaybe [ V2 i j 
-                         | (i, j, Start) <- flattenWithIndex (A.toLists2 grid)
-                         ]
+    start <- headMaybe [ V2 i j 
+                       | (i, j, Start) <- flattenWithIndex (A.toLists2 grid)
+                       ]
     let starts = surrounding start \\ adjacent start
     let newWalls = start : adjacent start
     let grid' = grid // ([(toIx2 p, Start) | p <- starts] ++ [(toIx2 p, Wall) | p <- newWalls])

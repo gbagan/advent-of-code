@@ -8,7 +8,7 @@ import           Data.Massiv.Array (Matrix, (!), (!?), U, B, BL, Comp(Seq), Sz(.
 import qualified Data.Massiv.Array as A
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal, some)
-import           AOC.List (count, freqs')
+import           AOC.List (count, freqs', headMaybe)
 import           AOC.Number (toDouble)
 import           AOC.Tuple (thd3)
 import           AOC.Util (binToInt)
@@ -116,7 +116,7 @@ part2 :: Input -> Maybe Int
 part2 grids = do
     let bds = fmap borders grids
     let freqs = freqs' (concatMap thd3 bds)
-    (cornerId, corner) <- listToMaybe [ (id_, grid)
+    (cornerId, corner) <- headMaybe [ (id_, grid)
                             | (id_, grid, bds') <- bds
                             , count (\b -> freqs Map.! b >= 2) bds' == 2
                             ]

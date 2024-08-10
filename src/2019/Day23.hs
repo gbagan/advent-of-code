@@ -1,9 +1,9 @@
 -- https://adventofcode.com/2019/day/23
 module Day23 (solve) where
-import           AOC.Prelude hiding (head, last, unlines)
+import           AOC.Prelude
 import           AOC (aoc')
 import           AOC.Parser (Parser, signedDecimal, sepBy1)
-import           AOC.List (findDuplicate)
+import           AOC.List (findDuplicate, headMaybe)
 import           AOC.IntCode (Effect(..), runEffect, newMachine)
 import qualified Data.IntMap.Strict as Map
 import           Data.Sequence (Seq(..), (><))
@@ -45,7 +45,7 @@ readPackets (Output d (Output x (Output y eff))) = first (Packet d x y :) (readP
 readPackets e = ([], e)
 
 part1, part2 :: [(Packet, Bool)] -> Maybe Int
-part1 packets = listToMaybe [y | (Packet 255 _ y, _) <- packets]
+part1 packets = headMaybe [y | (Packet 255 _ y, _) <- packets]
 part2 packets = findDuplicate [y | (Packet 0 _ y, True) <- packets]
 
 solve :: Text -> IO ()

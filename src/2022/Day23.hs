@@ -5,7 +5,7 @@ import           Data.List (minimum, maximum, (!!))
 import qualified Data.HashMap.Strict as Map
 import qualified Data.HashSet as Set
 import           AOC (aoc)
-import           AOC.List (freqs, sliding)
+import           AOC.List (freqs, headMaybe, sliding)
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
 import           AOC.V2 (V2(..), surrounding)
 
@@ -36,7 +36,7 @@ runRound rules' elves = elves' where
     transitions = elves & Set.map \elf ->
         if not $ any (`Set.member` elves) (surrounding elf)
         then (elf, elf)
-        else (elf, fromMaybe elf . listToMaybe $ mapMaybe (applyRule elf) rules')
+        else (elf, fromMaybe elf . headMaybe $ mapMaybe (applyRule elf) rules')
     applyRule elf (checks, move) = if not $ any ((`Set.member` elves) . (+elf)) checks
                      then Just (elf + move)
                      else Nothing

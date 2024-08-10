@@ -10,6 +10,9 @@ allDistinct :: Ord a => [a] -> Bool
 allDistinct xs = length (ordNub xs) == length xs
 {-# INLINE allDistinct #-}
 
+headMaybe :: [a] -> Maybe a
+headMaybe = listToMaybe
+
 lastMaybe :: [a] -> Maybe a
 lastMaybe [] = Nothing
 lastMaybe [x] = Just x

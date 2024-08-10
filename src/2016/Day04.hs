@@ -4,7 +4,7 @@ import           AOC.Prelude hiding (unwords)
 import           Data.List (isInfixOf, unwords)
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, eol, sepEndBy1, some, lowerChar, scanf)
-import           AOC.List (freqs)
+import           AOC.List (freqs, headMaybe)
 
 data Room = Room { _name :: ![String], sectorId :: !Int,  _checksum :: !String }
 
@@ -24,7 +24,7 @@ decrypt (Room name id_ _) =  unwords $ map (map decryptChar) name where
     decryptChar c = chr $ ord 'a' + ((ord c - ord 'a' + id_) `rem` 26)
 
 part2 :: [Room] -> Maybe Int
-part2 rooms = listToMaybe [room.sectorId | room <- rooms, "north" `isInfixOf` decrypt room]
+part2 rooms = headMaybe [room.sectorId | room <- rooms, "north" `isInfixOf` decrypt room]
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2

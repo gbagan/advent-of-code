@@ -4,6 +4,7 @@ import           AOC.Prelude
 import qualified Data.IntSet as Set
 import qualified Data.Vector as V
 import           AOC (aoc)
+import           AOC.List (headMaybe)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal)
 
 data Instr = Noop !Int | Acc !Int | Jmp !Int 
@@ -31,7 +32,7 @@ part2 :: Vector Instr -> Maybe Int
 part2 instrs = case simulate instrs of
     Right v -> Just v
     Left (seen, _) ->
-        listToMaybe . rights $ Set.toList seen <&> \i ->
+        headMaybe . rights $ Set.toList seen <&> \i ->
             case instrs V.! i of
                 Noop j -> simulate $ instrs V.// [(i, Jmp j)]
                 Jmp j -> simulate $ instrs V.// [(i, Noop j)]

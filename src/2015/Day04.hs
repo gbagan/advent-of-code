@@ -2,6 +2,7 @@
 module Day04 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
+import           AOC.List (headMaybe)
 import           AOC.Parser (takeRest)
 import qualified Data.ByteString as BS
 import qualified Data.Text.Encoding as TSE
@@ -9,7 +10,7 @@ import qualified Data.ByteString.Base16 as B16 (encode)
 import           Crypto.Hash.MD5 (hash)
 
 solveFor :: ByteString -> Text -> Maybe Int
-solveFor pattern text = listToMaybe
+solveFor pattern text = headMaybe
                             [i | i <- [0..]
                             , pattern `BS.isPrefixOf` B16.encode (hash (bs <> show i))
                              ] where

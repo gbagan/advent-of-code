@@ -1,11 +1,11 @@
 -- https://adventofcode.com/2019/day/25
 module Day25 (solve) where
-import           AOC.Prelude hiding (head, last, lines)
+import           AOC.Prelude hiding (lines)
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, signedDecimal, sepBy1, scanf)
 import           Text.Megaparsec (Parsec, parseMaybe)
 import           AOC.IntCode (Effect(..), runEffect, newMachine)
-import           AOC.List (dropEnd, lastMaybe)
+import           AOC.List (dropEnd, headMaybe, lastMaybe)
 import           Data.List (isInfixOf, lines)
 import           AOC.Graph (bfsOn)
 
@@ -89,12 +89,12 @@ part1 pgm = do
                               | (o, path) <- objsAndPaths
                               ]
     let objects = map fst objsAndPaths
-    (lastStep, pathToEnd) <- uncons =<< listToMaybe 
+    (lastStep, pathToEnd) <- uncons =<< headMaybe 
                                 [ path
                                  | SearchState "Pressure-Sensitive Floor" _ _ path _ <- search
-                                ]        
+                                ]
     let (_, eff2) = runCommands eff (pathToObjects ++ reverse pathToEnd)
-    winMsg <- listToMaybe do
+    winMsg <- headMaybe do
         objs <- sublists objects
         let (msg', _) = runCommands eff2 (map ("drop " ++) objs ++ [lastStep])
         guard . not $ "Alert!" `isInfixOf` msg'
@@ -107,5 +107,3 @@ part2 _ = 0
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
-
--- Pressure-Sensitive Floor

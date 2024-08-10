@@ -5,7 +5,7 @@ import qualified Data.Text as Text
 import qualified Data.HashMap.Strict as Map
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepBy1, sepEndBy1, some, lowerChar, eol, lowerChar, hspace)
-import           AOC.List (count)
+import           AOC.List (count, headMaybe)
 import           AOC.Graph (perfectMatchings)
 import qualified AOC.HashSet as Set
 
@@ -19,7 +19,7 @@ parser = food `sepEndBy1` eol where
     name = Text.pack <$> some lowerChar
 
 getMatching  :: [Food] -> Maybe [(Text, Text)]
-getMatching foods = listToMaybe $ perfectMatchings graph where
+getMatching foods = headMaybe $ perfectMatchings graph where
     graph = Map.toList
             . Map.map Set.toList
             . Map.fromListWith Set.intersection 

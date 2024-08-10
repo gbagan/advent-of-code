@@ -2,7 +2,7 @@
 module Day03 (solve) where
 import           AOC.Prelude hiding (toList)
 import           AOC (aoc')
-import           AOC.List (count)
+import           AOC.List (count, headMaybe)
 import           AOC.Parser (Parser, sepEndBy1, eol, decimal, scanf)
 import           Data.Massiv.Array (Array, U, Sz(..), Ix2(..), (!), toList)
 import           Data.Massiv.Array.Mutable
@@ -29,7 +29,7 @@ isIntact arr (id_, x, y, w, h) =
         else Nothing
 
 part2 :: ([(Int, Int, Int, Int, Int)], Array U Ix2 Int) -> Maybe Int
-part2 (instructions, arr) = listToMaybe $ mapMaybe (isIntact arr) instructions
+part2 (instructions, arr) = headMaybe $ mapMaybe (isIntact arr) instructions
 
 solve :: Text -> IO ()
 solve = aoc' parser (Just . precomp) part1 part2
