@@ -3,6 +3,7 @@ module AOC.List where
 import           AOC.Prelude
 import           Data.List ((!!), maximum, minimum, maximumBy, minimumBy)
 import           Data.Maybe (fromJust)
+import qualified Data.HashSet as Set
 import qualified Data.HashMap.Strict as HMap
 
 allDistinct :: Ord a => [a] -> Bool
@@ -48,6 +49,9 @@ groupOn f = groupBy ((==) `on2` f)
 drop1 :: [a] -> [a]
 drop1 [] = []
 drop1 (_:xs) = xs
+
+dropEnd :: Int -> [a] -> [a]
+dropEnd i l = take (length l - i) l
 
 takeEnd :: Int -> [a] -> [a]
 takeEnd i l
@@ -124,3 +128,9 @@ flattenWithIndex l =
     | (i, row) <- zip [0..] l
     , (j, v) <- zip [0..] row
     ]
+
+findDuplicate :: Hashable a => [a] -> Maybe a
+findDuplicate = go Set.empty where
+    go _ [] = Nothing
+    go seen (x : xs) | x `Set.member` seen = Just x
+                     | otherwise = go (Set.insert x seen) xs

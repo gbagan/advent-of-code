@@ -19,7 +19,7 @@ runMachine input = go input . runEffect where
     go input' = \case
         Halt _ -> []
         Input f -> case input' of
-            [] -> error "empty input"
+            [] -> error "runMachine: empty input"
             (i:is) -> go is (f i)
         Output x eff -> x : go input' eff
 
