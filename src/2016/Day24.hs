@@ -3,8 +3,8 @@ module Day24 (solve) where
 import           AOC.Prelude hiding (head)
 import           AOC (aoc')
 import           AOC.Parser (Parser, choice, char, sepEndBy1, eol, some)
-import           AOC.List (flattenWithIndex, minimumDef)
-import           AOC.V2 (V2(..), adjacent, toIx2)
+import           AOC.List (flattenWithIndex', minimumDef)
+import           AOC.V2 (adjacent, toIx2)
 import           AOC.Graph (bfs)
 import           Data.Massiv.Array ((!), U, Comp(Seq))
 import qualified Data.Massiv.Array as A
@@ -18,13 +18,13 @@ parser :: Parser [[Char]]
 parser = some tile `sepEndBy1` eol where
     tile = choice (map char ".#0123456789")
 
-precomp :: [[Char]] -> Input
-precomp grid = Map.fromList distances where
+mkInput :: [[Char]] -> Input
+mkInput grid = Map.fromList distances where
     grid' = A.fromLists' @U Seq grid
-    distances = 
-        map (\(y, x, n) -> (digitToInt n, distancesFrom (V2 y x)))
-        . filter (\(_, _, n) -> isDigit n)
-        $ flattenWithIndex grid
+    distances = [ (digitToInt n, distancesFrom pos)
+                | (pos, n) <- flattenWithIndex' grid
+                , isDigit n
+                ]
     distancesFrom start = mapMaybe (\(dist, pos) ->
                 let tile = grid' ! toIx2 pos in
                 if isDigit tile
@@ -45,4 +45,4 @@ tsp returnToZero dists = go (Set.singleton 0) 0 0 where
                                    ]
 
 solve :: Text -> IO ()
-solve = aoc' parser (Just . precomp) (tsp False) (tsp True)
+solve = aoc' parser (Just . mkInput) (tsp False) (tsp True)

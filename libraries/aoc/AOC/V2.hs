@@ -4,7 +4,7 @@ import AOC.Prelude
 import           Data.Foldable1 (Foldable1, foldMap1)
 import           Data.Massiv.Array (Ix2(..))
 
-data V2 a = V2 { _x :: !a, _y :: !a } deriving (Eq, Ord, Show)
+data V2 a = V2 { _x :: !a, _y :: !a } deriving (Eq, Generic, Ord, Show)
 
 instance Functor V2 where
     fmap f (V2 a b) = V2 (f a) (f b)
@@ -34,10 +34,7 @@ instance Foldable1 V2 where
     foldMap1 f (V2 a b) = f a <> f b
     {-# INLINE foldMap1 #-}
 
-instance Hashable a => Hashable (V2 a) where
-    hashWithSalt s (V2 a b) = s `hashWithSalt` a `hashWithSalt` b
-    {-# INLINE hashWithSalt #-}
-
+instance Hashable a => Hashable (V2 a)
 instance Num a => Num (V2 a) where
     (+) = liftA2 (+)
     {-# INLINE (+) #-}

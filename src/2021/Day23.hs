@@ -9,13 +9,12 @@ import           AOC (aoc)
 import           AOC.Parser (Parser, anySingle, some)
 import           AOC.Graph (dijkstra)
 
-data Amphipod = Amber | Bronze | Copper | Desert deriving (Eq, Ord, Enum)
+data Amphipod = Amber | Bronze | Copper | Desert deriving (Eq, Ord, Enum, Generic)
 type Rooms = Vector [Amphipod]
 type Hall = IntMap Amphipod
 type Board = (Rooms, Hall)
 
-instance Hashable Amphipod where
-    hashWithSalt s v = s `hashWithSalt` fromEnum v
+instance Hashable Amphipod
 
 boardFromAmphipods :: [Amphipod] -> Maybe Board
 boardFromAmphipods [a1, b1, c1, d1, a2, b2, c2, d2] =

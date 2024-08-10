@@ -4,7 +4,7 @@ module Day13 (solve) where
 import           AOC.Prelude hiding (head)
 import           AOC (aoc')
 import           AOC.Parser (Parser, choice, char, sepEndBy1, eol, some)
-import           AOC.List (flattenWithIndex)
+import           AOC.List (flattenWithIndex')
 import           AOC.V2 (V2(..), west, east, north, south, turnLeft, turnRight, toIx2)
 import           Data.Massiv.Array (Matrix, (!), U, Comp(Seq))
 import qualified Data.Massiv.Array as A
@@ -20,11 +20,11 @@ parser = some tile `sepEndBy1` eol where
 
 rawToInput ::  [[Char]] -> Input
 rawToInput grid = (A.fromLists' Seq grid, carts) where
-    carts = flattenWithIndex grid & mapMaybe \(i, j, c) -> case c of
-        '<' -> Just $ Cart (V2 i j) west TurnLeft
-        '>' -> Just $ Cart (V2 i j) east TurnLeft
-        '^' -> Just $ Cart (V2 i j) north TurnLeft
-        'v' -> Just $ Cart (V2 i j) south TurnLeft
+    carts = flattenWithIndex' grid & mapMaybe \(pos, c) -> case c of
+        '<' -> Just $ Cart pos west TurnLeft
+        '>' -> Just $ Cart pos east TurnLeft
+        '^' -> Just $ Cart pos north TurnLeft
+        'v' -> Just $ Cart pos south TurnLeft
         _ -> Nothing
 
 nextTurn :: Turn -> Turn

@@ -4,7 +4,7 @@ import           AOC.Prelude
 import           Data.Massiv.Array (Matrix, (!), fromLists', size, U, Comp(Seq), Sz(..))
 import           AOC (aoc')
 import           AOC.Parser (Parser, sepEndBy1, some, eol)
-import           AOC.List (count, flattenWithIndex, headMaybe)
+import           AOC.List (count, flattenWithIndex', headMaybe)
 import           AOC.V2 (V2(..), adjacent, toIx2)
 import           AOC.Graph (bfs)
 
@@ -17,7 +17,7 @@ parser = some tile `sepEndBy1` eol where
 
 precomp :: [[Tile]] -> Maybe (Grid, V2 Int)
 precomp tiles = do
-    start <- headMaybe [V2 i j | (i, j, Start) <- flattenWithIndex tiles]
+    start <- headMaybe [pos | (pos, Start) <- flattenWithIndex' tiles]
     let matrix = fromLists' Seq $ map (map (==Rock)) tiles
     pure (matrix, start)
 

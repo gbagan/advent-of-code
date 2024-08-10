@@ -5,6 +5,7 @@ import           Data.List ((!!), maximum, minimum, maximumBy, minimumBy)
 import           Data.Maybe (fromJust)
 import qualified Data.HashSet as Set
 import qualified Data.HashMap.Strict as HMap
+import           AOC.V2 (V2(..))
 
 allDistinct :: Ord a => [a] -> Bool
 allDistinct xs = length (ordNub xs) == length xs
@@ -12,6 +13,10 @@ allDistinct xs = length (ordNub xs) == length xs
 
 headMaybe :: [a] -> Maybe a
 headMaybe = listToMaybe
+
+tailMaybe :: [a] -> Maybe [a]
+tailMaybe [] = Nothing
+tailMaybe (_:xs) = Just xs
 
 lastMaybe :: [a] -> Maybe a
 lastMaybe [] = Nothing
@@ -128,6 +133,13 @@ median l = sort l !! (length l `div` 2)
 flattenWithIndex :: [[a]] -> [(Int, Int, a)]
 flattenWithIndex l =
     [(i, j, v)
+    | (i, row) <- zip [0..] l
+    , (j, v) <- zip [0..] row
+    ]
+
+flattenWithIndex' :: [[a]] -> [(V2 Int, a)]
+flattenWithIndex' l =
+    [(V2 i j, v)
     | (i, row) <- zip [0..] l
     , (j, v) <- zip [0..] row
     ]

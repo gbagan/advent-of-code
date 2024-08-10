@@ -9,14 +9,12 @@ import qualified Data.Vector.Instances ()
 import           AOC.List (grouped2, pairwise)
 import           AOC.Graph (distance)
 
-data ItemType = Generator | Microchip deriving (Eq, Ord, Show)
-data Item = Item !Text !ItemType  deriving (Eq, Ord, Show)
+data ItemType = Generator | Microchip deriving (Eq, Ord)
+data Item = Item !Text !ItemType  deriving (Eq, Ord)
 
-data State = State Int (V.Vector Int) deriving (Eq, Ord, Show)
+data State = State Int (V.Vector Int) deriving (Eq, Ord, Generic)
     -- elevator floor, pairs of generator, microchip positions
-
-instance Hashable State where
-    hashWithSalt s (State x xs) = s `hashWithSalt` x `hashWithSalt` xs
+instance Hashable State
 
 parser :: Parser [[Item]]
 parser = row `sepEndBy1` eol where

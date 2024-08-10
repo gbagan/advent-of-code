@@ -23,6 +23,21 @@ bfs :: Hashable a => (a -> [a]) -> a -> [(Int, a)]
 bfs = bfsOn id
 {-# INLINE bfs #-}
 
+shortestPath :: Hashable a => (a -> [a]) -> a -> a -> Maybe [a]
+shortestPath nbors start dest = mkPath <$> go Map.empty (Seq.singleton (start, start)) where
+    go _ Empty = Nothing
+    go parents ((v, parent) :<| queue)
+        | v == dest = Just $ Map.insert v parent parents              
+        | v `Map.member` parents = go parents queue
+        | otherwise = go
+                        (Map.insert v parent parents)
+                        (queue >< Seq.fromList [(u, v) | u <- nbors v])
+    mkPath parents = reverse (go2 dest) where
+        go2 v =
+            let p = parents Map.! v in
+            if p == v then [v] else v : go2 p
+{-# INLINE shortestPath #-}
+
 distance :: Hashable a => (a -> [a]) -> (a -> Bool) -> a -> Maybe Int
 distance nborFunc destFunc start =
     fst <$> find (destFunc . snd) (bfs nborFunc start)

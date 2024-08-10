@@ -5,7 +5,7 @@ import Data.Foldable1 (Foldable1, foldMap1)
 import Data.List (tail)
 import Lens.Micro (Lens', lens)
 
-data V4 a = V4 !a !a !a !a deriving (Eq,Ord,Show)
+data V4 a = V4 !a !a !a !a deriving (Eq, Ord, Show, Generic)
 
 instance Functor V4 where
     fmap f (V4 a b c d) = V4 (f a) (f b) (f c) (f d)
@@ -35,9 +35,7 @@ instance Foldable1 V4 where
     foldMap1 f (V4 a b c d) = f a <> f b <> f c <> f d
     {-# INLINE foldMap1 #-}
 
-instance Hashable a => Hashable (V4 a) where
-    hashWithSalt s (V4 a b c d) = s `hashWithSalt` a `hashWithSalt` b `hashWithSalt` c `hashWithSalt` d
-    {-# INLINE hashWithSalt #-}
+instance Hashable a => Hashable (V4 a)
 
 instance Num a => Num (V4 a) where
     (+) = liftA2 (+)

@@ -12,10 +12,8 @@ import           AOC.Graph (astar)
 data Node = Node { _used, _avail :: !Int}
 type Input = [(V2 Int, Node)]
 
-data State = State { _goal, _hole :: !(V2 Int) } deriving (Eq, Ord, Show)
-instance Hashable State where
-    hashWithSalt s (State goal hole) = s `hashWithSalt` goal `hashWithSalt` hole
-
+data State = State { _goal, _hole :: !(V2 Int) } deriving (Eq, Ord, Generic)
+instance Hashable State
 
 parser :: Parser Input
 parser = skipLine *> skipLine *> node `sepEndBy1` eol where

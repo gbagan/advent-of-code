@@ -6,11 +6,10 @@ import qualified Data.HashMap.Strict as Map
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
 
-data Rock = Empty | Round | Cube deriving (Eq, Enum)
+data Rock = Empty | Round | Cube deriving (Eq, Enum, Generic)
 type Grid = [[Rock]]
 
-instance Hashable Rock where
-    hashWithSalt s rock = s `hashWithSalt` fromEnum rock
+instance Hashable Rock
 
 parser :: Parser Grid
 parser = some rock `sepEndBy1` eol where
