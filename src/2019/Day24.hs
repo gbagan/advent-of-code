@@ -7,6 +7,13 @@ import           AOC.Parser (Parser, eol, some, sepEndBy1)
 import           AOC.Util (times)
 import           Data.Bits ((.&.), (.|.), complement, popCount, shiftL, shiftR)
 
+parser :: Parser Word32
+parser = sum . zipWith (bool 0) powers2 . concat <$> some tile `sepEndBy1` eol where
+    tile = False <$ "." <|> True <$ "#"
+
+powers2 :: [Word32]
+powers2 = iterate' (*2) 1
+
 leftFilter :: Word32
 leftFilter = 0b11110_11110_11110_11110_11110
 
@@ -19,13 +26,6 @@ sel input bit shift = ((input `shiftR` bit) .&. 1) `shiftL` shift
 
 neg :: Word32 -> Word32
 neg n = complement n .&. 0x1ffffff
-
-powers2 :: [Word32]
-powers2 = take 25 $ iterate' (*2) 1
-
-parser :: Parser Word32
-parser = sum . zipWith (bool 0) powers2 . concat <$> some tile `sepEndBy1` eol where
-    tile = False <$ "." <|> True <$ "#"
 
 neighbors :: Word32 -> [Word32]
 neighbors i = [i `shiftL` 5, i `shiftR` 5, (i `shiftL` 1) .&. leftFilter,  (i `shiftR` 1) .&. rightFilter]
@@ -44,7 +44,7 @@ insideNeighbors i = [ sel i 0 7 + sel i 0 11 + sel i 4 13 + sel i 20 17
 step :: Word32 -> [Word32] -> Word32
 step layout = go 0 0 0 where
     go !one !two !three = \case
-        [] -> (one .&. neg two) .|. (neg layout .&. two .&. neg three)
+        [] -> (layout .&. one .&. neg two) .|. (neg layout .&. one .&. neg three)
         (x:xs) -> go (one .|. x) (two .|. (x .&. one)) (three .|. (x .&. two)) xs
 
 step2 :: [Word32] -> [Word32]

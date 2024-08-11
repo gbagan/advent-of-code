@@ -4,7 +4,7 @@ import           AOC.Prelude
 import           AOC (aoc')
 import           AOC.Parser (decimal)
 import           AOC.List (maximumOn)
-import           Data.Massiv.Array (Matrix, (!), makeArray, BL, U, Comp(Seq), Ix2(..), Sz(..))
+import           Data.Massiv.Array (Matrix, (!), makeArray, BL, Comp(Seq), Ix2(..), Sz(..))
 
 dim :: Int
 dim = 300

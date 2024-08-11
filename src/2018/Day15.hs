@@ -122,6 +122,5 @@ part2 grid = headMaybe $ catMaybes [ noElfDies elfAttack grid
                                    | elfAttack <- [4..]
                                    ]
 
-
 solve :: Text -> IO ()
 solve = aoc' parser (Just . mkGrid) part1 part2

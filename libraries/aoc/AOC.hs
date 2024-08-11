@@ -49,13 +49,15 @@ aoc' parser precomp part1 part2 input = do
                     (duration2, !res2) <- duration (pure $ part2 p)
                     putStrLn $ "  part 2: " ++ show res2  <> " in " ++ duration2
 
-aoc_ :: (Show b, Show c) =>
+aoc_ :: (NFData b, NFData c, Show b, Show c) =>
         Parser a -> (a -> Maybe (b, c)) -> Text -> IO ()
 aoc_ parser f input = do
     case parse parser "" input of
         Left err -> putStrLn $ errorBundlePretty err
         Right parsed -> do
-                    (duration1, !mres) <- duration (pure $ f parsed)
+                    (duration1, !mres) <- duration do
+                        let a = f parsed
+                        pure $ a `deepseq` a 
                     case mres of
                         Nothing -> putStrLn "  program has failed"
                         Just (res1, res2) -> do
