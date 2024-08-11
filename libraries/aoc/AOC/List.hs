@@ -4,7 +4,7 @@ import           AOC.Prelude
 import           Data.List ((!!), maximum, minimum, maximumBy, minimumBy)
 import           Data.Maybe (fromJust)
 import qualified Data.HashSet as Set
-import qualified Data.HashMap.Strict as HMap
+import qualified Data.HashMap.Strict as Map
 import           AOC.V2 (V2(..))
 
 allDistinct :: Ord a => [a] -> Bool
@@ -109,11 +109,11 @@ count f = foldl' (\acc x -> if f x then acc+1 else acc) 0
 {-# INLINE count #-}
 
 freqs :: Hashable a => [a] -> [(a, Int)]
-freqs = HMap.toList . freqs'
+freqs = Map.toList . freqs'
 {-# INLINE freqs #-}
 
 freqs' :: Hashable a => [a] -> HashMap a Int
-freqs' = HMap.fromListWith (+) . map (,1)
+freqs' = Map.fromListWith (+) . map (,1)
 {-# INLINE freqs' #-}
 
 mostCommon :: Hashable a => [a] -> Maybe a
@@ -149,3 +149,12 @@ findDuplicate = go Set.empty where
     go _ [] = Nothing
     go seen (x : xs) | x `Set.member` seen = Just x
                      | otherwise = go (Set.insert x seen) xs
+
+-- return the first two indices of the same element in a infinite list of elements
+findDuplicate' :: Hashable a => [a] -> Maybe (Int, Int, a)
+findDuplicate' = go Map.empty . zip [0..] where
+    go m ((i, x) : xs) =
+        case m Map.!? x of
+            Just j -> Just (j, i, x)
+            Nothing -> go (Map.insert x i m) xs
+    go _ [] = Nothing

@@ -1,7 +1,8 @@
 module AOC.Util where
 import           AOC.Prelude
 import           Data.Char (digitToInt, isDigit)
-import           AOC.List (count)
+import           Data.Maybe (fromJust)
+import           AOC.List (count, findDuplicate')
 import qualified Data.HashMap.Strict as HMap
 import qualified Data.HashSet as HSet
 import           AOC.V2 (V2(..))
@@ -25,6 +26,14 @@ timesM_ n f
     | n <= 0    = pure ()
     | otherwise = f *> timesM_ (n-1) f
 {-# INLINE timesM_ #-}
+
+-- similar to the functions times but assumes that n is huge and there is a cycle in the iteration
+manyTimes :: Hashable a => Int -> (a -> a) -> a -> a
+manyTimes n step x = times (remaining `rem` period) step y where
+    (i, j, y) = fromJust $ findDuplicate' $ iterate' step x
+    period = j - i
+    remaining = n - j
+{-# INLINE manyTimes #-}
 
 majority :: (a -> Bool) -> [a] -> Bool
 majority f l = 2 * count f l >= length l

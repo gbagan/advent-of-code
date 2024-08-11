@@ -3,7 +3,7 @@ module Day17 (solve) where
 import           AOC.Prelude hiding (toList)
 import           Control.Monad.ST (ST, runST)
 import           Data.List (maximum, minimum)
-import           Data.Massiv.Array (MArray, Comp(Seq), U, Ix2(..), Sz(..), newMArray, sizeOfMArray, read, readM, toList, write_)
+import           Data.Massiv.Array (MArray, Comp(Seq), U, Ix2(..), Sz(..), newMArray, read, readM, toList, write_)
 import           Data.Massiv.Array.Unsafe (unsafeFreeze)
 import           AOC (aoc_)
 import           AOC.List (count)
@@ -27,14 +27,13 @@ parser = (vertical <|> horizontal) `sepEndBy1` eol where
     horizontal = [scanf|$Horizontal y={decimal}, x={decimal}..{decimal}|]
 
 flow :: Grid s -> V2 Int -> ST s ()
-flow grid pos@(V2 y _) = do
-    let (Sz2 h _) = sizeOfMArray grid
-    unless (y >= h) do
-        let currentIx = toIx2 pos
+flow grid pos = do
+    let currentIx = toIx2 pos
+    tile <- read grid currentIx
+    unless (isNothing tile || tile == Just '~') do
         let downIx = toIx2 (down pos)
 
-        tile <- readM grid currentIx
-        when (tile == '.') do
+        when (tile == Just '.') do
             write_ grid currentIx '|'
             flow grid (down pos)
         
@@ -52,9 +51,7 @@ flow grid pos@(V2 y _) = do
             fill grid pos
 
 canFill :: Grid s -> V2 Int -> ST s Bool
-canFill grid pos = do
-    tile <- readM grid (toIx2 pos)
-    pure (tile /= '~') &&^ canFill' grid pos west &&^ canFill' grid pos east
+canFill grid pos = canFill' grid pos west &&^ canFill' grid pos east
 
 canFill' :: Grid s -> V2 Int -> V2 Int -> ST s Bool
 canFill' grid pos dir = do

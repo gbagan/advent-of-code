@@ -5,6 +5,7 @@ import           Data.List ((!!))
 import qualified Data.HashMap.Strict as Map
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
+import           AOC.Util (manyTimes)
 
 data Rock = Empty | Round | Cube deriving (Eq, Enum, Generic)
 type Grid = [[Rock]]
@@ -24,15 +25,6 @@ tilt = map (go 0) where
         (Cube:xs) -> replicate n Empty ++ Cube : go 0 xs
         _        -> replicate n Empty
 
--- return the first two indices of the same element in a infinite list of elements
-findRepetition :: Hashable a => [a] -> (Int, Int)
-findRepetition = go Map.empty . zip [0..] where
-    go m ((i, x) : xs) =
-        case m Map.!? x of
-            Just j -> (j, i)
-            Nothing -> go (Map.insert x i m) xs
-    go _ [] = error "findRepetition: not an infinite list"
-
 -- compute the laod of a grid
 load :: Grid -> Int
 load grid = sum [len - i | (i, row) <- zip [0..] grid, Round <- row] where
@@ -41,11 +33,9 @@ load grid = sum [len - i | (i, row) <- zip [0..] grid, Round <- row] where
 part1 :: Grid -> Int
 part1 = load . transpose . tilt . transpose
 
+
 part2 :: Grid -> Int
-part2 grid = load . transpose $ grids !! z where 
-    (x, y) = findRepetition grids
-    z = x + (1_000_000_000 - x) `mod` (y-x)
-    grids = iterate' cycle (transpose grid)
+part2 grid = load . transpose $ manyTimes 1_000_000_000 cycle (transpose grid) where
     step = reverse . transpose . tilt
     cycle = step . step . step . step
 
