@@ -4,7 +4,7 @@ import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, sepBy1)
 import           AOC.List (findDuplicate)
-import           AOC.V2 (V2(..), manhattan, origin, north, turnLeft, turnRight)
+import           AOC.V2 (V2, manhattan, origin, north, turnLeft, turnRight)
 
 data Turn = L | R
 data Step = Step !Turn !Int

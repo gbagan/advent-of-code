@@ -4,7 +4,7 @@ import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, choice, some)
 import           AOC.List (grouped)
-import           AOC.V2 (V2(..), origin, north, south, west, east)
+import           AOC.V2 (V2, origin, north, south, west, east)
 
 parser :: Parser [V2 Int]
 parser = some direction where

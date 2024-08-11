@@ -57,8 +57,8 @@ neighbors start grid v
 
 moveAndAttack :: Int -> Grid -> (V2 Int, Int, Race, Int) -> Grid
 moveAndAttack elfAttack grid (pos, id_, race, life) = fromMaybe grid do
-    guard $ get pos grid `hasId` id_ -- check if the character who does action is still alive
-    nearestAdversories <- headMaybe $ groupOn fst         
+    guard $ get pos grid `hasId` id_ -- check if the character who does the action is still alive
+    nearestAdversories <- headMaybe $ groupOn fst
             [ (d, (pos', id', race', life'))
             | (d, pos') <- bfs (neighbors pos grid) pos
             , Character id' race' life' <- [get pos' grid]
