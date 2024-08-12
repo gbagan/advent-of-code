@@ -5,7 +5,7 @@ import           Data.Char (digitToInt)
 import           Data.Massiv.Array (Matrix, (!), (!?), U, Comp(Seq), Sz(Sz2))
 import qualified Data.Massiv.Array as A
 import           AOC (aoc)
-import           AOC.V2 (V2(..), toIx2)
+import           AOC.V2 (V2(..), south, east, toIx2)
 import           AOC.Parser (Parser, sepEndBy1, eol, digitChar, some)
 import           AOC.Graph (dijkstra')  
 
@@ -19,7 +19,7 @@ parser = A.fromLists' Seq <$> some (digitToInt <$> digitChar) `sepEndBy1` eol
 neighbors :: [Int] -> Grid -> (Position, Direction) -> [((Position, Direction), Int)]
 neighbors nbSteps grid (pos, dir) =
     [ ((nextPos, not dir), weight)
-    | let vDir = if dir then V2 0 1 else V2 1 0
+    | let vDir = if dir then east else south
     , i <- nbSteps
     , let nextPos = pos + fmap (*i) vDir
     , isJust (grid !? toIx2 nextPos)

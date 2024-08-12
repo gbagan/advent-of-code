@@ -1,7 +1,7 @@
 -- https://adventofcode.com/2020/day/12
 module Day12 (solve) where
 import           AOC.Prelude
-import           AOC.V2 (V2(..), perp)
+import           AOC.V2 (V2(..), north, south, east, west, origin, turnLeft)
 import           AOC (aoc)
 import           AOC.Parser (Parser, choice, sepEndBy1, eol, decimal)
 import           AOC.Util (times)
@@ -14,27 +14,27 @@ parser = instr `sepEndBy1` eol where
     instr' = choice [N <$ "N",  S <$ "S", W <$ "W", E <$ "E", L <$ "L", R <$ "R", F <$ "F"]
 
 part1 :: [Instr] -> Int
-part1 xs = abs a + abs b where
-    (V2 a b, _) = foldl' go (V2 0 0, V2 1 0) xs
+part1 xs = sum (fmap abs p) where
+    (p, _) = foldl' go (origin, east) xs
     go (pos, dir) = \case
-        N n -> (pos + V2 0 n, dir)
-        S n -> (pos - V2 0 n, dir)
-        W n -> (pos - V2 n 0, dir)
-        E n -> (pos + V2 n 0, dir)
+        N n -> (pos + fmap (*n) north, dir)
+        S n -> (pos + fmap (*n) south, dir)
+        W n -> (pos + fmap (*n) west, dir)
+        E n -> (pos + fmap (*n) east, dir)
         F n -> (pos + fmap (*n) dir, dir)
-        L n -> (pos, times (n `div` 90) perp dir)
+        L n -> (pos, times (n `div` 90) turnLeft dir)
         R n -> go (pos, dir) (L $ 360-n)
 
 part2 :: [Instr] -> Int
-part2 xs = abs a + abs b where
-    (V2 a b, _) = foldl' go (V2 0 0, V2 10 1) xs
+part2 xs = sum (fmap abs p) where
+    (p, _) = foldl' go (origin, V2 (-1) 10) xs
     go (pos, wpos) = \case
-        N n -> (pos, wpos + V2 0 n)
-        S n -> (pos, wpos - V2 0 n)
-        W n -> (pos, wpos - V2 n 0)
-        E n -> (pos, wpos + V2 n 0)
+        N n -> (pos, wpos + fmap (*n) north)
+        S n -> (pos, wpos + fmap (*n) south)
+        W n -> (pos, wpos + fmap (*n) west)
+        E n -> (pos, wpos + fmap (*n) east)
         F n -> (pos + fmap (*n) wpos, wpos)
-        L n -> (pos, times (n `div` 90) perp wpos)
+        L n -> (pos, times (n `div` 90) turnLeft wpos)
         R n -> go (pos, wpos) (L $ 360-n)
 
 

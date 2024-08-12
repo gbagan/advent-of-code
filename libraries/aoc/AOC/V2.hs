@@ -51,10 +51,6 @@ instance Num a => Num (V2 a) where
     fromInteger = pure . fromInteger
     {-# INLINE fromInteger #-}
 
-perp :: Num a => V2 a -> V2 a
-perp (V2 a b) = V2 (negate b) a
-{-# INLINE perp #-}
-
 origin, north, south, east, west :: Num a => V2 a
 origin = V2 0 0
 north = V2 (-1) 0

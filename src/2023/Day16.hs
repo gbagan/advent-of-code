@@ -7,7 +7,7 @@ import           Data.Massiv.Array (Matrix, (!), (!?), B, Comp(Seq), Sz(Sz2))
 import qualified Data.Massiv.Array as A
 -- import           Control.Parallel.Strategies (parListChunk, rdeepseq, using)
 import           AOC (aoc)
-import           AOC.V2 (V2(..), toIx2)
+import           AOC.V2 (V2(..), origin, north, south, west, east, toIx2)
 import           AOC.Parser (Parser, sepEndBy1, eol, choice, some)
 import           AOC.Graph (reachableFrom)
 
@@ -30,8 +30,8 @@ nextDirections :: Direction -> Tile -> [Direction]
 nextDirections (V2 drow dcol) = \case
     Slash -> [V2 (-dcol) (-drow)]
     Antislash -> [V2 dcol drow]
-    Horizontal | drow /= 0 -> [V2 0 (-1), V2 0 1]
-    Vertical | dcol /= 0 -> [V2 (-1) 0, V2 1 0]
+    Horizontal | drow /= 0 -> [west, east]
+    Vertical | dcol /= 0 -> [north, south]
     _ -> [V2 drow dcol]
 
 neighbors :: Grid -> Beam -> [Beam]
@@ -46,14 +46,14 @@ energized grid start = Set.size (Set.map fst reachable) where
     reachable = reachableFrom (neighbors grid) start
 
 part1 :: Grid -> Int
-part1 grid = energized grid (V2 0 0, V2 0 1)
+part1 grid = energized grid (origin, east)
 
 part2 :: Grid -> Int
 part2 grid = maximum (map (energized grid) starts) where
     Sz2 h w = A.size grid
     starts = concat $
-                [[(V2 r 0, V2 0 1), (V2 r (w-1), V2 0 (-1))] | r <- [0 .. h-1]]
-             ++ [[(V2 0 c, V2 1 0), (V2 (h-1) c, V2 (-1) 0)] | c <- [0 .. w-1]]
+                [[(V2 r 0, east), (V2 r (w-1), west)] | r <- [0 .. h-1]]
+             ++ [[(V2 0 c, south), (V2 (h-1) c, north)] | c <- [0 .. w-1]]
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
