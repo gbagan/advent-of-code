@@ -7,7 +7,7 @@ import qualified Data.HashSet as Set
 import           AOC.Graph (bfs)
 import           AOC.List (count)
 import           AOC.Parser (Parser, between, char, choice, sepBy1, many)
-import           AOC.V2 (V2(..), origin, west, east, north, south, adjacent)
+import           AOC.V2 (V2, origin, west, east, north, south, adjacent)
 
 data Expr = Sequence [Expr] | Singleton (V2 Int) | Disjunction [Expr]
 
@@ -35,7 +35,7 @@ mkGrid = fst . go (Set.singleton origin, Set.singleton origin) where
     go (visited, endPoints) (Sequence exprs) = foldl' go (visited, endPoints) exprs
 
 isRoom :: V2 Int -> Bool
-isRoom (V2 y x) = even (y + x)
+isRoom = even . sum
 
 solve' :: Expr -> Maybe (Int, Int)
 solve' expr = Just (p1, p2) where
