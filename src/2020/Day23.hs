@@ -1,11 +1,11 @@
 -- https://adventofcode.com/2020/day/23
 module Day23 (solve) where
-import           AOC.Prelude hiding (head, last, tail)
-import           Data.List (head, last, tail)
+import           AOC.Prelude hiding (head, last)
 import           Control.Monad.ST (ST, runST)
 import           Data.Char (digitToInt)
 import qualified Data.Vector.Unboxed.Mutable as V
 import           AOC (aoc)
+import           AOC.List (head, last, drop1)
 import           AOC.Parser (Parser, some, digitChar)
 import           AOC.Util (timesM)
 
@@ -18,7 +18,7 @@ makeCircle :: Int -> [Int] -> ST r (V.MVector r Int)
 makeCircle n xs = do
     let m = length xs
     vec <- V.generate n succ
-    zipWithM_ (V.write vec) xs (tail xs)
+    zipWithM_ (V.write vec) xs (drop1 xs)
     if m == n
         then V.write vec (last xs) (head xs)
         else do

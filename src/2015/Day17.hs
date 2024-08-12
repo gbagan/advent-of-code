@@ -2,9 +2,8 @@
 module Day17 (solve) where
 import           AOC.Prelude hiding (min)
 import           AOC (aoc)
+import           AOC.List (count, minimum)
 import           AOC.Parser (Parser, decimal, eol, sepEndBy1)
-import           Data.List (minimum)
-import           AOC.List (count)
 
 parser :: Parser [Int]
 parser = decimal `sepEndBy1` eol

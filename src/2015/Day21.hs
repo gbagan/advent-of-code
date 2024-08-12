@@ -1,8 +1,8 @@
 -- https://adventofcode.com/2015/day/21
 module Day21 (solve) where
 import           AOC.Prelude
-import           Data.List (maximum, minimum)
 import           AOC (aoc)
+import           AOC.List (maximum, minimum)
 import           AOC.Parser (Parser, eol, scanf, decimal)
 
 data Boss = Boss { _hp, _damage, _armor :: Int }

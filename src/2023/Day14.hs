@@ -1,8 +1,6 @@
 -- https://adventofcode.com/2023/day/14
 module Day14 (solve) where
 import           AOC.Prelude hiding (cycle, empty)
-import           Data.List ((!!))
-import qualified Data.HashMap.Strict as Map
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, some)
 import           AOC.Util (manyTimes)

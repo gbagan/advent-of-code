@@ -1,16 +1,16 @@
 -- https://adventofcode.com/2015/day/20
 module Day20 (solve) where
-import           AOC.Prelude hiding (head)
-import           Data.List (head)
+import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (decimal)
+import           AOC.List (groupOnKey)
 
 primeDecomposition :: Int -> [(Int, Int)]
-primeDecomposition = map (\n -> (head n, length n)) . group . aux 2 where
-    aux _ 1                  = []
-    aux p n | n `rem` p == 0 = p : aux p (n `quot` p)
-            | p*p > n        = [n]
-            | otherwise      = aux (p+1) n
+primeDecomposition = map (second length) . groupOnKey id . aux 2 where
+    aux _ 1                           = []
+    aux p n | (q, 0) <- n `quotRem` p = p : aux p q
+            | p*p > n                 = [n]
+            | otherwise               = aux (p+1) n
 
 divisorSigma1 :: Int -> Int
 divisorSigma1 n = product [(p ^ (a+1) - 1) `div` (p - 1) | (p, a) <- primeDecomposition n]

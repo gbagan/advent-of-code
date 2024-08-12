@@ -1,8 +1,8 @@
 -- https://adventofcode.com/2015/day/14
 module Day14 (solve) where
-import           AOC.Prelude hiding (max, tail)
-import           Data.List (maximum, tail)
+import           AOC.Prelude hiding (max)
 import           AOC (aoc)
+import           AOC.List (maximum, drop1)
 import           AOC.Parser (Parser, decimal, eol, letterChar, some, sepEndBy1, scanf)
 
 type Reindeer = (Int, Int, Int) -- speed, duration, rest time
@@ -26,7 +26,7 @@ part1  = maximum . map (distance 2503)
 positions :: Reindeer -> [Int]
 positions (speed, duration, rest) = 
     take 2503
-    . tail
+    . drop1
     . scanl' (+) 0 
     . cycle $ 
         replicate duration speed ++ replicate rest 0

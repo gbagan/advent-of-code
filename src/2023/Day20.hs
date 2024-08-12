@@ -1,7 +1,6 @@
 -- https://adventofcode.com/2023/day/20
 module Day20 (solve) where
-import           AOC.Prelude hiding (Type, head, round, state)
-import           Data.List (head)
+import           AOC.Prelude hiding (Type, round, state)
 import           AOC (aoc)
 import qualified Data.HashMap.Strict as Map
 import qualified Data.Sequence as Seq 
@@ -11,6 +10,7 @@ import           Lens.Micro (ix)
 import           Lens.Micro.Mtl ((.=), (+=))
 import           Lens.Micro.TH (makeLenses)
 import           Lens.Micro.Platform ()
+import           AOC.List (headMaybe)
 import           AOC.Parser (Parser, sepBy1, sepEndBy1, some, lowerChar, eol)
 import           AOC.Util (timesM_)
 
@@ -87,18 +87,21 @@ part1 network = _nbLow finalState * _nbHigh finalState where
     finalState = flip execState nstate do
         timesM_ 1000 (pushButton network)
 
-part2 :: Network -> Integer
-part2 network = foldl' lcm 1 cycles where
-    nstate = initNState network
-    predRx = head . Map.keys $ _from nstate Map.! "rx"
-    predPredRx = Map.keys $ _from nstate Map.! predRx
-    nstates = iterate' (execState (pushButton network)) nstate
-    cycles = map extractCycle predPredRx
-    extractCycle name = head [ idx 
-                             | (idx, True) <- zip [0..] 
-                                . map ((Map.! name) . _seen) 
-                                 $ nstates
-                             ]
+
+extractCycle :: [NState] -> Text -> Maybe Integer
+extractCycle states name = headMaybe [ idx 
+                                     | (idx, True) <- zip [0..] 
+                                     $ map ((Map.! name) . _seen) states
+                                     ]
+
+part2 :: Network -> Maybe Integer
+part2 network = do
+    let nstate = initNState network
+    predRx <- headMaybe . Map.keys $ _from nstate Map.! "rx"
+    let predPredRx = Map.keys $ _from nstate Map.! predRx
+    let nstates = iterate' (execState (pushButton network)) nstate
+    cycles <- traverse (extractCycle nstates) predPredRx
+    pure $ foldl' lcm 1 cycles
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2

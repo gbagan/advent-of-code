@@ -1,10 +1,9 @@
 -- https://adventofcode.com/2016/day/10
 module Day10 (solve) where
 import           AOC.Prelude hiding (last)
-import           Data.List (last)
 import qualified Data.IntMap.Strict as Map
 import           AOC (aoc')
-import           AOC.List (headMaybe)
+import           AOC.List (headMaybe, last)
 import           AOC.Parser (Parser, decimal, eol, sepEndBy1, scanf)
 
 data BinType = Bot | Output

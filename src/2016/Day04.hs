@@ -1,10 +1,9 @@
 -- https://adventofcode.com/2016/day/4
 module Day04 (solve) where
 import           AOC.Prelude hiding (unwords)
-import           Data.List (isInfixOf, unwords)
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, eol, sepEndBy1, some, lowerChar, scanf)
-import           AOC.List (freqs, headMaybe)
+import           AOC.List (freqs, headMaybe, isInfixOf, unwords)
 
 data Room = Room { _name :: ![String], sectorId :: !Int,  _checksum :: !String }
 

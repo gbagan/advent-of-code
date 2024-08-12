@@ -2,9 +2,8 @@
 module Day05 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
-import           Data.List (isInfixOf)
 import           AOC.Parser (Parser, eol, some, lowerChar, sepEndBy1)
-import           AOC.List (count)
+import           AOC.List (count, isInfixOf)
 
 parser :: Parser [String]
 parser = some lowerChar `sepEndBy1` eol

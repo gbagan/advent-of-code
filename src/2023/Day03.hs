@@ -2,11 +2,10 @@
 module Day03 (solve) where
 import           AOC.Prelude hiding (head, last)
 import           Prelude (read)
-import           Data.List (head, last)
 import           Data.Char (isDigit)
 import           AOC (aoc)
 import           AOC.Parser (Parser, anySingleBut, eol, sepEndBy1, some)
-import           AOC.List (wordsBy)
+import           AOC.List (head, last, wordsBy)
 import           Data.Massiv.Array ((!?), fromLists', U, Comp(Seq), Ix2(..))
 
 type NumberRange = ((Int, Int, Int), Int) -- position of a number: row, start column, end column, the scanned number

@@ -1,8 +1,8 @@
 -- https://adventofcode.com/2015/day/11
 module Day11 (solve) where
-import           AOC.Prelude hiding (head, tail)
-import           Data.List (tail)
+import           AOC.Prelude
 import           AOC (aoc)
+import           AOC.List (drop1)
 import           AOC.Parser (Parser, alphaNumChar, some)
 
 parser :: Parser String
@@ -30,7 +30,7 @@ nextString (x : xs) = succ x : xs
 nextString "" = error "nextString on an empty string" 
 
 nextPassword :: String -> Maybe String
-nextPassword = fmap reverse . find isValid . tail . iterate' nextString  . reverse 
+nextPassword = fmap reverse . find isValid . drop1 . iterate' nextString  . reverse 
 
 part1, part2 :: String -> Maybe String
 part1 = nextPassword

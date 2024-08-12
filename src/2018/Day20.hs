@@ -9,7 +9,7 @@ import           AOC.List (count)
 import           AOC.Parser (Parser, between, char, choice, sepBy1, many)
 import           AOC.V2 (V2, origin, west, east, north, south, adjacent)
 
-data Expr = Sequence [Expr] | Singleton (V2 Int) | Disjunction [Expr]
+data Expr = Singleton (V2 Int) | Sequence [Expr] | Disjunction [Expr]
 
 parser :: Parser Expr
 parser = "^" *> sequence <* "$" where
@@ -23,16 +23,19 @@ parser = "^" *> sequence <* "$" where
             ]
 
 mkGrid :: Expr -> HashSet (V2 Int)
-mkGrid = fst . go (Set.singleton origin, Set.singleton origin) where
-    go (visited, endPoints) (Singleton dir) = (visited', endPoints'') where
-        endPoints' = Set.map (+dir) endPoints
-        endPoints'' = Set.map (+dir) endPoints'
-        visited' = visited `Set.union` endPoints' `Set.union` endPoints''
-    go (visited, endPoints) (Disjunction exprs) = (Set.unions (visited:visited'), Set.unions endPoints') where
-        res = map (go (Set.empty, endPoints)) exprs
-        visited' = map fst res
-        endPoints' = map snd res
-    go (visited, endPoints) (Sequence exprs) = foldl' go (visited, endPoints) exprs
+mkGrid = Set.insert origin . fst . go (Set.singleton origin) where
+    go startingRooms (Singleton dir) = (visited, endRooms) where
+        doors = Set.map (+dir) startingRooms
+        endRooms = Set.map (+dir) doors
+        visited = doors `Set.union` endRooms
+    go startingRooms (Disjunction exprs) = (Set.unions visited, Set.unions endRooms) where
+        res = map (go startingRooms) exprs
+        visited = map fst res
+        endRooms = map snd res
+    go startingRooms (Sequence exprs) = foldl'
+                                            (\(v, s) -> first (Set.union v) . go s)
+                                            (Set.empty, startingRooms)
+                                            exprs
 
 isRoom :: V2 Int -> Bool
 isRoom = even . sum

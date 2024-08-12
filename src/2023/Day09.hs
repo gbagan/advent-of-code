@@ -1,6 +1,6 @@
 -- https://adventofcode.com/2023/day/9
 module Day09 (solve) where
-import           AOC.Prelude hiding (last, tail)
+import           AOC.Prelude hiding (last)
 import           Data.List (last)
 import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, hspace, signedDecimal)

@@ -1,10 +1,10 @@
 -- https://adventofcode.com/2015/day/1
 module Day09 (solve) where
-import           AOC.Prelude hiding (tail)
-import           Data.List (minimum, maximum, tail)
+import           AOC.Prelude
 import qualified Data.HashMap.Strict as Map
 import qualified Data.Text as Text
 import           AOC (aoc')
+import           AOC.List (drop1, minimum, maximum)
 import           AOC.Parser (Parser, decimal, eol, sepEndBy1, some, letterChar)
 import           AOC.Tuple (fst3, snd3)
 
@@ -25,7 +25,7 @@ precomp rows = (cities, network) where
 
 solveFor :: ([Int] -> Int) -> Input -> Int
 solveFor f (cities, network) = f . map distance $ permutations cities where
-    distance xs = sum [network Map.! (x, y) | (x, y) <- zip xs (tail xs)]
+    distance xs = sum [network Map.! (x, y) | (x, y) <- zip xs (drop1 xs)]
 
 solve :: Text -> IO ()
 solve = aoc' parser (pure . precomp) (solveFor minimum) (solveFor maximum)

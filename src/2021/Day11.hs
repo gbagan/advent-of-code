@@ -1,12 +1,11 @@
 module Day11 (solve) where
-import           AOC.Prelude hiding (tail)
-import           Data.List (tail)
+import           AOC.Prelude
 import           Data.Char (digitToInt)
 import qualified Data.HashMap.Strict as Map
 import qualified Data.Set as Set
 import           AOC (aoc')
 import           AOC.Parser (Parser, digitChar, eol, sepEndBy1, some)
-import           AOC.List (count)
+import           AOC.List (count, drop1)
 import           AOC.V2 (V2(..), surrounding)
 import           AOC.Util (listTo2dMap)
 
@@ -36,7 +35,7 @@ precomp :: HashMap Coord Int -> [HashMap Coord Int]
 precomp = iterate' step
 
 part1 :: [HashMap Coord Int] -> Int
-part1 = sum . map (count (==0) . Map.elems) . take 100 . tail
+part1 = sum . map (count (==0) . Map.elems) . take 100 . drop1
 
 part2 :: [HashMap Coord Int] -> Maybe Int
 part2 = findIndex (all (==0) . Map.elems)

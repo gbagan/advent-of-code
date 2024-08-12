@@ -1,7 +1,14 @@
-module AOC.List where
+module AOC.List (module L, allDistinct, headMaybe, tailMaybe, lastMaybe, minimumOn, maximumOn
+                        , minimumMaybe, minimumDef, maximumDef, findJust, groupOn, groupOnKey
+                        , drop1, dropEnd, takeEnd
+                        , splitWhen, wordsBy, grouped, grouped2, grouped3, sliding, pairwise
+                        , count, freqs, freqs', mostCommon, slice, average, median
+                        , flattenWithIndex, flattenWithIndex', findDuplicate, findDuplicate'
+                        )
+where
 
 import           AOC.Prelude
-import           Data.List ((!!), maximum, minimum, maximumBy, minimumBy)
+import           Data.List as L ((!!), head, last, tail, init, minimum, maximum, minimumBy, maximumBy, isInfixOf, unwords)
 import           Data.Maybe (fromJust)
 import qualified Data.HashSet as Set
 import qualified Data.HashMap.Strict as Map
@@ -53,6 +60,13 @@ findJust f = fromJust . find f
 groupOn :: Eq k => (a -> k) -> [a] -> [[a]]
 groupOn f = groupBy ((==) `on2` f)
     where (.*.) `on2` g = \x -> let fx = f x in \y -> fx .*. g y
+{-# INLINE groupOn #-}
+
+groupOnKey :: Eq k => (a -> k) -> [a] -> [(k, [a])]
+groupOnKey _ []     = []
+groupOnKey f (x:xs) = (fx, x:yes) : groupOnKey f no where
+    fx = f x
+    (yes, no) = span (\y -> f y == f x) xs
 
 drop1 :: [a] -> [a]
 drop1 [] = []

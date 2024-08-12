@@ -5,7 +5,7 @@ import           Data.Char (digitToInt)
 import           Data.Massiv.Array (Matrix, (!), (!?), U, Comp(Seq), Sz(Sz2))
 import qualified Data.Massiv.Array as A
 import           AOC (aoc)
-import           AOC.V2 (V2(..), south, east, toIx2)
+import           AOC.V2 (V2(..), origin, south, east, toIx2)
 import           AOC.Parser (Parser, sepEndBy1, eol, digitChar, some)
 import           AOC.Graph (dijkstra')  
 
@@ -31,7 +31,7 @@ solveFor :: [Int] -> Grid -> Maybe Int
 solveFor nbSteps grid = dijkstra' (neighbors nbSteps' grid) (`elem` ends) starts where
     nbSteps' = nbSteps ++ map negate nbSteps
     Sz2 h w = A.size grid
-    starts = (V2 0 0,) <$> [True, False]
+    starts = (origin,) <$> [True, False]
     ends = (V2 (h-1) (w-1),) <$> [True, False]
 
 solve :: Text -> IO ()

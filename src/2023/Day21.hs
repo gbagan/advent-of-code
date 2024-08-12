@@ -37,7 +37,7 @@ nbReachable n = fromIntegral
 part1 :: (Grid, V2 Int) -> Integer
 part1 (grid, start) = nbReachable 64 $ bfs (neighbors grid) start
 
--- given a quadratic sequence with first terms u0, u1, u0,  compute u_n
+-- given a quadratic sequence with first terms u0, u1, u2,  compute u_n
 quadraticSequence :: Integer -> Integer -> Integer -> Integer -> Integer
 quadraticSequence u0 u1 u2 n = u0 + n * u0' + n * (n-1) * u0'' `div` 2
     where

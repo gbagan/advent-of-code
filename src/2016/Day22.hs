@@ -1,10 +1,9 @@
 -- https://adventofcode.com/2016/day/22
 module Day22 (solve) where
-import           AOC.Prelude hiding (State, head)
-import           Data.List (head)
+import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, eol, scanf, hspace, sepEndBy1, skipLine)
-import           AOC.List (groupOn)
+import           AOC.List (headMaybe, groupOn)
 import           AOC.V2 (V2(..), manhattan, origin, adjacent, toIx2)
 import           Data.Massiv.Array hiding (map, dropWhile, toIx2)
 import           AOC.Graph (astar)
@@ -12,8 +11,8 @@ import           AOC.Graph (astar)
 data Node = Node { _used, _avail :: !Int}
 type Input = [(V2 Int, Node)]
 
-data State = State { _goal, _hole :: !(V2 Int) } deriving (Eq, Ord, Generic)
-instance Hashable State
+data SearchState = SearchState { _goal, _hole :: !(V2 Int) } deriving (Eq, Ord, Generic)
+instance Hashable SearchState
 
 parser :: Parser Input
 parser = skipLine *> skipLine *> node `sepEndBy1` eol where
@@ -32,34 +31,34 @@ part1 nodes = aux useds avails len 0 where
     aux (u:us) (a:as) l total | u <= a    = aux us (a:as) l $! total + l 
                               | otherwise = aux (u:us) as (l-1) $! total 
 
-
-findHole :: Input -> V2 Int
-findHole input = head [ p | (p,node) <- input, _used node == 0 ]
+findHole :: Input -> Maybe (V2 Int)
+findHole input = headMaybe [ p | (p,node) <- input, _used node == 0 ]
 
 inputToMat :: Input -> Matrix B Bool
 inputToMat input = fromLists' Seq . map (map \(_, Node used avail) -> used + avail <= 120) 
                         $ groupOn (\(V2 x _, _) -> x) input       
 
-neighbors :: Matrix B Bool -> State -> [(State, Int)]
-neighbors grid (State goal hole) =
-    [ (State goal' hole', 1)
+neighbors :: Matrix B Bool -> SearchState -> [(SearchState, Int)]
+neighbors grid (SearchState goal hole) =
+    [ (SearchState goal' hole', 1)
     | hole' <- adjacent hole
     , (grid !? toIx2 hole') == Just True
     , let goal' = if hole' == goal then hole else goal
     ]
 
-heuristic :: State -> Int
-heuristic (State goal hole) = 5 * (manhattan goal origin - 1) + manhattan goal hole
+heuristic :: SearchState -> Int
+heuristic (SearchState goal hole) = 5 * (manhattan goal origin - 1) + manhattan goal hole
 
-isDest :: State -> Bool
-isDest (State goal _) = goal == origin
+isDest :: SearchState -> Bool
+isDest (SearchState goal _) = goal == origin
 
 part2 :: Input -> Maybe Int
-part2 input = astar (State goal hole) isDest (neighbors mat) heuristic where
-    mat = inputToMat input
-    Sz2 w _ = size mat
-    goal = V2 (w-1) 0
-    hole = findHole input
+part2 input = do
+    let mat = inputToMat input
+    let Sz2 w _ = size mat
+    let goal = V2 (w-1) 0
+    hole <- findHole input
+    astar (SearchState goal hole) isDest (neighbors mat) heuristic
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2
