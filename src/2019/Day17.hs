@@ -15,18 +15,6 @@ data Instr = Move !Turn !Int | Function !Int deriving (Eq, Show)
 parser :: Parser [Int]
 parser = signedDecimal `sepBy1` ","
 
-part1and2 :: [Int] -> Maybe (Int, Int)
-part1and2 pgm = do
-    let grid = filter (/= "") . lines . map chr $ runProgram [] pgm
-    let tiles = [pos | (pos, '#') <- flattenWithIndex' grid]
-    start <- headMaybe [pos | (pos, '^') <- flattenWithIndex' grid]
-    let grid' = fromLists' @U Seq grid
-    let p1 = sum [x * y | p@(V2 y x) <- tiles, all (\p' -> (grid' !? toIx2 p') == Just '#') (adjacent p)]
-    let instrs = map ord . codeToString . compress $ getWalk grid' start
-    let pgm' = 2 : drop 1 pgm
-    let p2 = last $ runProgram instrs pgm'
-    pure (p1, p2)
-
 getWalk :: Matrix U Char -> V2 Int -> [Instr]
 getWalk grid = go north where
     go !dir !pos =
@@ -75,4 +63,4 @@ codeToString :: ([Instr], [[Instr]]) -> String
 codeToString (main, fs)= unlines $ map routineToString (main : fs) ++ ["n"]
 
 solve :: Text -> IO ()
-solve = aoc_ parser part1and2
+solve = aoc_ parser solve'

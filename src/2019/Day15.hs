@@ -29,8 +29,8 @@ neighbors (SearchState _ loc eff) = case eff of
             _ -> error "incorrect program"
     _ -> error "incorrect program"
 
-part1and2 :: [Int] -> Maybe (Int, Int)
-part1and2 pgm = do
+solve' :: [Int] -> Maybe (Int, Int)
+solve' pgm = do
     let eff = runEffect $ newMachine pgm
     let states = bfsOn position neighbors (SearchState False origin eff)
     (p1, st) <- find (onOxygen . snd) states
@@ -38,4 +38,4 @@ part1and2 pgm = do
     pure (p1, p2)
 
 solve :: Text -> IO ()
-solve = aoc_ parser part1and2
+solve = aoc_ parser solve'
