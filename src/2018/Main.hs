@@ -20,6 +20,7 @@ import qualified Day15 (solve)
 import qualified Day16 (solve)
 import qualified Day17 (solve)
 import qualified Day18 (solve)
+import qualified Day19 (solve)
 
 solutions :: Map String (Text -> IO ())
 solutions = Map.fromList
@@ -41,6 +42,7 @@ solutions = Map.fromList
             , ("16", Day16.solve)
             , ("17", Day17.solve)
             , ("18", Day18.solve)
+            , ("19", Day19.solve)
             ]
 
 main :: IO ()

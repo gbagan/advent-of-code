@@ -45,7 +45,10 @@ step :: Word32 -> [Word32] -> Word32
 step layout = go 0 0 0 where
     go !one !two !three = \case
         [] -> (layout .&. one .&. neg two) .|. (neg layout .&. one .&. neg three)
-        (x:xs) -> go (one .|. x) (two .|. (x .&. one)) (three .|. (x .&. two)) xs
+        (x:xs) -> go one' two' three' xs where
+            one' = one .|. x
+            two' = two .|. (x .&. one)
+            three' =three  .|. (x .&. two)
 
 step2 :: [Word32] -> [Word32]
 step2 layouts = go layouts' where
