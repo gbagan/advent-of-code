@@ -1,6 +1,6 @@
 module Day11 (solve) where
 import           AOC.Prelude
-import           AOC (aoc)
+import           AOC (aocIO)
 import           AOC.Parser (Parser, signedDecimal, sepBy1)
 import           AOC.IntCode (Effect(..), newMachine, runEffect)
 import           AOC.V2 (V2(..), origin, north, turnLeft, turnRight)
@@ -25,12 +25,12 @@ simulate initialPaint pgm = go initialPaint (runEffect (newMachine pgm)) origin 
 part1 :: [Int] -> Int
 part1 = Map.size . simulate Map.empty
 
-part2 :: [Int] -> Int
-part2 pgm = trace drawing 0 where
+part2 :: [Int] -> IO Int
+part2 pgm = putStr drawing $> 0 where
     drawing = drawPicture 
             . fmap (bool ' ' '#')
             . Map.mapKeys (\(V2 x y) -> V2 y x)
             $ simulate (Map.singleton origin True) pgm
 
 solve :: Text -> IO ()
-solve = aoc parser part1 part2
+solve = aocIO parser (pure . part1) part2

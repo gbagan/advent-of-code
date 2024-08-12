@@ -23,6 +23,13 @@ aocMain year solutions = do
 aoc :: (Show b, Show c) => Parser a -> (a -> b) -> (a -> c) -> Text -> IO ()
 aoc parser = aoc' parser pure
 
+aoc' :: (Show c, Show d) =>
+        Parser a -> (a -> Maybe b) -> (b -> c) -> (b -> d) -> Text -> IO ()
+aoc' parser precomp part1 part2 = aocIO' parser precomp (pure . part1) (pure . part2)
+
+aocIO :: (Show b, Show c) => Parser a -> (a -> IO b) -> (a -> IO c) -> Text -> IO ()
+aocIO parser = aocIO' parser pure
+
 duration :: IO a -> IO (String, a)
 duration m = do
     begin <- getCPUTime
@@ -35,29 +42,33 @@ duration m = do
                     show diff <> " microseconds"
     pure (strDiff, res)
 
-aoc' :: (Show c, Show d) =>
-        Parser a -> (a -> Maybe b) -> (b -> c) -> (b -> d) -> Text -> IO ()
-aoc' parser precomp part1 part2 input = do
+aocIO' :: (Show c, Show d) =>
+        Parser a -> (a -> Maybe b) -> (b -> IO c) -> (b -> IO d) -> Text -> IO ()
+aocIO' parser precomp part1 part2 input = do
     case parse parser "" input of
         Left err -> putStrLn $ errorBundlePretty err
         Right parsed ->
             case precomp parsed of
                 Nothing -> putStrLn "  precomputation has failed"
                 Just !p -> do
-                    (duration1, !res1) <- duration (pure $ part1 p)
+                    (duration1, !res1) <- duration (part1 p)
                     putStrLn $ "  part 1: " ++ show res1 <> " in " ++ duration1
-                    (duration2, !res2) <- duration (pure $ part2 p)
+                    (duration2, !res2) <- duration (part2 p)
                     putStrLn $ "  part 2: " ++ show res2  <> " in " ++ duration2
 
 aoc_ :: (NFData b, NFData c, Show b, Show c) =>
         Parser a -> (a -> Maybe (b, c)) -> Text -> IO ()
-aoc_ parser f input = do
+aoc_ parser f = aocIO_ parser (pure . f) 
+
+aocIO_ :: (NFData b, NFData c, Show b, Show c) =>
+        Parser a -> (a -> IO (Maybe (b, c))) -> Text -> IO ()
+aocIO_ parser f input = do
     case parse parser "" input of
         Left err -> putStrLn $ errorBundlePretty err
         Right parsed -> do
                     (duration1, !mres) <- duration do
-                        let a = f parsed
-                        pure $ a `deepseq` a 
+                        a <- f parsed
+                        pure $ a `deepseq` a
                     case mres of
                         Nothing -> putStrLn "  program has failed"
                         Just (res1, res2) -> do

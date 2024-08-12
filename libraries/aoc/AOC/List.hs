@@ -8,7 +8,8 @@ module AOC.List (module L, allDistinct, headMaybe, tailMaybe, lastMaybe, minimum
 where
 
 import           AOC.Prelude
-import           Data.List as L ((!!), head, last, tail, init, minimum, maximum, minimumBy, maximumBy, isInfixOf, unwords)
+import           Data.List as L ((!!), head, last, tail, init, minimum, maximum
+                                , minimumBy, maximumBy, isInfixOf, unwords, unlines)
 import           Data.Maybe (fromJust)
 import qualified Data.HashSet as Set
 import qualified Data.HashMap.Strict as Map

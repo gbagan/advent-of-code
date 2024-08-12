@@ -1,9 +1,9 @@
 {-# OPTIONS_GHC -Wno-deprecations #-}
 module Day13 (solve) where
-import           AOC.Prelude hiding (fold, head)
-import           Data.List (head, maximum)
+import           AOC.Prelude hiding (fold, head, unlines)
+import           Data.List (head, maximum, unlines)
 import qualified Data.Set as Set
-import           AOC (aoc)
+import           AOC (aocIO)
 import           AOC.Parser (Parser, decimal, eol, sepEndBy1, some)
 
 type Point = (Int, Int)
@@ -25,9 +25,9 @@ foldPaper (Fold Y i) = Set.map \(x, y) -> (x, min y (2*i - y))
 part1 :: Input -> Int
 part1 (Input paper folds) = Set.size $ foldPaper (head folds) paper
 
-part2 :: Input -> Int
-part2 (Input paper folds) = trace str 0 where
-    str = intercalate "\n"
+part2 :: Input -> IO Int
+part2 (Input paper folds) = putStr str $> 0 where
+    str = unlines
         [
             [if Set.member (x, y) folded then '#' else ' ' | x <- [0..xMax]]
             | y <- [0..yMax]        
@@ -37,4 +37,4 @@ part2 (Input paper folds) = trace str 0 where
     yMax = maximum (Set.map snd folded)
 
 solve :: Text -> IO ()
-solve = aoc parser part1 part2
+solve = aocIO parser (pure . part1) part2

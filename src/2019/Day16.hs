@@ -5,7 +5,6 @@ import           AOC (aoc)
 import           AOC.Parser (Parser, some, digitChar)
 import           Data.Char (digitToInt)
 import           AOC.Util (times)
-import           Prelude (read)
 import qualified Data.Vector.Unboxed as V
 
 parser :: Parser (V.Vector Int)
@@ -30,9 +29,11 @@ solveFor offset = concatMap show . V.toList . V.slice offset 8 . times 100 (phas
 part1 :: V.Vector Int -> String
 part1 = solveFor 0
 
-part2 :: V.Vector Int -> String
-part2 vec = solveFor offset $ V.concat (replicate 10_000 vec) where
-    offset = read . concatMap show . V.toList $ V.take 7 vec
+part2 :: V.Vector Int -> Maybe String
+part2 vec = do
+    offset <- readMaybe . concatMap show . V.toList $ V.take 7 vec
+    pure $ solveFor offset $ V.concat (replicate 10_000 vec)
+    
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2

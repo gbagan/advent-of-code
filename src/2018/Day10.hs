@@ -1,7 +1,7 @@
 -- https://adventofcode.com/2018/day/10
 module Day10 (solve) where
 import           AOC.Prelude
-import           AOC (aoc')
+import           AOC (aocIO')
 import           AOC.Parser (Parser, sepEndBy1, eol, hspace, signedDecimal, scanf)
 import           AOC.V2 (V2(..))
 import           AOC.Area (Area(..), boundingBox)
@@ -21,11 +21,13 @@ isNice positions = ymax - ymin <= 10 where
 findNice :: [(V2 Int, V2 Int)] -> Maybe (Int, [V2 Int])
 findNice = find (isNice . snd) . zip [0..] . map (map fst) . iterate' step
 
-part1 :: (a, [V2 Int]) -> Int
-part1 (_, points) = trace (drawPoints points) 0
+part1 :: (a, [V2 Int]) -> IO Int
+part1 (_, points) = do
+    putStr (drawPoints points) 
+    pure 0
 
 part2 :: (Int, a) -> Int
 part2 = fst
 
 solve :: Text -> IO ()
-solve = aoc' parser findNice part1 part2
+solve = aocIO' parser findNice part1 (pure . part2)
