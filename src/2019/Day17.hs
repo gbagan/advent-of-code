@@ -62,5 +62,17 @@ routineToString = intercalate "," . map instrToString where
 codeToString :: ([Instr], [[Instr]]) -> String
 codeToString (main, fs)= unlines $ map routineToString (main : fs) ++ ["n"]
 
+solve' :: [Int] -> Maybe (Int, Int)
+solve' pgm = do
+    let grid = filter (/= "") . lines . map chr $ runProgram [] pgm
+    let tiles = [pos | (pos, '#') <- flattenWithIndex' grid]
+    start <- headMaybe [pos | (pos, '^') <- flattenWithIndex' grid]
+    let grid' = fromLists' @U Seq grid
+    let p1 = sum [x * y | p@(V2 y x) <- tiles, all (\p' -> (grid' !? toIx2 p') == Just '#') (adjacent p)]
+    let instrs = map ord . codeToString . compress $ getWalk grid' start
+    let pgm' = 2 : drop 1 pgm
+    let p2 = last $ runProgram instrs pgm'
+    pure (p1, p2)
+
 solve :: Text -> IO ()
 solve = aoc_ parser solve'
