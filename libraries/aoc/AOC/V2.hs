@@ -1,10 +1,13 @@
 module AOC.V2 where
 
-import AOC.Prelude
+import AOC.Prelude hiding (show)
 import           Data.Foldable1 (Foldable1, foldMap1)
 import           Data.Massiv.Array (Ix2(..))
+import           Prelude (show)
 
-data V2 a = V2 { _x :: !a, _y :: !a } deriving (Eq, Generic, Ord, Show)
+data V2 a = V2 { _x :: !a, _y :: !a } deriving (Eq, Generic, Ord)
+instance Show a => Show (V2 a) where
+    show (V2 a b) = "(" ++ show a ++ "," ++ show b ++ ")"
 
 instance Functor V2 where
     fmap f (V2 a b) = V2 (f a) (f b)

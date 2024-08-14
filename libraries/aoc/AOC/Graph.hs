@@ -1,10 +1,13 @@
-module AOC.Graph (module B, module S, module MM, module MC, perfectMatchings, lexicographicTopologicalOrdering, dagLongestPath) where
+module AOC.Graph (module B, module C, module D, module S, module MM, module MC, perfectMatchings, lexicographicTopologicalOrdering, dagLongestPath) where
 import           AOC.Prelude
 import qualified Data.HashSet as Set
 import           AOC.List (minimumOn, maximumDef)
 import qualified AOC.HashMap as Map
 import qualified Data.Set as OSet
 import           AOC.Graph.Base as B
+
+import           AOC.Graph.Clique as C
+import           AOC.Graph.Degeneracy as D
 import           AOC.Graph.Search as S
 import           AOC.Graph.MaximumMatching as MM
 import           AOC.Graph.MinCut as MC

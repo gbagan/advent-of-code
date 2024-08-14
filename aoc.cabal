@@ -38,10 +38,13 @@ library aoclib
     exposed-modules:
         AOC
         AOC.Area
+        AOC.Box3
         AOC.Debug
         AOC.Draw
         AOC.Graph
         AOC.Graph.Base
+        AOC.Graph.Clique
+        AOC.Graph.Degeneracy
         AOC.Graph.MaximumMatching
         AOC.Graph.MinCut
         AOC.Graph.Search
@@ -52,6 +55,9 @@ library aoclib
         AOC.List
         AOC.MassivArray
         AOC.Monad
+        AOC.Mutable.DynArray
+        AOC.Mutable.Heap
+        AOC.Mutable.PriorityMap
         AOC.Number
         AOC.Prelude
         AOC.Parser
@@ -64,6 +70,7 @@ library aoclib
         AOC.V4
     build-depends: base >= 4.15 && < 5
                    , containers
+                   , hashtables
                    , massiv
                    , megaparsec
                    , microlens
@@ -126,7 +133,7 @@ executable aoc2018
     import: aoc-exe
     hs-source-dirs:      src/2018
     main-is:             Main.hs
-    other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13 Day14 Day15 Day16 Day17 Day18 Day19 Day20 Day21
+    other-modules: Day01 Day02 Day03 Day04 Day05 Day06 Day07 Day08 Day09 Day10 Day11 Day12 Day13 Day14 Day15 Day16 Day17 Day18 Day19 Day20 Day21 Day22 Day23
     build-depends:
 
 executable aoc2019

@@ -30,18 +30,6 @@ aoc' parser precomp part1 part2 = aocIO' parser precomp (pure . part1) (pure . p
 aocIO :: (Show b, Show c) => Parser a -> (a -> IO b) -> (a -> IO c) -> Text -> IO ()
 aocIO parser = aocIO' parser pure
 
-duration :: IO a -> IO (String, a)
-duration m = do
-    begin <- getCPUTime
-    !res <- m
-    end <- getCPUTime
-    let diff = (end - begin) `div` 1_000_000 -- in microseconds 
-    let strDiff = if diff >= 10000 then
-                    show (diff `div` 1000) <> " milliseconds"
-                  else
-                    show diff <> " microseconds"
-    pure (strDiff, res)
-
 aocIO' :: (Show c, Show d) =>
         Parser a -> (a -> Maybe b) -> (b -> IO c) -> (b -> IO d) -> Text -> IO ()
 aocIO' parser precomp part1 part2 input = do
@@ -74,3 +62,15 @@ aocIO_ parser f input = do
                         Just (res1, res2) -> do
                             putStrLn $ "  part 1: " ++ show res1
                             putStrLn $ "  part 2: " ++ show res2  <> ", total duration:  " ++ duration1
+
+duration :: IO a -> IO (String, a)
+duration m = do
+    begin <- getCPUTime
+    !res <- m
+    end <- getCPUTime
+    let diff = (end - begin) `div` 1_000_000 -- in microseconds 
+    let strDiff = if diff >= 10000 then
+                    show (diff `div` 1000) <> " milliseconds"
+                  else
+                    show diff <> " microseconds"
+    pure (strDiff, res)

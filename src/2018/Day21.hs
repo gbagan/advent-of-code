@@ -67,7 +67,7 @@ incIp :: Int -> Registers -> Registers
 incIp ip regs = regs // [(ip, (regs ! ip) + 1)]
 
 solve' :: Program -> Maybe (Int, Int)
-solve' prog = do 
+solve' prog = do
     let values = go prog (VU.replicate 6 0)
     p1 <- headMaybe values
     (_, j, _) <- findDuplicate' values
