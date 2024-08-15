@@ -5,15 +5,14 @@ import           AOC (aoc)
 import           AOC.Parser (Parser, sepEndBy1, eol, upperChar, scanf)
 import qualified Data.Set as Set
 import qualified AOC.HashMap as Map
-import           AOC.Graph (lexicographicTopologicalOrdering)
+import           AOC.Graph (lexicographicTopologicalOrdering, fromEdges)
 import           Data.List (minimum)
-
 
 parser :: Parser [(Char, Char)]
 parser = [scanf|Step {upperChar} must be finished before step {upperChar} can begin.|] `sepEndBy1` eol
 
 part1 :: [(Char, Char)] -> String
-part1 = lexicographicTopologicalOrdering
+part1 = lexicographicTopologicalOrdering . fromEdges
 
 duration :: Char -> Int
 duration c = ord c - ord 'A'  + 61

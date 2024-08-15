@@ -3,9 +3,8 @@ module Day25 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import qualified Data.Text as Text
-import qualified Data.HashMap.Strict as Map
 import           AOC.Parser (Parser, sepEndBy1, some, lowerChar, eol, hspace)
-import           AOC.Graph (addEdge, removeEdge, connectedComponents, minimumCut)
+import           AOC.Graph (fromEdges, removeEdge, connectedComponents, minimumCut, symmetrize)
 
 type Network = [(Text, [Text])] 
 
@@ -16,8 +15,8 @@ parser = row `sepEndBy1` eol where
 
 part1 :: Network -> Int
 part1 network = product (map length components) where
-    graph = foldl' (\g (u, v) -> addEdge u v g) Map.empty
-                [(u, v) | (u, nbor) <- network, v <- nbor]
+    edges = concatMap (\(u, nbors) -> map (u,) nbors) network
+    graph = symmetrize $ fromEdges edges
     cutset = minimumCut graph
     graph' = foldl' (\g (u, v) -> removeEdge u v g) graph cutset
     components = connectedComponents graph'

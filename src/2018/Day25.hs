@@ -15,8 +15,5 @@ part1 :: [V4 Int] -> Int
 part1 = length . connectedComponents . flip fromEdgePredicate p where
     p v1 v2 = manhattan v1 v2 <= 3
 
-part2 :: a -> Int
-part2 _ = 0
-
 solve :: Text -> IO ()
-solve = aoc parser part1 part2
+solve = aoc parser part1 (pure ())

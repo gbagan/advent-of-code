@@ -3,7 +3,7 @@ module Day14 (solve) where
 import           AOC.Prelude
 import           AOC (aoc)
 import           AOC.Parser (Parser, decimal, eol, hspace, upperChar, sepBy1, sepEndBy1, some)
-import           AOC.Graph (lexicographicTopologicalOrdering)
+import           AOC.Graph (Graph, fromEdges, lexicographicTopologicalOrdering)
 import           AOC.Util (maxBinSearch')
 import qualified Data.HashMap.Strict as Map
 import qualified Data.Text as Text
@@ -17,8 +17,8 @@ parser = Map.fromList <$> reaction `sepEndBy1` eol where
     chemical' = (,) <$> decimal <* hspace <*> chemical
     f cs (n, c) = (c, (n, cs))
 
-edges :: Input -> [(Text, Text)]
-edges = concatMap (\(c, (_, cs)) -> map ((c,) . snd) cs) . Map.toList 
+mkGraph :: Input -> Graph Text
+mkGraph = fromEdges . (concatMap \(v, (_, nbors)) -> map ((v,) . snd) nbors) . Map.toList
 
 amountOfOreForFuel :: Input -> [Text] -> Int -> Int
 amountOfOreForFuel  reactions ordering n = foldl' go (Map.singleton "FUEL" n) ordering Map.! "ORE" where
@@ -29,11 +29,11 @@ amountOfOreForFuel  reactions ordering n = foldl' go (Map.singleton "FUEL" n) or
 
 part1 :: Input -> Int
 part1 reactions = amountOfOreForFuel reactions ordering 1 where
-    ordering = lexicographicTopologicalOrdering (edges reactions)
+    ordering = lexicographicTopologicalOrdering (mkGraph reactions)
 
 part2 :: Input -> Int
 part2 reactions = maxBinSearch' \n -> amountOfOreForFuel reactions ordering n <= 1_000_000_000_000 where
-    ordering = lexicographicTopologicalOrdering (edges reactions)
+    ordering = lexicographicTopologicalOrdering (mkGraph reactions)
 
 divUp :: Int -> Int -> Int
 divUp n m | n `mod` m == 0 = n `div` m

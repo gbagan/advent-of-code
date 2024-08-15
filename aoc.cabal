@@ -44,6 +44,7 @@ library aoclib
         AOC.Graph
         AOC.Graph.Base
         AOC.Graph.Clique
+        AOC.Graph.DAG
         AOC.Graph.Degeneracy
         AOC.Graph.MaximumMatching
         AOC.Graph.MinCut
