@@ -6,12 +6,10 @@ import           AOC (aoc)
 import           AOC.List (maximum, minimum, maximumOn)
 import           AOC.Parser (Parser, sepEndBy1, eol, signedDecimal, scanf)
 import           AOC.V3 (V3(..), origin, manhattan)
-import           AOC.Graph (Graph, maximalCliques)
-import qualified Data.Vector as V
-import qualified Data.HashMap.Strict as Map
-import qualified Data.HashSet as Set
+import           AOC.Graph (fromEdgePredicate, maximalCliques)
 
-data Bot = Bot { position :: !(V3 Int), radius :: !Int }
+data Bot = Bot { position :: !(V3 Int), radius :: !Int } deriving (Eq, Generic)
+instance Hashable Bot
 
 parser :: Parser [Bot]
 parser = bot `sepEndBy1` eol where
@@ -30,20 +28,10 @@ overlaps (Bot pos1 radius1) (Bot pos2 radius2) = manhattan pos1 pos2 <= radius1 
 distanceToOrigin :: Bot -> Int
 distanceToOrigin (Bot pos radius) = manhattan origin pos - radius
 
-mkGraph :: [Bot] -> Graph Int
-mkGraph bots = Map.fromList [ (i, Set.fromList [ j 
-                                               | (j, bot') <- zip [0..] bots
-                                               , i /= j && overlaps bot bot'
-                                               ]
-                              )
-                            | (i, bot) <- zip [0..] bots
-                            ]
-
 part2 :: [Bot] -> Int
 part2 bots = snd . minimum . map f $ maximalCliques graph where
-    f indices = (-length indices, maximum [distanceToOrigin (vbots V.! i) | i <- indices])
-    vbots = V.fromList bots
-    graph = mkGraph bots
+    f clique = (-length clique, maximum [distanceToOrigin bot | bot <- clique])
+    graph = fromEdgePredicate bots overlaps
 
 solve :: Text -> IO ()
 solve = aoc parser part1 part2

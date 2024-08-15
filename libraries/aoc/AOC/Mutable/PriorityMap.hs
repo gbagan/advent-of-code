@@ -6,41 +6,40 @@ PriorityMap (..),
 -- * Query
 AOC.Mutable.PriorityMap.null, lookupValue,
 -- * Construction
-empty, fromList,
+new, fromList,
 -- * Modification
 insert, peek, updateValue, updateMapKey, updatePriority, delete,
 -- * Internals
 -- | These are not part of the API, and may change from version to version.
-Info (..), updateCallback
+Info (..), updateCallback,
+AOC.Mutable.PriorityMap.toList
 ) where
 
-import AOC.Prelude hiding (empty, fromList)
+import Prelude
+import Control.Arrow (first)
+import Control.Monad.ST (ST)
+import Data.Foldable (for_)
+import Data.Hashable (Hashable)
+import qualified Data.HashTable.ST.Basic as T
+import Data.STRef
 import AOC.Mutable.Heap (Heap)
 import qualified AOC.Mutable.Heap as H
-import qualified Data.HashTable.ST.Basic as T
-import Control.Monad.ST (ST)
-import Data.STRef
 
--- | The default priority map, which uses an STRef to a Data.Map as its
--- map structure.
--- type PrioMap s = PriorityMap s MapST
-
-data Info km v = Info !Int !km !v deriving Show
+data Info p v = Info !Int !p !v deriving Show
 
 -- | A general priority map structure. @s@ is the state thread in the ST monad,
--- @m@ is the map type, @km@ is the keys for the map, @kh@ is the keys for
--- the heap, and @v@ is the value type.
-data PriorityMap s km kh v = PriorityMap
-  { pmmap  :: T.HashTable s km (STRef s (Info km v)) -- ^ the map
-  , pmheap :: Heap s kh (STRef s (Info km v)) -- ^ the heap
+-- @k@ is the key type, @p@ is the priority type and @v@ is the value type.
+data PriorityMap s k p v = PriorityMap
+  { pmmap  :: T.HashTable s k (STRef s (Info k v))
+  , pmheap :: Heap s p (STRef s (Info k v))
   }
 
 -- | Create a new empty priority map.
-empty :: ST s (PriorityMap s km kh v)
-empty = do
-  h <- H.empty
-  m <- T.new
-  return (PriorityMap m h)
+new :: ST s (PriorityMap s km kh v)
+new = do
+    h <- H.new
+    m <- T.new
+    return (PriorityMap m h)
 
 -- | /O(1)/. Returns true iff the priority map is null.
 null :: PriorityMap s km kh v -> ST s Bool
@@ -53,19 +52,26 @@ updateCallback i (_, ref) = modifySTRef' ref (\(Info _ km v) -> Info i km v)
 -- scores, and values. Could be improved in the future to be /O(n)/.
 fromList :: (Hashable k, Ord p) => [(k, p, v)] -> ST s (PriorityMap s k p v)
 fromList xs = do
-    m <- empty
+    m <- new
     for_ xs \(k, p, v) -> do
         insert m k p v
     return m
 
--- | /O(log n)/. Insert a value into the priority map. There should not already
--- be an entry with the given map key. If there is, behavior is undefined,
--- and it is likely that bad things will happen!
+-- | /O(log n)/. Insert a value into the priority map. If there is already
+-- an entry with the given map key, the entry is replaced.
 insert :: (Hashable k, Ord p) => PriorityMap s k p v -> k -> p -> v -> ST s ()
-insert (PriorityMap m h) k p v = do
-    info <- newSTRef (Info undefined k v)
-    T.insert m k info
-    H.insertWith h updateCallback (p, info)
+insert (PriorityMap t h) k p v = do
+    mref <- T.lookup t k
+    case mref of
+        Nothing -> do
+            info <- newSTRef (Info 0 k v)
+            T.insert t k info
+            H.insert h (p, info)
+        Just ref -> do
+            Info i _ _ <- readSTRef ref
+            writeSTRef ref (Info i k v)
+            H.modifyWith h updateCallback i (first (const p))
+
 
 -- | /O(log n)/. If the priority map is empty, returns 'Nothing'. If the 
 -- priority map is not empty, removes the entry with the lowest score from the
@@ -125,7 +131,6 @@ delete (PriorityMap t h) k = do
         Just ref -> do
             T.delete t k
             Info i _ _ <- readSTRef ref
-            -- todo: updateCallback needed?
             H.deleteWith h updateCallback i
 
 -- | /O(log n)/. Update the priority for a given entry. If no entry
@@ -137,5 +142,11 @@ updatePriority (PriorityMap t h) k f = do
     case v of
         Nothing -> pure ()
         Just ref -> do
-            Info i _ _ <- readSTRef ref
+            Info i _ _ <- readSTRef ref  
             H.modifyWith h updateCallback i (first f)
+
+toList :: PriorityMap s k p v -> ST s [(k, p, v)]
+toList (PriorityMap _ h) = traverse go =<< H.toList h where
+    go (p, ref) = do
+        Info _ k v <- readSTRef ref
+        pure (k, p, v)

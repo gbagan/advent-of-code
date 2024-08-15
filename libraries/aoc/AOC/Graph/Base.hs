@@ -25,3 +25,7 @@ removeVertex v graph = case graph Map.!? v of
                     (flip (Map.adjust (Set.delete v)))
                     (Map.delete v graph)
                     (Set.toList nbor)
+
+fromEdgePredicate :: Hashable a => [a] -> (a -> a -> Bool) -> Graph a
+fromEdgePredicate vertices p = Map.fromList [(v, nbors v) | v <- vertices] where
+    nbors v = Set.fromList [u | u <- vertices, u /= v && p v u]

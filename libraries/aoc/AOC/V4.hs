@@ -67,3 +67,6 @@ _t = lens (\(V4 _ _ _ t) -> t) (\(V4 x y z _) t -> V4 x y z t)
 
 surrounding :: Integral a => V4 a -> [V4 a]
 surrounding (V4 x y z t) = tail (V4 <$> [x, x-1, x+1] <*> [y, y-1, y+1] <*> [z, z-1, z+1] <*> [t, t-1, t+1])
+
+manhattan :: Integral a => V4 a -> V4 a -> a
+manhattan v1 v2 = sum $ fmap abs (v1 - v2)

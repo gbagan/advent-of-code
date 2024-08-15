@@ -82,6 +82,17 @@ maxBinSearch' predicate = go 1 where
          | otherwise = maxBinSearch predicate 1 n  
 {-# INLINE maxBinSearch' #-}
 
+minBinSearch :: (Int -> Maybe a) -> Int -> Maybe (Int, a) -> a
+minBinSearch _ low (Just (high, value)) | low + 1 == high = value
+minBinSearch f low mbHigh =
+    case f i of
+        Nothing -> minBinSearch f i mbHigh
+        Just a  -> minBinSearch f low (Just (i, a))
+    where
+    i = case mbHigh of
+        Nothing        -> low*2+1
+        Just (high, _) -> (low+1 + high) `quot` 2
+{-# INLINE minBinSearch #-}
 
 -- return the double of the polygon area
 shoelaceFormula :: Num a => [V2 a] -> a

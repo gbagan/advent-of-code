@@ -1,4 +1,4 @@
-module AOC.List (module L, allDistinct, headMaybe, tailMaybe, lastMaybe, minimumOn, maximumOn
+module AOC.List (module L, allDistinct, headMaybe, tailMaybe, lastMaybe, minimumOn, maximumOn, maximumOnMaybe
                         , minimumMaybe, minimumDef, maximumDef, findJust, groupOn, groupOnKey
                         , drop1, dropEnd, takeEnd
                         , splitWhen, wordsBy, grouped, grouped2, grouped3, sliding, pairwise
@@ -38,6 +38,11 @@ minimumOn f = minimumBy (comparing f)
 maximumOn :: (Foldable t, Ord b) => (a -> b) -> t a -> a
 maximumOn f = maximumBy (comparing f)
 {-# INLINE maximumOn #-}
+
+maximumOnMaybe :: Ord b => (a -> b) -> [a] -> Maybe a
+maximumOnMaybe _ [] = Nothing
+maximumOnMaybe o l = Just $ maximumOn o l
+{-# INLINE maximumOnMaybe #-}
 
 minimumMaybe :: Ord a => [a] -> Maybe a
 minimumMaybe [] = Nothing

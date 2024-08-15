@@ -150,6 +150,42 @@ astar startNode isGoal neighbors heuristic =
 
 {-# INLINE astar #-}
 
+{-
+astarMutable :: (Ord a, Hashable a) => a -> (a -> Bool) -> (a -> [(a, Int)]) -> (a -> Int) -> Maybe Int
+astarMutable startNode isGoal neighbors heuristic =
+    runST do
+        pq <- PQ.new
+        PQ.insert pq startNode (-(heuristic startNode)) 0
+        gscore <- T.new
+        T.insert gscore startNode 0
+        seen <- T.new
+        astarMutableAux isGoal neighbors heuristic pq seen gscore
+
+astarMutableAux :: Hashable a => (a -> Bool) -> (a -> [(a, Int)]) -> (a -> Int) -> PriorityMap s a Int Int -> T.HashTable s a () -> T.HashTable s a Int -> ST s (Maybe Int)
+astarMutableAux isGoal neighbors heuristic pq seen gscore = do
+    mp <- PQ.peek pq
+    case mp of
+        Nothing -> pure Nothing
+        Just (node, _, gcost)
+            | isGoal node -> pure (Just gcost)
+            | otherwise -> do
+                unlessM (isJust <$> T.lookup seen node) do
+                    T.insert seen node ()
+                    successors <-
+                            filterM (\(u, g, _) -> do
+                                uScore <- T.lookup gscore u
+                                pure $ isNothing uScore || Just g < uScore
+                            )
+                            [ (u, g + gcost, heuristic u)
+                            | (u, g) <- neighbors node
+                            ]
+                    for_ successors \(s, g, h) -> do
+                        PQ.insert pq s (-g-h) g
+                        T.insert gscore s g
+                astarMutableAux isGoal neighbors heuristic pq seen gscore
+{-# INLINE astarMutable #-}
+-}
+
 connectedComponents :: Hashable a => Graph a -> [[a]]
 connectedComponents g = map (map fst) . groupOn snd . sortOn snd $ Map.toList a
     where
